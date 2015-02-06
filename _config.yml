@@ -1,0 +1,7 @@
+# Site settings
+title: John Murray
+email: me@johnmurray.io
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://www.johnmurray.io"
+# Build settings
+markdown: kramdown
