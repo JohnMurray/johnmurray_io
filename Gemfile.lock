@@ -55,6 +55,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler
   jekyll
   kramdown
   puma
