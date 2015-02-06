@@ -1,6 +1,8 @@
 # Site settings
 title: John Murray
 email: me@johnmurray.io
+description: <
+  Random thoughts of John Murray
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://www.johnmurray.io"
 # Build settings
