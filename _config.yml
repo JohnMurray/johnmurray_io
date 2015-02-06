@@ -7,4 +7,4 @@ baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://www.johnmurray.io"
 # Build settings
 markdown: kramdown
-exclude: [vendor]
+exclude: [vendor, config.ru, Gemfile, Gemfile.lock, Procfile]

@@ -55,6 +55,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  jekyll
   kramdown
   puma
   rack-jekyll
