@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Per-Project Console</title>
+  <meta name="description" content="[Pry][1] is a wonderful interactive environment for Ruby. It is (more or less)a replacement to IRB. We already know that interactive environments are highlyu...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/2012/05/31/Per-Project-Console.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2015. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Per-Project Console</h1>
+    <p class="post-meta">May 31, 2012</p>
+  </header>
+
+  <article class="post-content">
+    <p><a href="http://pry.github.com/">Pry</a> is a wonderful interactive environment for Ruby. It is (more or less)
+a replacement to IRB. We already know that interactive environments are highly
+useful and the Rails Console is a great example of utilizing that interactive
+environment effectively. </p>
+
+<p>However, if you’re like me, then you don’t work in Rails. The majority of my
+work is in custom Ruby programs, <a href="http://rubyeventmachine.com/">EM</a>-driven programs and <a href="http://www.sinatrarb.com/">Sinatra</a> APIs.
+You don’t get anything like Rails Console for free when you’re building a custom
+Ruby program. So, when you start up an interactive environment, you may find
+yourself starting each session like so:</p>
+
+<div class="highlight"><pre><code class="language-js" data-lang="js"><span class="lineno"> 1</span> <span class="nx">require</span> <span class="s1">&#39;bundler/setup&#39;</span>
+<span class="lineno"> 2</span> <span class="nx">bundler</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="o">:</span><span class="nx">development</span><span class="p">,</span> <span class="o">:</span><span class="nx">test</span><span class="p">,</span> <span class="o">:</span><span class="nx">console</span><span class="p">)</span>
+<span class="lineno"> 3</span>  
+<span class="lineno"> 4</span> <span class="nx">$</span><span class="o">:</span> <span class="o">&lt;&lt;</span> <span class="nx">File</span><span class="p">.</span><span class="nx">expand_path</span><span class="p">(</span><span class="s1">&#39;../src&#39;</span><span class="p">,</span> <span class="nx">__FILE__</span><span class="p">)</span>
+<span class="lineno"> 5</span> <span class="nx">require</span> <span class="s1">&#39;app&#39;</span>
+<span class="lineno"> 6</span> <span class="nx">require</span> <span class="s1">&#39;models/user_account&#39;</span>
+<span class="lineno"> 7</span> <span class="nx">require</span> <span class="s1">&#39;models/cat&#39;</span>
+<span class="lineno"> 8</span>  
+<span class="lineno"> 9</span> <span class="err">#</span> <span class="nx">Load</span> <span class="nx">config</span> <span class="nx">and</span> <span class="nx">connect</span> <span class="nx">to</span> <span class="nx">DB</span>
+<span class="lineno">10</span> <span class="nx">App</span><span class="p">.</span><span class="nx">init</span><span class="p">()</span>
+<span class="lineno">11</span>  
+<span class="lineno">12</span> <span class="nx">def</span> <span class="nx">random_helper_method</span>
+<span class="lineno">13</span>   <span class="err">#</span> <span class="p">...</span> <span class="nx">helpful</span> <span class="nx">code</span> <span class="p">...</span>
+<span class="lineno">14</span> <span class="nx">end</span>
+<span class="lineno">15</span>  
+<span class="lineno">16</span> <span class="err">#</span> <span class="nx">maybe</span> <span class="nx">some</span> <span class="nx">other</span> <span class="nx">random</span> <span class="nx">junk</span> <span class="nx">depending</span> 
+<span class="lineno">17</span> <span class="err">#</span> <span class="nx">on</span> <span class="nx">what</span> <span class="nx">your</span> <span class="nx">testing</span> <span class="nx">at</span> <span class="nx">the</span> <span class="nx">moment</span>
+<span class="lineno">18</span>  
+<span class="lineno">19</span>  
+<span class="lineno">20</span> <span class="err">#</span> <span class="nx">FINALLY</span> <span class="nx">time</span> <span class="nx">to</span> <span class="nx">test</span><span class="o">!</span></code></pre></div>
+
+<p>You may keep your console running just because you don’t want to have to type
+all of that junk again. But eventually you will restart your computer, close
+your terminal, etc. and you will loose all of the work you put into setting up
+your console environment. </p>
+
+<p>My question to you (and to myself), is why go through all this trouble when
+creating your own console is so easy! Just create a <strong>console</strong> file in the
+root of your project and insert all of that code that you would normally put
+into an interactive session. You can even get fancy with a little color output
+and various, generic helper methods that are useful for debugging. A console
+example from one of my [current projects] looks like the following:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno"> 1</span> <span class="c1">#!/usr/bin/env ruby</span>
+<span class="lineno"> 2</span>  
+<span class="lineno"> 3</span> <span class="c1"># require all the necessary files</span>
+<span class="lineno"> 4</span> <span class="vg">$:</span> <span class="o">&lt;&lt;</span> <span class="o">::</span><span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">&#39;../src&#39;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+<span class="lineno"> 5</span> <span class="nb">require</span> <span class="s1">&#39;app&#39;</span>
+<span class="lineno"> 6</span> <span class="nb">require</span> <span class="s1">&#39;geofence&#39;</span>
+<span class="lineno"> 7</span>  
+<span class="lineno"> 8</span> <span class="c1"># at this point bundler should be setup and the :development group</span>
+<span class="lineno"> 9</span> <span class="c1"># should have been included. However, just to be sure, I&#39;m going to</span>
+<span class="lineno">10</span> <span class="c1"># include bundler again and require the console group.</span>
+<span class="lineno">11</span> <span class="nb">require</span> <span class="s1">&#39;bundler/setup&#39;</span>
+<span class="lineno">12</span> <span class="no">Bundler</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:console</span><span class="p">)</span>
+<span class="lineno">13</span>  
+<span class="lineno">14</span> <span class="c1"># specify some sample fences to play with</span>
+<span class="lineno">15</span> <span class="c1"># </span>
+<span class="lineno">16</span> <span class="c1"># format:</span>
+<span class="lineno">17</span> <span class="c1">#   [</span>
+<span class="lineno">18</span> <span class="c1">#     [:lon, :lat],</span>
+<span class="lineno">19</span> <span class="c1">#     ...</span>
+<span class="lineno">20</span> <span class="c1">#   ]</span>
+<span class="lineno">21</span> <span class="n">fence_1</span> <span class="o">=</span> <span class="o">[</span>
+<span class="lineno">22</span>   <span class="o">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">23</span>   <span class="o">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">24</span>   <span class="o">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">25</span>   <span class="o">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">26</span>   <span class="o">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">27</span>   <span class="o">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">28</span>   <span class="o">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">29</span>   <span class="o">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">30</span>   <span class="o">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span>
+<span class="lineno">31</span> <span class="o">]</span>
+<span class="lineno">32</span>  
+<span class="lineno">33</span> <span class="n">fence_2</span> <span class="o">=</span> <span class="o">[</span>
+<span class="lineno">34</span>   <span class="o">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">35</span>   <span class="o">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">36</span>   <span class="o">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">37</span>   <span class="o">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">38</span>   <span class="o">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">39</span>   <span class="o">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">40</span>   <span class="o">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">41</span>   <span class="o">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">42</span>   <span class="o">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">43</span>   <span class="o">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">18</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">44</span>   <span class="o">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">15</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">45</span>   <span class="o">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">46</span>   <span class="o">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">13</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">47</span>   <span class="o">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="o">]</span>
+<span class="lineno">48</span> <span class="o">]</span>
+<span class="lineno">49</span>  
+<span class="lineno">50</span> <span class="c1"># patch pretty-print to use a smaller width for looking at our fences</span>
+<span class="lineno">51</span> <span class="k">class</span> <span class="nc">PP</span>
+<span class="lineno">52</span>   <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
+<span class="lineno">53</span>     <span class="n">alias_method</span> <span class="ss">:old_pp</span><span class="p">,</span> <span class="ss">:pp</span>
+<span class="lineno">54</span>     <span class="k">def</span> <span class="nf">pp</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="vg">$&gt;</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">40</span><span class="p">)</span>
+<span class="lineno">55</span>       <span class="n">old_pp</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+<span class="lineno">56</span>     <span class="k">end</span>
+<span class="lineno">57</span>   <span class="k">end</span>
+<span class="lineno">58</span> <span class="k">end</span>
+<span class="lineno">59</span>  
+<span class="lineno">60</span>  
+<span class="lineno">61</span> <span class="c1"># include helpers to play around with Sinatra application</span>
+<span class="lineno">62</span> <span class="kp">include</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Test</span><span class="o">::</span><span class="no">Methods</span>
+<span class="lineno">63</span> <span class="nb">self</span><span class="o">.</span><span class="n">instance_eval</span> <span class="k">do</span>
+<span class="lineno">64</span>   <span class="vi">@app</span> <span class="o">=</span> <span class="no">App</span><span class="o">.</span><span class="n">new</span>
+<span class="lineno">65</span>   <span class="k">def</span> <span class="nf">app</span><span class="p">;</span> <span class="vi">@app</span><span class="p">;</span> <span class="k">end</span>
+<span class="lineno">66</span> <span class="k">end</span>
+<span class="lineno">67</span>  
+<span class="lineno">68</span>  
+<span class="lineno">69</span> <span class="c1"># add ability to reload console</span>
+<span class="lineno">70</span> <span class="k">def</span> <span class="nf">reload</span>
+<span class="lineno">71</span>   <span class="n">reload_msg</span> <span class="o">=</span> <span class="s1">&#39;# Reloading the console...&#39;</span>
+<span class="lineno">72</span>   <span class="nb">puts</span> <span class="no">CodeRay</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="n">reload_msg</span><span class="p">,</span> <span class="ss">:ruby</span><span class="p">)</span><span class="o">.</span><span class="n">term</span>
+<span class="lineno">73</span>   <span class="no">Pry</span><span class="o">.</span><span class="n">save_history</span>
+<span class="lineno">74</span>   <span class="nb">exec</span><span class="p">(</span><span class="s1">&#39;./console&#39;</span><span class="p">)</span>
+<span class="lineno">75</span> <span class="k">end</span>
+<span class="lineno">76</span>  
+<span class="lineno">77</span> <span class="n">g</span> <span class="o">=</span> <span class="no">Class</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span>
+<span class="lineno">78</span>   <span class="k">def</span> <span class="nf">method_missing</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+<span class="lineno">79</span>     <span class="no">Geofence</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+<span class="lineno">80</span>   <span class="k">end</span>
+<span class="lineno">81</span> <span class="p">}</span><span class="o">.</span><span class="n">new</span>
+<span class="lineno">82</span>  
+<span class="lineno">83</span>  
+<span class="lineno">84</span> <span class="c1"># start the console! :-)</span>
+<span class="lineno">85</span> <span class="nb">system</span><span class="p">(</span><span class="s1">&#39;clear&#39;</span><span class="p">)</span>
+<span class="lineno">86</span> <span class="n">welcome</span> <span class="o">=</span> <span class="o">&lt;&lt;</span><span class="no">eos</span>
+<span class="lineno">87</span> <span class="sh"># This is my interactive playground. You can call the Sinatra methods in</span>
+<span class="lineno">88</span> <span class="sh"># the same way you would in RSpec (get, post). There are also a couple of</span>
+<span class="lineno">89</span> <span class="sh"># test fences defined for you (fence_1, fence_2). I also monkey-patched</span>
+<span class="lineno">90</span> <span class="sh"># &#39;pp&#39; to print short arrays nicer.</span>
+<span class="lineno">91</span> <span class="sh">#</span>
+<span class="lineno">92</span> <span class="sh"># Everything you would want to play with (for this project) should be in here</span>
+<span class="lineno">93</span> <span class="sh"># </span>
+<span class="lineno">94</span> <span class="no">eos</span>
+<span class="lineno">95</span> <span class="nb">puts</span> <span class="no">CodeRay</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="n">welcome</span><span class="p">,</span> <span class="ss">:ruby</span><span class="p">)</span><span class="o">.</span><span class="n">term</span>
+<span class="lineno">96</span> <span class="no">Pry</span><span class="o">.</span><span class="n">start</span></code></pre></div>
+
+<p>In my console I:</p>
+
+<ul>
+  <li>Load my project files</li>
+  <li>Define test-data to work with</li>
+  <li>redefine <strong>PP.pp</strong> to use a shorter-width for printing out test-coordinates</li>
+  <li>load Rack helper methods so that I can make calls to my Sinatra app from
+within the console</li>
+  <li>add the ability to reload my console</li>
+  <li>define a helper object to call private methods on the Geofence class</li>
+  <li>print a nice welcome message (colorized with CodeRay which is packaged with
+Pry)</li>
+</ul>
+
+<p>That’s quite a bit of work if I were to do that each time I started a new
+interactive Pry session. And to be honest, I just wouldn’t. I would do the bare
+minimum required to test something. With the console, I can have some other
+niceties because I only have to write them once. So nice!</p>
+
+<p>This has now become a mandatory step when <em>getting started</em> on any new Ruby
+project. I add some basics that I put into all of my console files and then
+I evolve the console as the project moves forward. I can’t imagine working
+any other way (well… I can, I just don’t prefer it).</p>
+
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+  </body>
+
+</html>

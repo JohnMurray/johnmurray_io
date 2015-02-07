@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Getting Started with Akka</title>
+  <meta name="description" content="For those not familiar, [Akka][1] is a [Scala][3] library for implementing the[Actor Model][2]. Technically you can use Java as well, but things are a little...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/2013/08/31/Hello-Akka.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2015. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Getting Started with Akka</h1>
+    <p class="post-meta">Aug 31, 2013</p>
+  </header>
+
+  <article class="post-content">
+    <p>For those not familiar, <a href="http://akka.io">Akka</a> is a <a href="http://scala-lang.org">Scala</a> library for implementing the
+<a href="http://en.wikipedia.org/wiki/Actor_model">Actor Model</a>. Technically you can use Java as well, but things are a little
+more concise and idiomatic in Scala.</p>
+
+<p>Let’s get started shall we. The first thing you should have installed is <a href="http://www.scala-sbt.org/0.12.4/docs/Getting-Started/Setup.html">sbt</a>.
+Then you’ll want to create a new folder for your project <code>hello-akka</code>. Within that
+folder, let’s create a <code>build.sbt</code> file with the following contents:</p>
+
+<!-- build.sbt gist -->
+<script src="https://gist.github.com/JohnMurray/6400829.js?file=build.sbt"></script>
+
+<p>You can see that we just have some basic setup with names and versions. You’ll also
+notice that we’re delcaring <code>akka-actor</code> and <code>akka-kernel</code> as our dependencies. The
+main library is <code>akka-actor</code> which we will (obviously) define our actor in. The second
+is a little less obvious, <code>akka-kernel</code>, and will be used to define our akka-instance
+as a standalone setup (not as a library within another project).</p>
+
+<p>The next thing we want to do is create a couple of actors to perform an asynchronous
+hello-world:</p>
+
+<script src="https://gist.github.com/JohnMurray/6400829.js?file=HelloWorldActor.scala"></script>
+
+<script src="https://gist.github.com/JohnMurray/6400829.js?file=Greeter.scala"></script>
+
+<p>Take note that these files were created within the directory <code>src/main/scala</code> within
+the <code>hello-akka</code> directory. From the above, you’ll notice that the HelloWorldActor
+receives a <code>Tick</code> event and then sends a message to the <code>Greeter</code> actor which then
+prints <code>"Hello, World"</code>. You may be wondering what is sending the <code>Tick</code> event to the
+HelloWorldActor to start with. For this we have to define our kernel:</p>
+
+<script src="https://gist.github.com/JohnMurray/6400829.js?file=HelloWorldKernel.scala"></script>
+
+<p>This is the entry-point for our application. You can see that we are creating an instance
+of the <code>HelloWorldActor</code> and scheduling a message be sent (<code>Tick</code>) every 500 milliseconds.</p>
+
+<h2 id="done">Done!</h2>
+
+<p>That’s all there is to creating a standalone Akka, pretty simple. There are various ways you
+can run your application, but I feel the easiest is with scripts that ship with Akka. To add
+that to your project, run the following script from within the <code>hello-akka</code> directory:</p>
+
+<script src="https://gist.github.com/JohnMurray/6400829.js?file=run.sh"></script>
+
+<p>I typically create a Makefile for running my project just because I find that easier. You could
+do something like the following:</p>
+
+<script src="https://gist.github.com/JohnMurray/6400829.js?file=Makefile"></script>
+
+<p>And then just run <code>make run</code> to start your project. You should see something like the following:</p>
+
+<script src="https://gist.github.com/JohnMurray/6400829.js?file=akka-output"></script>
+
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+  </body>
+
+</html>

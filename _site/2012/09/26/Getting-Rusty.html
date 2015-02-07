@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Getting Rust'y</title>
+  <meta name="description" content="Have you heard of [Rust][1] (I’m not talking about iron oxide)? It’s a newsystems language being baked up by the [Mozilla Foundation][2]. Currentlyit is very...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/2012/09/26/Getting-Rusty.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2015. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Getting Rust'y</h1>
+    <p class="post-meta">Sep 26, 2012</p>
+  </header>
+
+  <article class="post-content">
+    <p>Have you heard of <a href="http://rust-lang.org">Rust</a> (I’m not talking about iron oxide)? It’s a new
+systems language being baked up by the <a href="http://www.mozilla.org/foundation">Mozilla Foundation</a>. Currently
+it is very new and unstable (in the sense that it will change a LOT by the
+time is reaches version 1). It looks very interesting and is well worth a look.</p>
+
+<p>From my VERY limited knowledge of the language, it looks like <a href="http://en.wikipedia.org/wiki/C_(programming_language)">C</a>, <a href="http://golang.org">Go</a>,
+and <a href="http://ruby-lang.org">Ruby</a> had a child. However, I’m sure my opinion of this will change
+greatly as I learn more about the language. All I can really say for sure is
+that it looks like it’s going to be a great/fun language to learn. How could
+it not with a feature list consisting of:</p>
+
+<ul>
+  <li>pre-compiled (C/C++ compatible)</li>
+  <li>static typing, with type inference</li>
+  <li>simple concurrency model</li>
+  <li>lambdas everywhere (the way it should be)</li>
+  <li>immutable by default</li>
+  <li>move semantics (<a href="http://stackoverflow.com/questions/3106110/can-someone-please-explain-move-semantics-to-me">good explanation here</a>)</li>
+</ul>
+
+<p><br />
+<br /></p>
+
+<h3 id="compiling">Compiling</h3>
+<p>Okay, if we’re going to play around with the language then we’ll at least need
+to compile it and get it up and running. For me, I had just setup a new Fedora
+17 instance (no updates at this point) and to compile only required that I do:</p>
+
+<script src="https://gist.github.com/3805064.js?file=compiling-rust.sh"></script>
+
+<p>Do note that I use the <code>-j</code> option for <code>make</code> to speed things up on my
+computer. I’d recommend to change the value of <code>-j</code> to however many cores your
+computer has available. You might also need to run <code>make install</code> as sudo
+if you do not have the necessary permissions. </p>
+
+<p><br />
+<br /></p>
+
+<h3 id="hello-rust">Hello Rust</h3>
+<p>As is tradition, you have to force your newly compiled interpreter/compiler
+to introduce itself to the world. And, in Rust, it’s just about as boring as it
+is in any other language:</p>
+
+<script src="https://gist.github.com/3805064.js?file=hello_world.rs"></script>
+
+<p>A slightly more exciting example (shamelessly stolen from rust-lang.org’s
+<a href="http://dl.rust-lang.org/doc/0.3/tutorial.html#first-impressions">tutorial</a>), a parallel game of rock-paper-scissors:</p>
+
+<script src="https://gist.github.com/3805064.js?file=parallel_rock_paper_scissors.rs">
+</script>
+
+<h3 id="i-want-more">I Want More!</h3>
+<p>If you’re like me, then you think that Rust could really turn out to be something
+fun and awesome (I really recommend heading on over to rust-lang.org to learn
+something more substantial)! But, I’m not here to give a thorough walk-through
+of the language. I’m more or less just giving a shout-out to what could really
+be a very interesting systems-programming language.</p>
+
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+  </body>
+
+</html>

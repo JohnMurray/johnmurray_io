@@ -5,8 +5,8 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 06 Feb 2015 10:25:41 -0500</pubDate>
-    <lastBuildDate>Fri, 06 Feb 2015 10:25:41 -0500</lastBuildDate>
+    <pubDate>Fri, 06 Feb 2015 23:29:07 -0500</pubDate>
+    <lastBuildDate>Fri, 06 Feb 2015 23:29:07 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -51,6 +51,771 @@
         <category>test</category>
         
         <category>post</category>
+        
+      </item>
+    
+      <item>
+        <title>Starting a Scala Project</title>
+        <description>&lt;p&gt;When starting a new Scala project there are a few things that you want
+do get setup correctly before starting your development work. These are
+some of the things that I do for each new project.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Spoiler&lt;/strong&gt; - I have created a GitHub repo &lt;a href=&quot;https://github.com/JohnMurray/basic-scala-template&quot;&gt;basic-scala-template&lt;/a&gt; that 
+contains everything that is mentioned here.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt; - Based on feedback, I have listed updates to the template
+at the bottom of this post.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;a-note-on-activator&quot;&gt;A Note on Activator&lt;/h2&gt;
+
+&lt;p&gt;The wonderful people at Typesafe have a project called &lt;a href=&quot;http://www.typesafe.com/activator&quot;&gt;Activator&lt;/a&gt; which
+is a nice little tool that, among other things, allows you to get started quickly
+by selecting a base template. While this is useful and there are some good
+templates, I still prefer to manage my own template. This allows me to make some
+additions that are missing from the Activator templates and setup my projects
+in a way that work best for me.&lt;/p&gt;
+
+&lt;h2 id=&quot;sbt&quot;&gt;SBT&lt;/h2&gt;
+
+&lt;p&gt;I setup all my projects as a standard SBT project (because why wouldn’t you)
+so hopefully you can find this useful. The first thing I do is download the
+version of SBT that I want and add the launcher and the shell script local
+to my git repo. This way I always have sbt available on whatever machine
+that I am working on and I am able to make per-project changes to the
+launcher. If you do this as well you will have to get used to typing &lt;code&gt;./sbt&lt;/code&gt; 
+vs &lt;code&gt;sbt&lt;/code&gt;, but that is an easy change to make. &lt;/p&gt;
+
+&lt;p&gt;As of right now, my project structure looks like the following:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=layout-1&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;I will note that for the actual &lt;code&gt;sbt&lt;/code&gt; script I usually just use one of
+my own rather than the super-complex ones that ship with the SBT download. My
+current sbt launch script looks like:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=sbt&quot;&gt;
+&lt;/script&gt;
+
+&lt;h2 id=&quot;basic-sbt-additions&quot;&gt;Basic SBT Additions&lt;/h2&gt;
+
+&lt;p&gt;Now that I have SBT setup for a project, I can start doing some basic
+configurations that I figure I will need on all my projects. First I’m going
+to add is the &lt;a href=&quot;https://github.com/spray/sbt-revolver&quot;&gt;sbt-revolver&lt;/a&gt;. This is a very useful plugin that can run
+your project in a forked JVM and reload it on a change. We can add this to
+the project by adding the following to our &lt;code&gt;project/plugin.sbt&lt;/code&gt;:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=plugins-line-1.sbt&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;While I’m at it, I’m going to add one more plugin, &lt;a href=&quot;https://github.com/mpeltonen/sbt-idea&quot;&gt;sbt-idea&lt;/a&gt;, that can 
+generate IDE-specific files for IntelliJ IDE with a simple command &lt;code&gt;gen-idea&lt;/code&gt;:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=plugins-line-2.sbt&quot;&gt;
+&lt;/script&gt;
+
+&lt;h2 id=&quot;template-build-file&quot;&gt;Template Build File&lt;/h2&gt;
+
+&lt;p&gt;When using SBT I opt for the full &lt;code&gt;Build.scala&lt;/code&gt; vs the DSL-like &lt;code&gt;build.sbt&lt;/code&gt; file.
+I find it easier and more straight-forward to work with. I like to break my
+build file into several logical sections: resolvers, dependencies, build settings,
+and the application build. My typical build-file looks like:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=Build.scala&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;Even though this build file is pretty bare (&lt;em&gt;at the moment&lt;/em&gt;) there are some key
+things that I like to include as part of every build configuration. &lt;/p&gt;
+
+&lt;dl&gt;
+  &lt;dt&gt;Scala&lt;/dt&gt;
+  &lt;dd&gt;
+    Aside from specifying the version that I will be using for this project, I
+    also specify some basic compiler options to output more verbose warnings and
+    do some extra checks for me.
+  &lt;/dd&gt;
+
+  &lt;dt&gt;Versioning&lt;/dt&gt;
+  &lt;dd&gt;
+    I like to start each project as a snapshot version (0.0.1). I can then extend
+    the build-file later with some publishing configurations to push snapshot versions
+    to a repo (like Sonatype) on each successful build/commit/test-run/etc.
+  &lt;/dd&gt;
+
+  &lt;dt&gt;Revolver&lt;/dt&gt;
+  &lt;dd&gt;
+    Even though we added the &lt;code&gt;sbt-revolver&lt;/code&gt; plugin to our 
+    &lt;code&gt;plugins.sbt&lt;/code&gt; file earlier we still need to add the settings to 
+    our build to fully install it.
+  &lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;h2 id=&quot;style-checking&quot;&gt;Style Checking&lt;/h2&gt;
+
+&lt;p&gt;For me, this is a new addition but I generally like consistency in my projects (open
+source and closed) when it comes to style. I’ve been playing around with various
+style checkers, but I’ve settled on &lt;a href=&quot;http://www.scalastyle.org/&quot;&gt;Scalastyle&lt;/a&gt; for now. I don’t have much beyond
+the standard, but I’m sure it’ll evolve over time. I added the following to my
+&lt;code&gt;plugins.sbt&lt;/code&gt; file&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=plugins-line-3-4.sbt&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;I’ve also updated our &lt;code&gt;buildSettings&lt;/code&gt; in &lt;code&gt;project/Build.scala&lt;/code&gt; by appending the
+Scalastyle settings&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=scalastyle-build.scala&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;As far as the build configuration goes, my configuration isn’t far off the default you
+get by running &lt;code&gt;sbt scalastyle-generate-config&lt;/code&gt; so I won’t list it here. &lt;/p&gt;
+
+&lt;h2 id=&quot;testing&quot;&gt;Testing&lt;/h2&gt;
+
+&lt;p&gt;For testing I typically start with Specs2 and add from there. For this we add to the build
+file simply:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=Build.specs2.scala&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;I can easily add others in the same fashion. For example, if I were doing an Akka
+project I would add the &lt;code&gt;akka-testkit&lt;/code&gt; for the &lt;code&gt;spray-teskit&lt;/code&gt; for Spray projects.&lt;/p&gt;
+
+&lt;p&gt;If the project I am building is open source, I have to think about CI what build
+system I’m going to use. I personally prefer to use &lt;a href=&quot;http://travis-ci.org&quot;&gt;Travis-CI&lt;/a&gt; just because
+it’s so darn simple. Since this is usually the case I add the &lt;code&gt;.travis.yml&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=.travis.yml&quot;&gt;
+&lt;/script&gt;
+
+&lt;h2 id=&quot;miscellaneous&quot;&gt;Miscellaneous&lt;/h2&gt;
+
+&lt;p&gt;As a final note, I like to add some basic files that I put in most projects:&lt;/p&gt;
+
+&lt;dl&gt;
+  &lt;dt&gt;&lt;code&gt;.gitignore&lt;/code&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    The baiscs for scala projects as well as IntelliJ project-files and general
+    files (like &lt;code&gt;.swp&lt;/code&gt; files and what not)
+  &lt;/dd&gt;
+
+  &lt;dt&gt;&lt;code&gt;readme.md&lt;/code&gt;&lt;/dt&gt;
+  &lt;dd&gt;
+    I like to include a readme with all of my projects (open source or not) just
+    as a &lt;em&gt;welcome&lt;/em&gt; and a guide for navigating and working with the project.
+  &lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;h2 id=&quot;done&quot;&gt;Done!&lt;/h2&gt;
+
+&lt;p&gt;Now that I’m done putting together all the pieces to get started, my final directory
+structure is laid out in the following manner:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=layout-2&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;As I mentioned in the spoiler up top, I have put this into a git repository for my
+own (and possibly your) convenience &lt;a href=&quot;https://github.com/JohnMurray/basic-scala-template&quot;&gt;here&lt;/a&gt;. You can start any new project using 
+this template simply via:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=clone-repo.sh&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;Or, you can clone the repository and add the &lt;code&gt;scala-new&lt;/code&gt; script to your path which is
+located in the root of the project. With this you can simply do&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/11116775.js?file=scala-new.sh&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;This script will take care of updating the repo, creating a directory, and copying
+over all the necessary files. Easy peasy. &lt;/p&gt;
+
+&lt;p&gt;If you find this useful (and I hope you do) then please fork &lt;a href=&quot;https://github.com/JohnMurray/basic-scala-template&quot;&gt;my repo&lt;/a&gt; and customize
+it to suite your needs. Feel free to send pull requests if you think I am missing
+something awesome that you feel every Scala project should include.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Enjoy!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;update-1&quot;&gt;Update #1&lt;/h2&gt;
+
+&lt;p&gt;Thanks to a comment by &lt;a href=&quot;http://www.reddit.com/user/predef&quot;&gt;predef&lt;/a&gt; on reddit, I have removed the sbt-launcher jar from
+my project along with my custom sbt script in favor of using the &lt;a href=&quot;https://github.com/paulp/sbt-extras&quot;&gt;sbt-extra&lt;/a&gt; script
+and creating a &lt;code&gt;project/build.properties&lt;/code&gt; file. You now must simply use the sbt script
+&lt;code&gt;./sbt&lt;/code&gt; and the correct version of SBT will be downloaded for you.&lt;/p&gt;
+
+&lt;p&gt;The second suggestion was to remove the &lt;code&gt;sbt-idea&lt;/code&gt; plugin from the project and move it
+into my global plugins (that’s a thing?!) which is a fantastic idea. So I have now created
+the file &lt;code&gt;~/.sbt/0.13/plugins/intellij.sbt&lt;/code&gt; that contains the &lt;code&gt;addPlugin...&lt;/code&gt; that we used
+earlier in the &lt;code&gt;plugins.sbt&lt;/code&gt; file for the &lt;code&gt;sbt-idea&lt;/code&gt; plugin. Now the project can be more
+agnostic to what editor is used. Do note that if you still want to use the IntelliJ SBT
+plugin that you’ll need to add that to your global plugins as the script/template will not
+handle that for you.&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 15 Apr 2014 08:00:00 -0400</pubDate>
+        <link>http://www.johnmurray.io/2014/04/15/Starting-a-Scala-Project.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/2014/04/15/Starting-a-Scala-Project.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Scala map() vs map{}</title>
+        <description>&lt;p&gt;I was wondering the other day what the difference really was, in Scala, between&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/7518029.js?file=map1.scala&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;and&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/7518029.js?file=map2.scala&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;So, I figured I’d take a look at the map function defined on the List class. I winded up
+finding the definition in the &lt;code&gt;TraversableLike&lt;/code&gt; trait as follows:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/7518029.js?file=map-traversable-like.scala&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;Let’s ignore the builder for now since it’s the less important part of this question. We’re
+interested in the first set of parameters, &lt;code&gt;f: A =&amp;gt; B&lt;/code&gt;. This seems to be a normal argument
+yet we can apply it in two different ways. That got me thinking a little bit and so I decided
+to play around a bit to see if I can figure this out anecdotally, before looking up the proper
+literature.&lt;/p&gt;
+
+&lt;h3 id=&quot;non-function-arguments&quot;&gt;Non-Function Arguments&lt;/h3&gt;
+
+&lt;p&gt;I first wanted to try with some simple functions that didn’t have functions as arguments to see if
+this format is generally applicable. I came up with some simple tests.&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/7518029.js?file=normal-function.scala&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;So from this it seems to indicate that braces are not interchangeable with parenthesis. However,
+it does seem that &lt;code&gt;&quot;John&quot;&lt;/code&gt; and &lt;code&gt;{&quot;John&quot;}&lt;/code&gt; are interchangeable. In fact, if we look at the REPL
+we see:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/7518029.js?file=braces-repl.scala&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;This may not be a surprise to some, but that means that something like &lt;code&gt;echo {&quot;hello&quot;}&lt;/code&gt; can
+really just be thought of as a shorthand for &lt;code&gt;echo({&quot;hello&quot;})&lt;/code&gt;. But what about &lt;code&gt;{x =&amp;gt; x * x}&lt;/code&gt;.
+We can assume that just returns a function, correct? So that would means we can assume that
+these are functionally equivalent:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/7518029.js?file=map3.scala&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;And, anecdotally, this seems to be true.&lt;/p&gt;
+
+&lt;h3 id=&quot;back-to-functions&quot;&gt;Back to Functions&lt;/h3&gt;
+
+&lt;p&gt;So based on our findings, what is the point of the curly braces and when would they be useful.
+Let’s do some experiments with a little more meat and see if we can find an answer. First let’s try
+a slightly larger map example.&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/7518029.js?file=map4.scala&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;Ah ha, so there is a good reason to use curly braces. It looks like the parenthesis version cannot
+handle multiple statements and is only expecting a single expression. Furthermore, I found this bit
+interesting as well:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/7518029.js?file=func-val.scala&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;The same syntax using parenthesis cannot be used to define the function outside of the map unlike
+the version with curly-braces. Very interesting.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-real-story&quot;&gt;The Real Story&lt;/h3&gt;
+
+&lt;p&gt;Okay, at this point I feel like I’ve made some interesting findings, but I’m curious what the
+Internet has to say about such things. So I figured I’d let her weigh in. I came across a few
+different posts:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.scala-lang.org/old/node/2593&quot;&gt;Scala Forums Posting, complete with appearance by Odersky&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/4386127/what-is-the-formal-difference-in-scala-between-braces-and-parentheses-and-when&quot;&gt;This SO Post&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.scala-lang.org/old/node/10195&quot;&gt;Another Scala Forums Posting&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Surprisingly, all three answers were by the same person. For someone strapped for time when it
+comes to blogging, he sure does seem to make a lot of appearances on this topic. ;-D&lt;/p&gt;
+
+&lt;p&gt;All in all, there seems to be quite a bit of discussion with some grey areas still that I still
+don’t fully understand. In those cases the compiler seems to be the specification, which is never
+preferable (IMO) for many reasons. Oh Scala, you are an interesting little language.&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 17 Nov 2013 07:00:00 -0500</pubDate>
+        <link>http://www.johnmurray.io/2013/11/17/Scala-map()-vs-map%7B%7D.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/2013/11/17/Scala-map()-vs-map%7B%7D.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Read Less HN</title>
+        <description>&lt;p&gt;Let’s break it down. What type of content do you typically read on HN:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;People having great success with their startup&lt;/li&gt;
+  &lt;li&gt;People failing (again) at their Nth startup&lt;/li&gt;
+  &lt;li&gt;A wonderful new language that you should learn &lt;em&gt;immediately&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;How language X is &lt;em&gt;way&lt;/em&gt; better than language Y and why you should 
+rewrite all of your existing, working code immediately&lt;/li&gt;
+  &lt;li&gt;A wonderful new framework that you should also learn immediately&lt;/li&gt;
+  &lt;li&gt;How X technology product is terrible and made some company go out of business&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I think you are starting to get the picture. There are a lot of success stories, a lot
+of failure stories, a &lt;em&gt;ton&lt;/em&gt; of articles/links about some newfangled technology, and even
+more articles about how that new technology is better than what you’re currently using in
+every way possible. I propose that &lt;em&gt;most&lt;/em&gt; of this information is actually doing more
+harm than good and that you should attempt to read less HN.&lt;/p&gt;
+
+&lt;h2 id=&quot;why&quot;&gt;Why?&lt;/h2&gt;
+
+&lt;h3 id=&quot;loss-in-productivity&quot;&gt;Loss in Productivity&lt;/h3&gt;
+
+&lt;p&gt;And I’m not just talking about the time you spend at work reading HN. HN is a very easy
+way to sink hours of time and get relatively little reward. After you’ve read about the
+20 new frameworks that came out this week, what are you going to do with that knowledge?
+Are you going to try each one? Likely the answer is no. If you are at work or working on
+a personal project for fun, likely you have already chosen your set of tools and you are
+just wasting your time.&lt;/p&gt;
+
+&lt;p&gt;If you tend to read more of the “startup stories” on HN, what do you really gain? Will reading
+more and more stories about failed and successful startups really teach you everything that
+you need to know about running your own startup? And at what point do you start getting
+diminishing returns? What is the opportunity cost associated with spending your time reading
+100’s of “startup stories” each week/month?&lt;/p&gt;
+
+&lt;h3 id=&quot;too-many-good-things&quot;&gt;Too Many Good Things&lt;/h3&gt;
+
+&lt;p&gt;There are a fair number of posts on HN detailing the wonderful success that X random startup /
+company has had. Reading too many of these articles may get you feeling depressed about your
+own situation. Even if you are running a mildly successful business, you’ll still start
+to see how your company is failing in one way or another. I’m not saying that is a bad thing,
+but I think it would be more beneficial for your company, and for you as a person, to focus
+on the things you do well and try to do them even better.&lt;/p&gt;
+
+&lt;h3 id=&quot;too-many-bad-things&quot;&gt;Too Many Bad Things&lt;/h3&gt;
+
+&lt;p&gt;The converse of the previous point is that there are a ton of posts detailing the massive
+failures in their startup or career that have costs them dearly. Those articles, in and of
+themselves, are not a bad thing. It is good to know some of the common pitfalls that you 
+may face. However, reading too many of these articles may get some people discouraged when
+they should not be. When you read a bunch of these type of articles, you have to ask yourself
+what you are getting out of them?&lt;/p&gt;
+
+&lt;h3 id=&quot;no-middle-ground&quot;&gt;No Middle Ground&lt;/h3&gt;
+
+&lt;p&gt;The main reason with the two previous points may just be that there is no strong middle-ground
+representation. People seem to talk more about how things went wonderful or horrible.
+Likely because that attracts more readership, but it is to the detriment to everyone as
+a whole. It also breeds a culture that only wants to talk about the extremes or will exaggerate
+the truth to meet those standards.&lt;/p&gt;
+
+&lt;h3 id=&quot;technology-add&quot;&gt;Technology ADD&lt;/h3&gt;
+
+&lt;p&gt;If you’re more on the engineering side, and anything like me, you like to get your hands dirty
+in just about everything tech related. Personally, I can’t get enough of it. However, there is
+a point where you want to put a hold on learning every new-fangled language/framework and start
+applying your knowledge to build something that you enjoy. However, if you keep subjecting
+yourself to the continual stream of technology news, you may have a hard time keeping yourself
+focused (How can you &lt;em&gt;not&lt;/em&gt; learn each new “LISP of the month”?).&lt;/p&gt;
+
+&lt;p&gt;As an added bonus, by digging into less technologies you’ll come to master the ones that you
+already know which can be a powerful thing. Many people seem to value the polyglot programmer
+these days, but you have to determine how far down that path you’d like to go and how much
+mastery you’d like to attain in those languages/tools/frameworks.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-solution&quot;&gt;The Solution&lt;/h2&gt;
+
+&lt;p&gt;The solution is not to read absolutely no news at all. Obviously this post was titled “Read
+Less HN”, so that’s not where I’m going with all of this. I’d recommend that you switch to
+some sort of aggregated format. Something that can curate the top posts and send them to you
+on a schedule. Personally, I subscribe to the &lt;a href=&quot;http://www.hackernewsletter.com/&quot;&gt;Hacker Newsletter&lt;/a&gt; for a weekly update. The
+idea of curated content has several benefits&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The best content is filtered for you, so you spend less time reading uninteresting articles&lt;/li&gt;
+  &lt;li&gt;You save time reading a newsletter once a week vs reading the site every day&lt;/li&gt;
+  &lt;li&gt;Because you read less articles, you’ll avoid hearing about 20 new frameworks a week and ideally
+read about 1’ish which will hopefully be more worthwhile (since it was theoretically filtered
+from the initial 20)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The wonderful part about aggregated content is that you have options. If Hacker Newsletter doesn’t
+suite you, you could try several other newsletters as well:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://javascriptweekly.com/&quot;&gt;Javascript Weekly&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://rubyweekly.com/&quot;&gt;Ruby Weekly&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://pycoders.com/&quot;&gt;PyCoders Weekly&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://statuscode.org/&quot;&gt;Status Code (General CompSci Weekly News)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://dartweekly.com/&quot;&gt;Dart Weekly&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://html5weekly.com/&quot;&gt;HTML 5 Weekly&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.hndigest.com/&quot;&gt;HN Digest&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://iosdevweekly.com/issues&quot;&gt;iOS Dev Weekly&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://androidweekly.net&quot;&gt;Android Weekly&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jobety.com/&quot;&gt;Jobety Weekly&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can also consume multiple newsletters if you’d like but be very careful not to fall back
+into the same trap as with HN. Choose carefully and always think about how you’re benefiting
+from each article that you read.&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 17 Nov 2013 07:00:00 -0500</pubDate>
+        <link>http://www.johnmurray.io/2013/11/17/Read-Less-HN.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/2013/11/17/Read-Less-HN.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Scala By Example</title>
+        <description>&lt;p&gt;I believe that the best way to learn a new language or technology, or anything for that
+matter, is to really get your hands dirty. This is especially true when it comes to learning
+a new programming language. You really absorb the details of the language by writing code
+and small/toy applications in that language. However, just getting started can be a little
+hard sometimes. In part because you can’t yet get your hands dirty until you’ve spent a fair
+amount of time reading and understanding the basic principals of the language.&lt;/p&gt;
+
+&lt;p&gt;Recently I taught an introductory Scala course to my team at AppNexus and I spent a fair amount
+of time thinking about how I could get everyone involved while still learning the beginner concepts.
+Scala makes this relatively easy by the use of Worksheets. Worksheets are an IDE feature that
+allows you to execute a file’s worth of code in a REPL like environment. That being the case, I
+created my lessons as a series of worksheets. I walked through each of these explaining various
+concepts and answering questions while everyone else was able to immediately start playing with
+Scala code.&lt;/p&gt;
+
+&lt;p&gt;I hope, and feel, that this was a useful tool. That being said, if you would like to do something
+similar with your team, or for yourself, then you can access the worksheets on GitHub. If you find
+this useful, please contribute back to the project and socialize it to other developers you know who
+might be interested in learning Scala or teaching it to their engineering team.&lt;/p&gt;
+
+&lt;p&gt;Github Repo: &lt;a href=&quot;https://github.com/JohnMurray/learn-scala-worksheets&quot;&gt;https://github.com/JohnMurray/learn-scala-worksheets&lt;/a&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 05 Oct 2013 08:00:00 -0400</pubDate>
+        <link>http://www.johnmurray.io/2013/10/05/Scala-by-Example.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/2013/10/05/Scala-by-Example.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Getting Started with Akka</title>
+        <description>&lt;p&gt;For those not familiar, &lt;a href=&quot;http://akka.io&quot;&gt;Akka&lt;/a&gt; is a &lt;a href=&quot;http://scala-lang.org&quot;&gt;Scala&lt;/a&gt; library for implementing the
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Actor_model&quot;&gt;Actor Model&lt;/a&gt;. Technically you can use Java as well, but things are a little
+more concise and idiomatic in Scala.&lt;/p&gt;
+
+&lt;p&gt;Let’s get started shall we. The first thing you should have installed is &lt;a href=&quot;http://www.scala-sbt.org/0.12.4/docs/Getting-Started/Setup.html&quot;&gt;sbt&lt;/a&gt;.
+Then you’ll want to create a new folder for your project &lt;code&gt;hello-akka&lt;/code&gt;. Within that
+folder, let’s create a &lt;code&gt;build.sbt&lt;/code&gt; file with the following contents:&lt;/p&gt;
+
+&lt;!-- build.sbt gist --&gt;
+&lt;script src=&quot;https://gist.github.com/JohnMurray/6400829.js?file=build.sbt&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;You can see that we just have some basic setup with names and versions. You’ll also
+notice that we’re delcaring &lt;code&gt;akka-actor&lt;/code&gt; and &lt;code&gt;akka-kernel&lt;/code&gt; as our dependencies. The
+main library is &lt;code&gt;akka-actor&lt;/code&gt; which we will (obviously) define our actor in. The second
+is a little less obvious, &lt;code&gt;akka-kernel&lt;/code&gt;, and will be used to define our akka-instance
+as a standalone setup (not as a library within another project).&lt;/p&gt;
+
+&lt;p&gt;The next thing we want to do is create a couple of actors to perform an asynchronous
+hello-world:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/6400829.js?file=HelloWorldActor.scala&quot;&gt;&lt;/script&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/6400829.js?file=Greeter.scala&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;Take note that these files were created within the directory &lt;code&gt;src/main/scala&lt;/code&gt; within
+the &lt;code&gt;hello-akka&lt;/code&gt; directory. From the above, you’ll notice that the HelloWorldActor
+receives a &lt;code&gt;Tick&lt;/code&gt; event and then sends a message to the &lt;code&gt;Greeter&lt;/code&gt; actor which then
+prints &lt;code&gt;&quot;Hello, World&quot;&lt;/code&gt;. You may be wondering what is sending the &lt;code&gt;Tick&lt;/code&gt; event to the
+HelloWorldActor to start with. For this we have to define our kernel:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/6400829.js?file=HelloWorldKernel.scala&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;This is the entry-point for our application. You can see that we are creating an instance
+of the &lt;code&gt;HelloWorldActor&lt;/code&gt; and scheduling a message be sent (&lt;code&gt;Tick&lt;/code&gt;) every 500 milliseconds.&lt;/p&gt;
+
+&lt;h2 id=&quot;done&quot;&gt;Done!&lt;/h2&gt;
+
+&lt;p&gt;That’s all there is to creating a standalone Akka, pretty simple. There are various ways you
+can run your application, but I feel the easiest is with scripts that ship with Akka. To add
+that to your project, run the following script from within the &lt;code&gt;hello-akka&lt;/code&gt; directory:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/6400829.js?file=run.sh&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;I typically create a Makefile for running my project just because I find that easier. You could
+do something like the following:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/6400829.js?file=Makefile&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;And then just run &lt;code&gt;make run&lt;/code&gt; to start your project. You should see something like the following:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/6400829.js?file=akka-output&quot;&gt;&lt;/script&gt;
+
+</description>
+        <pubDate>Sat, 31 Aug 2013 08:00:00 -0400</pubDate>
+        <link>http://www.johnmurray.io/2013/08/31/Hello-Akka.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/2013/08/31/Hello-Akka.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>SSH FS Script</title>
+        <description>&lt;p&gt;Due to my employer’s server-configuration, I find myself developing
+on remote machines often. However, I find it a pain to setup a dev
+environment on every new machine. So, I usually just end up working
+local as much as possible via SSH-FS. For anyone else that had to
+do this as well, here is a handly little script that will hopefully
+help you out (just a little).&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/5997323.js&quot;&gt;
+&lt;/script&gt;
+
+</description>
+        <pubDate>Mon, 15 Jul 2013 08:00:00 -0400</pubDate>
+        <link>http://www.johnmurray.io/2013/07/15/SSH-FS-Script.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/2013/07/15/SSH-FS-Script.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Copy to Learn</title>
+        <description>&lt;p&gt;While I have stated my opinion in the past that you should think twice before
+creating another web framework, it can be a useful tool. In particular, if you
+are familiar with a web framework in your language of choice, it may be a
+good learning exercise to try and implement that framework in another
+language. &lt;strong&gt;Note&lt;/strong&gt; however that you should likely not try to get people to use
+your new framework if it is only for learning purposes. If you are seriously
+considering creating a new web framework, please read my post &lt;a href=&quot;/log/2012/04/19/New-Web-Frameworks.md&quot;&gt;New Web
+Frameworks&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;background&quot;&gt;Background&lt;/h2&gt;
+&lt;p&gt;I’ve recently (as of the time this post was written) taken a new position in
+AdTech doing PHP for the purpose of web services. I really don’t know too much
+about PHP and it’s been a while since I’ve last encountered real PHP code. So,
+I figured that a little homework was in order. &lt;/p&gt;
+
+&lt;p&gt;I figured that the best way to learn would be to create a fun project in PHP
+that could utilize many of PHP’s newer features. For this, I wanted to create
+a (very) simple clone of my favorite web-app framework, &lt;a href=&quot;http://sinatrarb.com&quot;&gt;Sinatra&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;goals&quot;&gt;Goals&lt;/h2&gt;
+
+&lt;p&gt;Obviously the main goal is to better learn PHP’s main language features, but
+let’s talk more about what the goal of the project will be:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Implement basic Sinatra/HTTP routing methods (GET, POST, PUT, DELETE)&lt;/li&gt;
+  &lt;li&gt;Provide pre and post hooks&lt;/li&gt;
+  &lt;li&gt;Implement parameratized routes in Sinatra fashion&lt;/li&gt;
+  &lt;li&gt;Use lambdas to provide an &lt;em&gt;authentic&lt;/em&gt; Sinatra-experience&lt;/li&gt;
+  &lt;li&gt;Use PHP 5.4 features (where possible/applicable)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;result&quot;&gt;Result&lt;/h2&gt;
+
+&lt;p&gt;The result is a framework called Pinatra (to make it even more obvious my
+intent) that is available on my Github &lt;a href=&quot;https://github.com/JohnMurray/pinatra&quot;&gt;here&lt;/a&gt;. Let’s see how well I did
+at meeting the aforementioned goals:&lt;/p&gt;
+
+&lt;h3 id=&quot;basic-routing&quot;&gt;Basic Routing&lt;/h3&gt;
+
+&lt;p&gt;This was relatively simple. To get started, I created a main class &lt;code&gt;Pinatra&lt;/code&gt;
+that I could use to register my routes with. I then created methods for each
+HTTP verb I would be supporting (GET, POST, PUT, DELETE) that took a path (a
+string) and a handler. The handler would then be called if the incoming
+request could be matched against the route. The method for registering a GET
+request looked generally like:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/5139047.js?file=pinatra_get.php&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;As you can see, we are simply taking the route to match (the &lt;code&gt;$match&lt;/code&gt;) and a
+callback (a callable) and sending that on to the &lt;code&gt;register&lt;/code&gt; function. So, to
+look at the register function:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/5139047.js?file=pinatra_register.php&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;You can see here that we are extracting a regex out of the given match (we’ll
+look more at that later) and we are registering the route in a local hash based
+on the HTTP verb (&lt;code&gt;$method&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;We can use this very simply now as:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/5139047.js?file=get.php&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;Very similar, we can register POST method like the following:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/5139047.js?file=post.php&quot;&gt;
+&lt;/script&gt;
+
+&lt;h3 id=&quot;prepost-hooks&quot;&gt;Pre/Post Hooks&lt;/h3&gt;
+
+&lt;p&gt;Using the same functionality used to register the routes on a particular HTTP
+verb, we can also register before and after hooks. When we create them in our
+application, it is as simple as:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/5139047.js?file=before.php&quot;&gt;
+&lt;/script&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/5139047.js?file=after.php&quot;&gt;
+&lt;/script&gt;
+
+&lt;h3 id=&quot;parameratized-routes&quot;&gt;Parameratized Routes&lt;/h3&gt;
+
+&lt;p&gt;This is a way of representing data in a given route that is extracted
+automatically. For example, given the following route:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/authors/:author_id/books/:book_id
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I should be able to extract the two values, &lt;code&gt;:author_id&lt;/code&gt; and &lt;code&gt;:book_id&lt;/code&gt;.
+Earlier you saw a method for building up the regular expression. This is
+what we’ll use to create our route and the match-patterns will be used
+to extract the route-data. The method for generating our regex from the
+user-supplied route is seen below.&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/5139047.js?file=pinatra_regex.php&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;You can see how the match patterns could be used to extract data from
+the URI. This can then be passed to the route-methods. An example of how
+this would look is as such:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/5139047.js?file=get_with_data.php&quot;&gt;
+&lt;/script&gt;
+
+&lt;p&gt;You’ll also notice a JSON helper function (I’ll leave that one for your own
+exploration).&lt;/p&gt;
+
+&lt;h3 id=&quot;lambdas&quot;&gt;Lambdas&lt;/h3&gt;
+
+&lt;p&gt;You’ve already seen the use of lambdas (anonymous functions) in my examples
+so far, so suffice it to say, I met that goal. One important thing to note is
+that newer versions of PHP provide easy way to rebind anonymous methods making
+it possible to use them here. Take a look at the method that actually matches
+a request to a route and calls a lambda:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/JohnMurray/5139047.js?file=handle_request.php&quot;&gt;
+&lt;/script&gt;
+
+&lt;h3 id=&quot;php-54-usage&quot;&gt;PHP 5.4 Usage&lt;/h3&gt;
+
+&lt;p&gt;Several features were used, but the main new 5.4’ish feature that got used
+was traits. They were fun, but I probably used them wrong. Anyways, I’ll leave it
+up to you to check out my usage, however I will say that I mainly used them
+as modules and not so much as re-usable traits. &lt;/p&gt;
+
+&lt;h2 id=&quot;what-was-learned&quot;&gt;What Was Learned&lt;/h2&gt;
+
+&lt;p&gt;While I already knew that a PHP script ran every time a new request was made,
+I learned that PHP may not be the best language in which to implement a
+Sinatra-like &lt;a href=&quot;http://en.wikipedia.org/wiki/Domain-specific_language&quot;&gt;DSL&lt;/a&gt;. Simply put, we must register all of the routes on every
+request. Since we cannot cache these results, we end up doing a lot of parsing
+and string manipulation on every request. This means that as you add new routes,
+you incur overhead on every new request, even if that route is never called.
+This is unlike other languages in which the application starts up once and then
+those computed routes (regex’s) can be cached and re-used. &lt;/p&gt;
+
+&lt;h2 id=&quot;final-notes&quot;&gt;Final Notes&lt;/h2&gt;
+
+&lt;p&gt;Like I had mentioned previously, this project was to learn. That being said, there
+is probably a lot of debug code and comments left in this project and I would not
+recommend it for real-world use. So, if you do want to play around with it, you might
+have to remove some &lt;code&gt;echo&lt;/code&gt; and &lt;code&gt;var_dump&lt;/code&gt; statements that might still be hanging
+around in the code.&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 11 Mar 2013 08:00:00 -0400</pubDate>
+        <link>http://www.johnmurray.io/2013/03/11/Copy-to-Learn.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/2013/03/11/Copy-to-Learn.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Metric K-Center [A]</title>
+        <description>&lt;p&gt;So, my classes are over and the results are in. I’ve implemented a solution
+to the &lt;a href=&quot;https://en.wikipedia.org/wiki/Metric_k-center&quot;&gt;Metric k-center&lt;/a&gt; problem and, to be honest, the results are not all
+that interesting. But, I’ll go ahead and answer the questions that I proposed
+in my last post.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-will-the-solution-look-like&quot;&gt;What will the solution look like?&lt;/h3&gt;
+
+&lt;p&gt;The solution was composed of two parts, the runner and the viewer. Its
+important to solve the problem (obviously) it is also important to visualize
+you’re results. While it is easy to calculate metrics on how much your
+algorithm improves over a random solution, it’s hard to see where improvements
+can be made (or how they could be made). &lt;/p&gt;
+
+&lt;p&gt;The runner is targetted for JRuby and solves the application in parallel by
+solving for the various values of &lt;em&gt;k&lt;/em&gt;. The output is then persisted to a MySQL
+database so that the logs can later be analyzed and rendered (by the viewer).&lt;/p&gt;
+
+&lt;p&gt;The viewer is just a simple Sinatra app that queries the DB for the latest runs
+and allows you to pick out a specific generation for a particular run and value
+of &lt;em&gt;k&lt;/em&gt; and the results are rendered using the &lt;a href=&quot;http://raphaeljs.com/&quot;&gt;Raphael JS&lt;/a&gt; library. &lt;/p&gt;
+
+&lt;h3 id=&quot;what-approaches-will-be-best-utilized-for-solvingestimating-the-problem&quot;&gt;What approaches will be best utilized for solving/estimating the problem?&lt;/h3&gt;
+
+&lt;p&gt;By approaches I don’t mean frameworks or technologies, I am more referring to
+algorithms. For this, I chose to use a couple of different approaches and
+combine them together. The first is a &lt;a href=&quot;https://en.wikipedia.org/wiki/Genetic_algorithm&quot;&gt;genetic algorithmm&lt;/a&gt; (GA) and the 
+second is the &lt;a href=&quot;https://en.wikipedia.org/wiki/The_Wisdom_of_Crowds&quot;&gt;Wisdom of the Crowd&lt;/a&gt; (WoC). &lt;/p&gt;
+
+&lt;p&gt;The GA allows me to derive
+solutions rather quickly from an initial, random set of solutions (read
+up on the Wikipedia article if you need more information on GAs) but, like all
+solutions to NP-C problems it is merely an estimation to the solution. WoC allows us
+generate a consensus from the set of &lt;em&gt;experts&lt;/em&gt; (top performing members) of a
+given population of solutions. &lt;/p&gt;
+
+&lt;p&gt;These two approaches will be the main driving factor for our runner. &lt;/p&gt;
+
+&lt;h3 id=&quot;how-fast-is-it-because-all-we-care-about-is-speed&quot;&gt;How fast is it? (because all we care about is speed)&lt;/h3&gt;
+
+&lt;p&gt;While I don’t have exact metrics, it takes about 32 seconds to solve a
+problem for 100 nodes for 80 value of &lt;em&gt;k&lt;/em&gt; and 500 evolutions. That’s running
+on my home desktop. &lt;/p&gt;
+
+&lt;p&gt;Now, while I don’t have exact metrics I can talk a little bit about JRuby
+versus MRI Ruby. My choice to go with JRuby is two-fold. The first reason
+is that I get the benefit of &lt;em&gt;real&lt;/em&gt;-threading. By this I mean that there is
+no GIL and when I run multiple threads, I get the benefit of JVM threads
+(running on multiple cores). This means that I can use libraries like
+&lt;a href=&quot;http://peach.rubyforge.org/&quot;&gt;peach&lt;/a&gt;. The second is faster overall runtime of the runner (regardless
+of whether or not threads are used). &lt;/p&gt;
+
+&lt;p&gt;Since these computations can be ran in parallel and since I have a quad-core
+machine, it only makes sense to run the tasks in parallel across multiple cores.
+However, if you’re a Rubyist, then you should be more than familiar with the
+limitations that come along with the GIL. From this, we can see why JRuby, in
+this circumstance, is a much better choice than the current MRI release. &lt;/p&gt;
+
+&lt;h3 id=&quot;what-makes-my-solution-better-than-other-existing-solutions&quot;&gt;What makes my solution better than other existing solutions?&lt;/h3&gt;
+
+&lt;p&gt;Nothing really. There’s not much novel about my solution, but it was fun and
+I did suffice to learn quite a bit. I’ve posted the code (for anyone interested)
+on GitHub at &lt;a href=&quot;https://github.com/JohnMurray/metric-k-center&quot;&gt;JohnMurray/metric-k-center.git&lt;/a&gt;. I’ve also added a writeup
+of the project (PDF) that is included in the repository if you’re inclined
+to know a little more about it.&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 16 Jan 2013 07:00:00 -0500</pubDate>
+        <link>http://www.johnmurray.io/2013/01/16/Metric-K-Center-A.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/2013/01/16/Metric-K-Center-A.html</guid>
+        
         
       </item>
     

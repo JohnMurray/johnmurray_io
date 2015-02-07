@@ -8,3 +8,4 @@ url: "http://www.johnmurray.io"
 # Build settings
 markdown: kramdown
 exclude: [vendor, config.ru, Gemfile, Gemfile.lock, Procfile]
+include: [blog_files]

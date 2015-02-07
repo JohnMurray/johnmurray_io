@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Scala map() vs map{}</title>
+  <meta name="description" content="I was wondering the other day what the difference really was, in Scala, between">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/2013/11/17/Scala-map()-vs-map%7B%7D.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2015. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Scala map() vs map{}</h1>
+    <p class="post-meta">Nov 17, 2013</p>
+  </header>
+
+  <article class="post-content">
+    <p>I was wondering the other day what the difference really was, in Scala, between</p>
+
+<script src="https://gist.github.com/JohnMurray/7518029.js?file=map1.scala"></script>
+
+<p>and</p>
+
+<script src="https://gist.github.com/JohnMurray/7518029.js?file=map2.scala"></script>
+
+<p>So, I figured I’d take a look at the map function defined on the List class. I winded up
+finding the definition in the <code>TraversableLike</code> trait as follows:</p>
+
+<script src="https://gist.github.com/JohnMurray/7518029.js?file=map-traversable-like.scala"></script>
+
+<p>Let’s ignore the builder for now since it’s the less important part of this question. We’re
+interested in the first set of parameters, <code>f: A =&gt; B</code>. This seems to be a normal argument
+yet we can apply it in two different ways. That got me thinking a little bit and so I decided
+to play around a bit to see if I can figure this out anecdotally, before looking up the proper
+literature.</p>
+
+<h3 id="non-function-arguments">Non-Function Arguments</h3>
+
+<p>I first wanted to try with some simple functions that didn’t have functions as arguments to see if
+this format is generally applicable. I came up with some simple tests.</p>
+
+<script src="https://gist.github.com/JohnMurray/7518029.js?file=normal-function.scala"></script>
+
+<p>So from this it seems to indicate that braces are not interchangeable with parenthesis. However,
+it does seem that <code>"John"</code> and <code>{"John"}</code> are interchangeable. In fact, if we look at the REPL
+we see:</p>
+
+<script src="https://gist.github.com/JohnMurray/7518029.js?file=braces-repl.scala"></script>
+
+<p>This may not be a surprise to some, but that means that something like <code>echo {"hello"}</code> can
+really just be thought of as a shorthand for <code>echo({"hello"})</code>. But what about <code>{x =&gt; x * x}</code>.
+We can assume that just returns a function, correct? So that would means we can assume that
+these are functionally equivalent:</p>
+
+<script src="https://gist.github.com/JohnMurray/7518029.js?file=map3.scala"></script>
+
+<p>And, anecdotally, this seems to be true.</p>
+
+<h3 id="back-to-functions">Back to Functions</h3>
+
+<p>So based on our findings, what is the point of the curly braces and when would they be useful.
+Let’s do some experiments with a little more meat and see if we can find an answer. First let’s try
+a slightly larger map example.</p>
+
+<script src="https://gist.github.com/JohnMurray/7518029.js?file=map4.scala"></script>
+
+<p>Ah ha, so there is a good reason to use curly braces. It looks like the parenthesis version cannot
+handle multiple statements and is only expecting a single expression. Furthermore, I found this bit
+interesting as well:</p>
+
+<script src="https://gist.github.com/JohnMurray/7518029.js?file=func-val.scala"></script>
+
+<p>The same syntax using parenthesis cannot be used to define the function outside of the map unlike
+the version with curly-braces. Very interesting.</p>
+
+<h3 id="the-real-story">The Real Story</h3>
+
+<p>Okay, at this point I feel like I’ve made some interesting findings, but I’m curious what the
+Internet has to say about such things. So I figured I’d let her weigh in. I came across a few
+different posts:</p>
+
+<ul>
+  <li><a href="http://www.scala-lang.org/old/node/2593">Scala Forums Posting, complete with appearance by Odersky</a></li>
+  <li><a href="http://stackoverflow.com/questions/4386127/what-is-the-formal-difference-in-scala-between-braces-and-parentheses-and-when">This SO Post</a></li>
+  <li><a href="http://www.scala-lang.org/old/node/10195">Another Scala Forums Posting</a></li>
+</ul>
+
+<p>Surprisingly, all three answers were by the same person. For someone strapped for time when it
+comes to blogging, he sure does seem to make a lot of appearances on this topic. ;-D</p>
+
+<p>All in all, there seems to be quite a bit of discussion with some grey areas still that I still
+don’t fully understand. In those cases the compiler seems to be the specification, which is never
+preferable (IMO) for many reasons. Oh Scala, you are an interesting little language.</p>
+
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+  </body>
+
+</html>
