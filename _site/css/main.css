@@ -89,13 +89,13 @@ blockquote {
  */
 pre,
 code {
-  font-size: 15px;
-  border: 1px solid #e8e8e8;
+  font-size: 12px;
+  border: 1px solid #e0e0e0;
   border-radius: 3px;
-  background-color: #eef; }
+  background-color: #fff; }
 
 code {
-  padding: 1px 5px; }
+  padding: 4px 5px 1px 5px; }
 
 pre {
   padding: 8px 12px;
@@ -473,7 +473,7 @@ pre {
 
 /* Literal.String.Heredoc */
 .highlight .si {
-  color: #d14; }
+  color: #0086b3; }
 
 /* Literal.String.Interpol */
 .highlight .sx {
