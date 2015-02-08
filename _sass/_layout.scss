@@ -85,11 +85,15 @@
 .post-list .post-title {
     margin-top: $spacing-unit;
     margin-bottom: 0;
+    display: inline-block;
 }
 
 .post-meta {
-    font-size: $small-font-size;
     color: $grey-color;
+    display: inline-block;
+    float: right;
+    font-size: $small-font-size;
+    margin-top: 32px;
 }
 
 .post-link {
