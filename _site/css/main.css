@@ -216,11 +216,15 @@ pre {
 
 .post-list .post-title {
   margin-top: 30px;
-  margin-bottom: 0; }
+  margin-bottom: 0;
+  display: inline-block; }
 
 .post-meta {
+  color: #828282;
+  display: inline-block;
+  float: right;
   font-size: 15.75px;
-  color: #828282; }
+  margin-top: 32px; }
 
 .post-link {
   display: block;
