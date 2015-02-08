@@ -9,3 +9,11 @@ url: "http://www.johnmurray.io"
 markdown: kramdown
 exclude: [vendor, config.ru, Gemfile, Gemfile.lock, Procfile]
 include: [blog_files]
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      category: "log"
+      layout: "default"

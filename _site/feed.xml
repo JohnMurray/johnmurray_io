@@ -5,8 +5,8 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 07 Feb 2015 22:14:12 -0500</pubDate>
-    <lastBuildDate>Sat, 07 Feb 2015 22:14:12 -0500</lastBuildDate>
+    <pubDate>Sun, 08 Feb 2015 00:43:21 -0500</pubDate>
+    <lastBuildDate>Sun, 08 Feb 2015 00:43:21 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -285,9 +285,11 @@ handle that for you.&lt;/p&gt;
 
 </description>
         <pubDate>Tue, 15 Apr 2014 08:00:00 -0400</pubDate>
-        <link>http://www.johnmurray.io/2014/04/15/Starting-a-Scala-Project.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/2014/04/15/Starting-a-Scala-Project.html</guid>
+        <link>http://www.johnmurray.io/log/2014/04/15/Starting-a-Scala-Project.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2014/04/15/Starting-a-Scala-Project.html</guid>
         
+        
+        <category>log</category>
         
       </item>
     
@@ -412,9 +414,11 @@ preferable (IMO) for many reasons. Oh Scala, you are an interesting little langu
 
 </description>
         <pubDate>Sun, 17 Nov 2013 07:00:00 -0500</pubDate>
-        <link>http://www.johnmurray.io/2013/11/17/Scala-map()-vs-map%7B%7D.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/2013/11/17/Scala-map()-vs-map%7B%7D.html</guid>
+        <link>http://www.johnmurray.io/log/2013/11/17/Scala-map()-vs-map%7B%7D.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/11/17/Scala-map()-vs-map%7B%7D.html</guid>
         
+        
+        <category>log</category>
         
       </item>
     
@@ -533,9 +537,11 @@ from each article that you read.&lt;/p&gt;
 
 </description>
         <pubDate>Sun, 17 Nov 2013 07:00:00 -0500</pubDate>
-        <link>http://www.johnmurray.io/2013/11/17/Read-Less-HN.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/2013/11/17/Read-Less-HN.html</guid>
+        <link>http://www.johnmurray.io/log/2013/11/17/Read-Less-HN.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/11/17/Read-Less-HN.html</guid>
         
+        
+        <category>log</category>
         
       </item>
     
@@ -565,9 +571,11 @@ might be interested in learning Scala or teaching it to their engineering team.&
 
 </description>
         <pubDate>Sat, 05 Oct 2013 08:00:00 -0400</pubDate>
-        <link>http://www.johnmurray.io/2013/10/05/Scala-by-Example.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/2013/10/05/Scala-by-Example.html</guid>
+        <link>http://www.johnmurray.io/log/2013/10/05/Scala-by-Example.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/10/05/Scala-by-Example.html</guid>
         
+        
+        <category>log</category>
         
       </item>
     
@@ -704,9 +712,11 @@ do something like the following:&lt;/p&gt;
 
 </description>
         <pubDate>Sat, 31 Aug 2013 08:00:00 -0400</pubDate>
-        <link>http://www.johnmurray.io/2013/08/31/Hello-Akka.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/2013/08/31/Hello-Akka.html</guid>
+        <link>http://www.johnmurray.io/log/2013/08/31/Hello-Akka.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/08/31/Hello-Akka.html</guid>
         
+        
+        <category>log</category>
         
       </item>
     
@@ -770,9 +780,11 @@ help you out (just a little).&lt;/p&gt;
 
 </description>
         <pubDate>Mon, 15 Jul 2013 08:00:00 -0400</pubDate>
-        <link>http://www.johnmurray.io/2013/07/15/SSH-FS-Script.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/2013/07/15/SSH-FS-Script.html</guid>
+        <link>http://www.johnmurray.io/log/2013/07/15/SSH-FS-Script.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/07/15/SSH-FS-Script.html</guid>
         
+        
+        <category>log</category>
         
       </item>
     
@@ -784,7 +796,7 @@ are familiar with a web framework in your language of choice, it may be a
 good learning exercise to try and implement that framework in another
 language. &lt;strong&gt;Note&lt;/strong&gt; however that you should likely not try to get people to use
 your new framework if it is only for learning purposes. If you are seriously
-considering creating a new web framework, please read my post &lt;a href=&quot;/2012/04/19/New-Web-Frameworks.html&quot;&gt;New Web
+considering creating a new web framework, please read my post &lt;a href=&quot;/log/2012/04/19/New-Web-Frameworks.html&quot;&gt;New Web
 Frameworks&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;background&quot;&gt;Background&lt;/h2&gt;
@@ -993,9 +1005,11 @@ around in the code.&lt;/p&gt;
 
 </description>
         <pubDate>Mon, 11 Mar 2013 08:00:00 -0400</pubDate>
-        <link>http://www.johnmurray.io/2013/03/11/Copy-to-Learn.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/2013/03/11/Copy-to-Learn.html</guid>
+        <link>http://www.johnmurray.io/log/2013/03/11/Copy-to-Learn.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/03/11/Copy-to-Learn.html</guid>
         
+        
+        <category>log</category>
         
       </item>
     
@@ -1068,9 +1082,11 @@ to know a little more about it.&lt;/p&gt;
 
 </description>
         <pubDate>Wed, 16 Jan 2013 07:00:00 -0500</pubDate>
-        <link>http://www.johnmurray.io/2013/01/16/Metric-K-Center-A.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/2013/01/16/Metric-K-Center-A.html</guid>
+        <link>http://www.johnmurray.io/log/2013/01/16/Metric-K-Center-A.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/01/16/Metric-K-Center-A.html</guid>
         
+        
+        <category>log</category>
         
       </item>
     
@@ -1103,9 +1119,11 @@ up in some random publication on the inter-webs. &lt;/p&gt;
 &lt;/ul&gt;
 </description>
         <pubDate>Fri, 09 Nov 2012 07:00:00 -0500</pubDate>
-        <link>http://www.johnmurray.io/2012/11/09/Metric-K-Center-Q.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/2012/11/09/Metric-K-Center-Q.html</guid>
+        <link>http://www.johnmurray.io/log/2012/11/09/Metric-K-Center-Q.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2012/11/09/Metric-K-Center-Q.html</guid>
         
+        
+        <category>log</category>
         
       </item>
     
@@ -1230,9 +1248,11 @@ be a very interesting systems-programming language.&lt;/p&gt;
 
 </description>
         <pubDate>Wed, 26 Sep 2012 08:00:00 -0400</pubDate>
-        <link>http://www.johnmurray.io/2012/09/26/Getting-Rusty.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/2012/09/26/Getting-Rusty.html</guid>
+        <link>http://www.johnmurray.io/log/2012/09/26/Getting-Rusty.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2012/09/26/Getting-Rusty.html</guid>
         
+        
+        <category>log</category>
         
       </item>
     

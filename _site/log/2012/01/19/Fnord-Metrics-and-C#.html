@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Fnord Metrics and C#</title>
+  <meta name="description" content="What’s a Fnord?So, if you’ve taken a look at FnordMetrics then you know why it’s worthtrying out. It’s easy to get setup, has a great API for defining yourme...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/log/2012/01/19/Fnord-Metrics-and-C%23.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2015. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Fnord Metrics and C#</h1>
+    <p class="post-meta">Jan 19, 2012</p>
+  </header>
+
+  <article class="post-content">
+    <h1 id="whats-a-fnord">What’s a Fnord?</h1>
+<p>So, if you’ve taken a look at FnordMetrics then you know why it’s worth
+trying out. It’s easy to get setup, has a great API for defining your
+metrics collection, and is a powerful tool in your platform-analytics
+arsenal. </p>
+
+<p>If you’ve never heard of FnordMetrics before (since it’s relatively new at
+this point) then, let me explain a little bit. From the FnordMetric site, it
+says:</p>
+
+<blockquote>
+  <p><em>FnordMetric is a highly configurable (and pretty fast) realtime app/event 
+tracking thing based on ruby eventmachine and redis. You define your own 
+plotting and counting functions as ruby blocks!</em></p>
+</blockquote>
+
+<p>This pretty much sums it up. It’s a beautiful API for representing data in
+a very compelling and useful way. If you want to know more about the project, 
+head on over to their <a href="http://github.com/paulasmuth/fnordmetric">GitHub</a> page. Also, be sure to check out the
+<a href="http://www.screenr.com/KiJs">original screencast</a> to see it in action!</p>
+
+<h1 id="on-to-the-show">On To the Show</h1>
+<p>Okay, let’s get down to business. I’m going to walk you through getting started
+with FnordMetric in your C# project. Why C# you may ask? Well, mainly because
+that is the environment which I am currently spending my time in (at work) and 
+because I believe we can all benefit from great projects. Not just <em>cool</em> 
+startups who <em>don’t</em> use .NET.</p>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<p>To follow along, you’re going to need the following:</p>
+
+<ul>
+  <li>A .NET project to play with</li>
+  <li>A Linux server with:
+    <ul>
+      <li>A Ruby installation (&gt;= v1.9.2)</li>
+      <li>A <a href="http://redis.io">Redis</a> installation (I’m using 2.4.6)</li>
+      <li>FnordMetric (v 0.6.3 is what I’m working with)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>If you don’t have a Linux server, then a VM or a free micro-instance from
+Amazon will do just fine. For me, I’m justing using the free, default 64-bit
+AMI from Amazon’s official AMI list.</p>
+
+<p>If you’re entirely opposed to using Linux (and prefer Windows) then by all
+means use it. However, you are on your own other than the brief mention that
+you can find a great Windows Ruby installer over <a href="http://rubyinstaller.org/">here</a>.</p>
+
+<p>Once you get the Linux server setup then you’ll need to install Ruby. I’d
+recommend (for ease) that you use <a href="http://beginrescueend.com">RVM</a>. To get started, mosey on
+over to their (entirely professional) site and follow the instructions. </p>
+
+<p>Once that is done, we need to install FnordMetric. This is my favorite part
+just because it is so easy. Open up a terminal and run:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno">1</span> gem install fnordmetric</code></pre></div>
+
+<p>That’s it! Painless I know. :-)</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno"> 1</span> <span class="c1">## fnord.rb</span>
+<span class="lineno"> 2</span> <span class="nb">require</span> <span class="s1">&#39;fnordmetric&#39;</span>
+<span class="lineno"> 3</span>       
+<span class="lineno"> 4</span> <span class="no">FnordMetric</span><span class="o">.</span><span class="n">namespace</span> <span class="ss">:my_first_fnord</span> <span class="k">do</span>    
+<span class="lineno"> 5</span>       
+<span class="lineno"> 6</span>   <span class="c1"># numeric gauge, shown on a per-hour total</span>
+<span class="lineno"> 7</span>   <span class="n">gauge</span> <span class="ss">:logins_per_hour</span><span class="p">,</span>
+<span class="lineno"> 8</span>     <span class="ss">:tick</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="o">.</span><span class="n">hour</span><span class="o">.</span><span class="n">to_i</span><span class="p">,</span>
+<span class="lineno"> 9</span>     <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s1">&#39;Logins per Hour&#39;</span>
+<span class="lineno">10</span>       
+<span class="lineno">11</span>    <span class="n">event</span><span class="p">(</span><span class="ss">:login</span><span class="p">)</span> <span class="p">{</span> <span class="n">incr</span><span class="p">(</span><span class="ss">:logins_per_hour</span><span class="p">)</span> <span class="p">}</span>
+<span class="lineno">12</span>       
+<span class="lineno">13</span>    <span class="n">widget</span> <span class="s1">&#39;Web Logins&#39;</span><span class="p">,</span> <span class="p">{</span>
+<span class="lineno">14</span>      <span class="ss">:title</span>            <span class="o">=&gt;</span> <span class="s1">&#39;Web App Logins Per Hour&#39;</span><span class="p">,</span>
+<span class="lineno">15</span>      <span class="ss">:type</span>             <span class="o">=&gt;</span> <span class="ss">:timeline</span><span class="p">,</span>
+<span class="lineno">16</span>      <span class="ss">:gauges</span>           <span class="o">=&gt;</span> <span class="ss">:logins_per_hour</span><span class="p">,</span>
+<span class="lineno">17</span>      <span class="ss">:include_current</span>  <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span>
+<span class="lineno">18</span>      <span class="ss">:autoupdate</span>       <span class="o">=&gt;</span> <span class="mi">2</span> <span class="c1">#update graph every 2 seconds</span>
+<span class="lineno">19</span>    <span class="p">}</span>
+<span class="lineno">20</span> <span class="k">end</span>
+<span class="lineno">21</span>       
+<span class="lineno">22</span> <span class="no">FnordMetric</span><span class="o">.</span><span class="n">standalone</span></code></pre></div>
+
+<p>That’s all it takes to get a sample up and running. If you want proof, just run
+the following in a terminal:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno">1</span> ruby fnord.rb run</code></pre></div>
+
+<p>If everything is setup properly then you should be able to browse to
+<a href="http://localhost:4242/">http://localhost:4242/</a> and see a dashboard similar to the following:</p>
+
+<p><img src="/blog-files/fnord-1.png" alt="FnordMetric Dashboard" /></p>
+
+<p>Yay, now that you have fnord running, you just need to pump in some data. But
+fist, we need to stop and understand what all of this means. Let’s take a look
+at the first actual line of code:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno">1</span> <span class="no">FnordMetric</span><span class="o">.</span><span class="n">namespace</span> <span class="ss">:my_first_fnord</span> <span class="k">do</span></code></pre></div>
+
+<p>This simply let’s us define a namespace within the Fnord application. What 
+exactly is a namespace? Well, in the context of my work, it could be our web
+application or our real time services. Think of it as the whole dashboard. Note
+that it is possible to create multiple namespaces and host them all in one
+Fnord instance. </p>
+
+<p>The next piece of important code is the gauge:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno">1</span> <span class="n">gauge</span> <span class="ss">:logins_per_hour</span><span class="p">,</span>
+<span class="lineno">2</span>   <span class="ss">:tick</span>  <span class="o">=&gt;</span> <span class="mi">1</span><span class="o">.</span><span class="n">hour</span><span class="o">.</span><span class="n">to_i</span><span class="p">,</span>
+<span class="lineno">3</span>   <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s1">&#39;Logins per Hour&#39;</span></code></pre></div>
+
+<p>This specifies the <em>bucket</em>, per say. This is a <em>bucket</em> (or gauge) where you
+will store events. In this case I have a <em>bucket</em> (:logins_per_hour) that is
+aggregated on a per-hourly basis and it titled ‘Logins per Hour’. This means
+that when I generate a graph, this data has a static granularity of a day. The
+title is only used when looking at the keys in your graph.</p>
+
+<p>Moving on, the event:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno">1</span> <span class="n">event</span><span class="p">(</span><span class="ss">:login</span><span class="p">)</span> <span class="p">{</span> <span class="n">incr</span><span class="p">(</span><span class="ss">:logins_per_hour</span><span class="p">)</span> <span class="p">}</span></code></pre></div>
+
+<p>This registers the event that Fnord will listen to and what to do when that
+event is received. In this case, we’d like to increment the gauge :logins_per_hour
+when we receive a :login event. </p>
+
+<p>An event looks like this (in JSON):</p>
+
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="lineno">1</span> <span class="p">{</span> <span class="nt">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;login&quot;</span> <span class="p">}</span></code></pre></div>
+
+<p>This is sent to Fnord in a variety of ways (we’ll look at one way in a minute).</p>
+
+<p>Lastly, there is the widget. The widget determines what we’re actually going
+to show in the dashboard.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno">1</span> <span class="n">widget</span> <span class="s1">&#39;Web Logins&#39;</span><span class="p">,</span> <span class="p">{</span>
+<span class="lineno">2</span>  <span class="ss">:title</span>            <span class="o">=&gt;</span> <span class="s1">&#39;Web App Logins Per Hour&#39;</span><span class="p">,</span>
+<span class="lineno">3</span>  <span class="ss">:type</span>             <span class="o">=&gt;</span> <span class="ss">:timeline</span><span class="p">,</span>
+<span class="lineno">4</span>  <span class="ss">:gauges</span>           <span class="o">=&gt;</span> <span class="ss">:logins_per_hour</span><span class="p">,</span>
+<span class="lineno">5</span>  <span class="ss">:include_current</span>  <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span>
+<span class="lineno">6</span>  <span class="ss">:autoupdate</span>       <span class="o">=&gt;</span> <span class="mi">2</span> <span class="c1">#update graph every 2 seconds</span>
+<span class="lineno">7</span> <span class="p">}</span></code></pre></div>
+
+<p>In this case, we’d like to use the <em>bucket</em> (gauge) we’ve created as input to
+a graph. We’re saying that we’d like to create a timeline which includes the
+current time and updates every two seconds (poll server for more data).We’ve
+also given the widget a nice title to display.</p>
+
+<h3>Now Finishing with C#</h3>
+
+<p>Now that we understand how things work on the Fnord side of things, it’s time
+to crack open that C# project and get to work. The first thing that we need to
+do is add a library reference (via NuGet) to <a href="http://github.com/chakrit/sider">Sider</a>.</p>
+
+<p><img src="/blog-files/fnord-2.png" alt="Install Sider in Visual Studio via NuGet" /></p>
+
+<p><a href="http://github.com/chakrit/sider">Sider</a> is a Redis library for C# that stays as close to the implementation
+as possible. It doesn’t deal with mapping complex data types to the underlying
+storage engine. It’s simple enough to be perfect for this demo. Remember earlier
+when I said that events could come to Fnord in a variety of ways. Well, the way
+we’re going to send messages is to push messages directly to the Redis queue.
+Fnord will notice the new message and process the event.</p>
+
+<p>So, since the example I have given deals with tracking logins, you would
+normally add the code below somewhere in your applications login method. Of
+course you can follow along however you like (login or no login).</p>
+
+<div class="highlight"><pre><code class="language-c#" data-lang="c#"><span class="lineno">1</span> <span class="n">using</span><span class="p">(</span><span class="kt">var</span> <span class="n">client</span> <span class="p">=</span> <span class="k">new</span> <span class="n">RedisClient</span><span class="p">(</span><span class="s">&quot;linux.mysite.com:6379&quot;</span><span class="p">))</span>
+<span class="lineno">2</span> <span class="p">{</span>
+<span class="lineno">3</span>   <span class="n">String</span> <span class="n">guid</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">(</span><span class="s">&quot;N&quot;</span><span class="p">);</span>
+<span class="lineno">4</span>   <span class="n">String</span> <span class="n">fnordId</span> <span class="p">=</span> <span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;fnordmetric-event-{0}&quot;</span><span class="p">,</span> <span class="n">guid</span><span class="p">)</span>
+<span class="lineno">5</span>   <span class="n">client</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">fnordId</span><span class="p">,</span> <span class="s">&quot;{\&quot;_type\&quot;: \&quot;login\&quot;}&quot;</span><span class="p">);</span>
+<span class="lineno">6</span>   <span class="n">client</span><span class="p">.</span><span class="n">Expire</span><span class="p">(</span><span class="n">fnordId</span><span class="p">,</span> <span class="k">new</span> <span class="n">TimeSpan</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">60</span><span class="p">));</span>
+<span class="lineno">7</span>   <span class="n">client</span><span class="p">.</span><span class="n">LPush</span><span class="p">(</span><span class="s">&quot;fnordmetric-queue&quot;</span><span class="p">,</span> <span class="n">guid</span><span class="p">);</span>
+<span class="lineno">8</span> <span class="p">}</span></code></pre></div>
+
+<p>At this point we are simply pushing a message directly to Redis. FnordMetric will
+notice the event and update the results in the dashboard. Note that I have
+set a timeout for this event of 60 seconds. This means that if FnordMetric is not
+running, it could miss the event (Redis will expire it). However, this keeps us 
+from quickly building up a lot of stale data in our Redis installation.</p>
+
+<p>You might also notice that there are some conventions with how we are naming the
+Redis keys. This is discussed in the next section if you are interested.</p>
+
+<h2 id="extra-goodness">Extra Goodness</h2>
+
+<p>Okay, up until now, things have fit together pretty well without any
+ intervention. But, what if my Redis install runs on a non-standard port? Or,
+ perhaps I want my metrics dashboard to run over port 80 so that I can set
+ up a sub-domain like stats.mysite.com. Maybe you’re wondering how FnordMetric
+ knows what items in Redis to read. Let’s take a closer look. </p>
+
+<p>The first piece of the puzzle is the configuration section which, if left
+ out, is populated with some smart defaults. Let’s define a custom
+ configuration as</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno"> 1</span> <span class="c1">## fnord.rb</span>
+<span class="lineno"> 2</span>       
+<span class="lineno"> 3</span> <span class="c1"># fnord namespace definition (as shown previously)</span>
+<span class="lineno"> 4</span>       
+<span class="lineno"> 5</span> <span class="no">FnordMetric</span><span class="o">.</span><span class="n">server_configuration</span> <span class="o">=</span> <span class="p">{</span>
+<span class="lineno"> 6</span>   <span class="c1"># point to external redis on non-standard port</span>
+<span class="lineno"> 7</span>   <span class="ss">redis_url</span><span class="p">:</span>          <span class="s1">&#39;redis://10.1.0.38:6380&#39;</span><span class="p">,</span>
+<span class="lineno"> 8</span>       
+<span class="lineno"> 9</span>   <span class="c1"># prefix on events pushed to redis</span>
+<span class="lineno">10</span>   <span class="ss">redis_prefix</span><span class="p">:</span>       <span class="s1">&#39;mavia-metrics&#39;</span><span class="p">,</span>
+<span class="lineno">11</span>       
+<span class="lineno">12</span>   <span class="c1"># port on which to accept event-pushes (we&#39;re not using this)</span>
+<span class="lineno">13</span>   <span class="ss">inbound_stream</span><span class="p">:</span>     <span class="o">[</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="s1">&#39;1339&#39;</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">14</span>       
+<span class="lineno">15</span>   <span class="c1"># port to run web interface</span>
+<span class="lineno">16</span>   <span class="ss">web_interface</span><span class="p">:</span>      <span class="o">[</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="s1">&#39;80&#39;</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">17</span>       
+<span class="lineno">18</span>   <span class="c1"># worker &quot;process&quot; to watch redis (we want this)</span>
+<span class="lineno">19</span>   <span class="ss">start_worker</span><span class="p">:</span>       <span class="kp">true</span><span class="p">,</span>
+<span class="lineno">20</span>       
+<span class="lineno">21</span>   <span class="c1"># make the program chatty so we know how it&#39;s feeling</span>
+<span class="lineno">22</span>   <span class="ss">print_stats</span><span class="p">:</span>        <span class="mi">3</span><span class="p">,</span>
+<span class="lineno">23</span>       
+<span class="lineno">24</span>   <span class="c1"># events not processed after 2 minutes are dropped</span>
+<span class="lineno">25</span>   <span class="ss">event_queue_ttl</span><span class="p">:</span>    <span class="mi">120</span><span class="p">,</span>
+<span class="lineno">26</span>       
+<span class="lineno">27</span>   <span class="c1"># event data is kept for one month</span>
+<span class="lineno">28</span>   <span class="ss">event_data_ttl</span><span class="p">:</span>     <span class="mi">3600</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">30</span><span class="p">,</span>
+<span class="lineno">29</span>       
+<span class="lineno">30</span>   <span class="c1"># session data is kept for one month</span>
+<span class="lineno">31</span>   <span class="ss">:session_data_ttl</span><span class="p">:</span>  <span class="mi">3600</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">30</span>
+<span class="lineno">32</span>       
+<span class="lineno">33</span> <span class="p">}</span>
+<span class="lineno">34</span>       
+<span class="lineno">35</span> <span class="no">FnordMetric</span><span class="o">.</span><span class="n">standalone</span></code></pre></div>
+
+<p>Take a minute to examine the configuration. Everything should be pretty
+self-explanatory with the possible exception of the <code>redis_prefix</code>. This
+is used to determine the keys you use when inserting data into redis. For
+example, with the newly defined prefix, our redis ID might look like</p>
+
+<div class="highlight"><pre><code class="language-c#" data-lang="c#"><span class="lineno">1</span> <span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;mavia-metrics-{0}&quot;</span><span class="p">,</span> <span class="n">guid</span><span class="p">);</span></code></pre></div>
+
+<p>The one other item that might be a little confusing is the <code>inbound_stream</code>
+configuration option. This specifies on what port the API will run. The API
+is yet another way to push data to FnordMetric but, I’m not going to cover
+that here. You can learn more about that on their <a href="http://github.com/paulasmuth/fnordmetric">GitHub</a> page. </p>
+
+<p>Well, that’s about it. There’s not a lot of demystifying to do here. It’s a
+pretty straight forward project with a gorgeous API. Obviously there is a lot
+more to this project than I have shown here. However, now that you have a
+working setup to play with, I recommend heading over to the <a href="http://github.com/paulasmuth/fnordmetric">GitHub</a> page
+to learn more interesting tricks! If making that extra mouse click is just
+too much for you however, I’ve included a couple of extras below.</p>
+
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11511983-4']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); 
+        ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+
+</html>

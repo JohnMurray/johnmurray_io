@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Metric K-Center [A]</title>
+  <meta name="description" content="So, my classes are over and the results are in. I’ve implemented a solutionto the [Metric k-center][1] problem and, to be honest, the results are not allthat...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/log/2013/01/16/Metric-K-Center-A.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2015. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Metric K-Center [A]</h1>
+    <p class="post-meta">Jan 16, 2013</p>
+  </header>
+
+  <article class="post-content">
+    <p>So, my classes are over and the results are in. I’ve implemented a solution
+to the <a href="https://en.wikipedia.org/wiki/Metric_k-center">Metric k-center</a> problem and, to be honest, the results are not all
+that interesting. But, I’ll go ahead and answer the questions that I proposed
+in my last post.</p>
+
+<h3 id="what-will-the-solution-look-like">What will the solution look like?</h3>
+
+<p>The solution was composed of two parts, the runner and the viewer. Its
+important to solve the problem (obviously) it is also important to visualize
+you’re results. While it is easy to calculate metrics on how much your
+algorithm improves over a random solution, it’s hard to see where improvements
+can be made (or how they could be made). </p>
+
+<p>The runner is targetted for JRuby and solves the application in parallel by
+solving for the various values of <em>k</em>. The output is then persisted to a MySQL
+database so that the logs can later be analyzed and rendered (by the viewer).</p>
+
+<p>The viewer is just a simple Sinatra app that queries the DB for the latest runs
+and allows you to pick out a specific generation for a particular run and value
+of <em>k</em> and the results are rendered using the <a href="http://raphaeljs.com/">Raphael JS</a> library. </p>
+
+<h3 id="what-approaches-will-be-best-utilized-for-solvingestimating-the-problem">What approaches will be best utilized for solving/estimating the problem?</h3>
+
+<p>By approaches I don’t mean frameworks or technologies, I am more referring to
+algorithms. For this, I chose to use a couple of different approaches and
+combine them together. The first is a <a href="https://en.wikipedia.org/wiki/Genetic_algorithm">genetic algorithmm</a> (GA) and the 
+second is the <a href="https://en.wikipedia.org/wiki/The_Wisdom_of_Crowds">Wisdom of the Crowd</a> (WoC). </p>
+
+<p>The GA allows me to derive
+solutions rather quickly from an initial, random set of solutions (read
+up on the Wikipedia article if you need more information on GAs) but, like all
+solutions to NP-C problems it is merely an estimation to the solution. WoC allows us
+generate a consensus from the set of <em>experts</em> (top performing members) of a
+given population of solutions. </p>
+
+<p>These two approaches will be the main driving factor for our runner. </p>
+
+<h3 id="how-fast-is-it-because-all-we-care-about-is-speed">How fast is it? (because all we care about is speed)</h3>
+
+<p>While I don’t have exact metrics, it takes about 32 seconds to solve a
+problem for 100 nodes for 80 value of <em>k</em> and 500 evolutions. That’s running
+on my home desktop. </p>
+
+<p>Now, while I don’t have exact metrics I can talk a little bit about JRuby
+versus MRI Ruby. My choice to go with JRuby is two-fold. The first reason
+is that I get the benefit of <em>real</em>-threading. By this I mean that there is
+no GIL and when I run multiple threads, I get the benefit of JVM threads
+(running on multiple cores). This means that I can use libraries like
+<a href="http://peach.rubyforge.org/">peach</a>. The second is faster overall runtime of the runner (regardless
+of whether or not threads are used). </p>
+
+<p>Since these computations can be ran in parallel and since I have a quad-core
+machine, it only makes sense to run the tasks in parallel across multiple cores.
+However, if you’re a Rubyist, then you should be more than familiar with the
+limitations that come along with the GIL. From this, we can see why JRuby, in
+this circumstance, is a much better choice than the current MRI release. </p>
+
+<h3 id="what-makes-my-solution-better-than-other-existing-solutions">What makes my solution better than other existing solutions?</h3>
+
+<p>Nothing really. There’s not much novel about my solution, but it was fun and
+I did suffice to learn quite a bit. I’ve posted the code (for anyone interested)
+on GitHub at <a href="https://github.com/JohnMurray/metric-k-center">JohnMurray/metric-k-center.git</a>. I’ve also added a writeup
+of the project (PDF) that is included in the repository if you’re inclined
+to know a little more about it.</p>
+
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11511983-4']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); 
+        ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+
+</html>
