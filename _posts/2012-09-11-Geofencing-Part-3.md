@@ -16,7 +16,7 @@ the
 <p style="font-size:32px"><a href="http://github.com/johnmurray/geofence-server-example"><b>Geofence Server Example</b></a></p>
 
 It's all the Ruby, geofency, Mongo'y goodness you've been reading about for
-3 blog posts now. Come and git it while it's hot!
+2 blog posts now. Come and git it while it's hot!
 
 
 ## Disclaimer

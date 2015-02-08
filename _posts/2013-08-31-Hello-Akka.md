@@ -14,7 +14,19 @@ Then you'll want to create a new folder for your project `hello-akka`. Within th
 folder, let's create a `build.sbt` file with the following contents:
 
 <!-- build.sbt gist -->
-<script src="https://gist.github.com/JohnMurray/6400829.js?file=build.sbt"></script>
+{% highlight text linenos %}
+name := "Hello Akka"
+ 
+version := "0.0.1"
+ 
+scalaVersion := "2.10.2"
+ 
+resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+ 
+libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.2.0"
+ 
+libraryDependencies += "com.typesafe.akka" %% "akka-kernel" % "2.2.0"
+{% endhighlight %}
 
 You can see that we just have some basic setup with names and versions. You'll also
 notice that we're delcaring `akka-actor` and `akka-kernel` as our dependencies. The
@@ -25,9 +37,36 @@ as a standalone setup (not as a library within another project).
 The next thing we want to do is create a couple of actors to perform an asynchronous
 hello-world:
 
-<script src="https://gist.github.com/JohnMurray/6400829.js?file=HelloWorldActor.scala"></script>
+{% highlight scala linenos %}
+import akka.actor.{Actor, Props}
+ 
+object HelloWorldActor {
+  case object Tick
+}
+ 
+class HelloWorldActor extends Actor {
+  val greeter = context.actorOf(Props[Greeter], "greeter")
+ 
+  def receive: Actor.Receive = {
+    case HelloWorldActor.Tick => greeter ! Greeter.Greet
+  }
+}
+{% endhighlight %}
 
-<script src="https://gist.github.com/JohnMurray/6400829.js?file=Greeter.scala"></script>
+{% highlight scala linenos %}
+import akka.actor.Actor
+ 
+object Greeter {
+  case object Greet
+}
+class Greeter extends Actor {
+  def receive = {
+    case Greeter.Greet => {
+      println("Hello, World")
+    }
+  }
+}
+{% endhighlight %}
 
 Take note that these files were created within the directory `src/main/scala` within
 the `hello-akka` directory. From the above, you'll notice that the HelloWorldActor
@@ -35,7 +74,28 @@ receives a `Tick` event and then sends a message to the `Greeter` actor which th
 prints `"Hello, World"`. You may be wondering what is sending the `Tick` event to the
 HelloWorldActor to start with. For this we have to define our kernel:
 
-<script src="https://gist.github.com/JohnMurray/6400829.js?file=HelloWorldKernel.scala"></script>
+{% highlight scala linenos %}
+import akka.actor.{ActorSystem, Props}
+import akka.kernel.Bootable
+import scala.concurrent.duration._
+ 
+class HelloWorldKernel extends Bootable {
+  val system = ActorSystem("helloworldkernel")
+  import system.dispatcher
+ 
+  def startup() {
+    val helloWorldActor = system.actorOf(Props[HelloWorldActor])
+    system.scheduler.schedule(0 milliseconds,
+      500 milliseconds,
+      helloWorldActor,
+      HelloWorldActor.Tick)
+  }
+ 
+  def shutdown() {
+    system.shutdown()
+  }
+}
+{% endhighlight %}
 
 This is the entry-point for our application. You can see that we are creating an instance
 of the `HelloWorldActor` and scheduling a message be sent (`Tick`) every 500 milliseconds.
@@ -46,16 +106,46 @@ That's all there is to creating a standalone Akka, pretty simple. There are vari
 can run your application, but I feel the easiest is with scripts that ship with Akka. To add
 that to your project, run the following script from within the `hello-akka` directory:
 
-<script src="https://gist.github.com/JohnMurray/6400829.js?file=run.sh"></script>
+{% highlight bash linenos %}
+wget http://downloads.typesafe.com/akka/akka-2.2.1.tgz
+tar xzf akka-2.2.1.tgz
+mv akka-2.2.1 akka
+rm akka-2.2.1.tgz
+dos2unix akka/bin/akka
+{% endhighlight %}
 
 I typically create a Makefile for running my project just because I find that easier. You could
 do something like the following:
 
-<script src="https://gist.github.com/JohnMurray/6400829.js?file=Makefile"></script>
+{% highlight make linenos %}
+all: build deploy
+run: build deploy start
+ 
+build:
+  sbt package:clean
+  sbt package
+ 
+start:
+  ./akka/bin/akka HelloWorldKernel
+ 
+deploy:
+  mv target/scala-2.10/hello-akka_2.10-0.0.1.jar akka/deploy/
+{% endhighlight %}
 
 And then just run `make run` to start your project. You should see something like the following:
 
-<script src="https://gist.github.com/JohnMurray/6400829.js?file=akka-output"></script>
+{% highlight text linenos %}
+Starting Akka...
+Running Akka 2.2.0
+Deploying file:/Users/jmurray/IdeaProjects/HelloAkka/akka/deploy/hello-akka_2.10-0.0.1.jar
+Starting up HelloWorldKernel
+Successfully started Akka
+Hello, World
+Hello, World
+Hello, World
+Hello, World
+...
+{% endhighlight %}
 
 
 

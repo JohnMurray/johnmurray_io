@@ -49,15 +49,23 @@ string) and a handler. The handler would then be called if the incoming
 request could be matched against the route. The method for registering a GET
 request looked generally like:
 
-<script src="https://gist.github.com/JohnMurray/5139047.js?file=pinatra_get.php">
-</script>
+{% highlight php5 linenos %}
+public static function get($match, $callback) {
+  $app = Pinatra::instance();
+  $app->register('get', $match, $callback);
+}
+{% endhighlight %}
 
 As you can see, we are simply taking the route to match (the `$match`) and a
 callback (a callable) and sending that on to the `register` function. So, to
 look at the register function:
 
-<script src="https://gist.github.com/JohnMurray/5139047.js?file=pinatra_register.php">
-</script>
+{% highlight php5 linenos %}
+private function register($method, $match, $callback) {
+  $match = $this->compute_regex($match);
+  $this->routes[$method][$match] = $callback;
+}
+{% endhighlight %}
 
 You can see here that we are extracting a regex out of the given match (we'll
 look more at that later) and we are registering the route in a local hash based
@@ -65,13 +73,19 @@ on the HTTP verb (`$method`).
 
 We can use this very simply now as:
 
-<script src="https://gist.github.com/JohnMurray/5139047.js?file=get.php">
-</script>
+{% highlight php5 linenos %}
+Pinatra::get('/hi', function () {
+  return 'hello world';
+});
+{% endhighlight %}
 
 Very similar, we can register POST method like the following:
 
-<script src="https://gist.github.com/JohnMurray/5139047.js?file=post.php">
-</script>
+{% highlight php5 linenos %}
+Pinatra::post('/name', function ($data) {
+  return 'Hello ' . $data['name'];
+});
+{% endhighlight %}
 
 
 
@@ -81,11 +95,17 @@ Using the same functionality used to register the routes on a particular HTTP
 verb, we can also register before and after hooks. When we create them in our
 application, it is as simple as:
 
-<script src="https://gist.github.com/JohnMurray/5139047.js?file=before.php">
-</script>
+{% highlight php5 linenos %}
+Pinatra::before('*', function () {
+  header('AppVersion: 0.0.1');
+});
+{% endhighlight %}
 
-<script src="https://gist.github.com/JohnMurray/5139047.js?file=after.php">
-</script>
+{% highlight php5 linenos %}
+Pinatra::after('*', function () {
+  Logger::log_request('served yet another request');
+});
+{% endhighlight %}
 
 
 
@@ -94,7 +114,9 @@ application, it is as simple as:
 This is a way of representing data in a given route that is extracted
 automatically. For example, given the following route:
 
-    /authors/:author_id/books/:book_id
+{% highlight text linenos %}
+/authors/:author_id/books/:book_id
+{% endhighlight %}
     
 I should be able to extract the two values, `:author_id` and `:book_id`.
 Earlier you saw a method for building up the regular expression. This is
@@ -102,15 +124,51 @@ what we'll use to create our route and the match-patterns will be used
 to extract the route-data. The method for generating our regex from the
 user-supplied route is seen below.
 
-<script src="https://gist.github.com/JohnMurray/5139047.js?file=pinatra_regex.php">
-</script>
+{% highlight php5 linenos %}
+private $URIParser_PLACEHOLDER = '([^\/]+)';
+private $URIParser_GLOB = '.*?';
+
+/**
+ * Private: Generate a PHP (Perl) regular expression given the
+ *          Sinatra-style expression in the get/post/put/etc. functions.
+ */
+private function compute_regex($match) {
+  // get the URI parts of the match-pattern given
+  $parts = array_filter(explode('/', $match), function ($val) { 
+    return !empty($val);
+  });
+
+  // build our pattern-matching regex from given route
+  $regex= '/^';
+
+  foreach ($parts as $part) {
+    if ($part[0] === ':') {
+      $regex .= '\/' . $this->URIParser_PLACEHOLDER;
+    }
+    else if ($part[0] === '*'){
+      $regex .= '\/' . $this->URIParser_GLOB;
+    }
+    else {
+      $regex .= '\/' . $part;
+    }
+  }
+  $regex .= '\/?$/';
+  return $regex;
+}
+{% endhighlight %}
 
 You can see how the match patterns could be used to extract data from
 the URI. This can then be passed to the route-methods. An example of how
 this would look is as such:
 
-<script src="https://gist.github.com/JohnMurray/5139047.js?file=get_with_data.php">
-</script>
+{% highlight php5 linenos %}
+Pinatra::get('/hello/:name', function($name) {
+  return $this->json([
+    'key' => 'hello-route has been matched!', 
+    'name' => $name
+  ]);
+});
+{% endhighlight %}
 
 You'll also notice a JSON helper function (I'll leave that one for your own
 exploration).
@@ -124,8 +182,37 @@ that newer versions of PHP provide easy way to rebind anonymous methods making
 it possible to use them here. Take a look at the method that actually matches
 a request to a route and calls a lambda:
 
-<script src="https://gist.github.com/JohnMurray/5139047.js?file=handle_request.php">
-</script>
+{% highlight php5 linenos %}
+  /**
+   * Method that is called when we actually want to process an incoming
+   * request based on the method and uri provided. This method (expecting
+   * to be given a URI and method) can also be used for re-routing requests
+   * internally.
+   */
+public static function handle_request($method, $uri) {
+  $app = Pinatra::instance();
+
+
+  // before hook code (removed for brevity)
+
+  // find and call route-handler
+  $route_match = $app->find_route($app->routes, $method, $uri);
+  if ($route_match !== null) {
+      
+    $request_body_data = $app->get_body_data($method);
+    if ($request_body_data !== null) {
+      array_unshift($route_match['arguments'], $request_body_data);
+    }
+
+    $route_res = call_user_func_array(
+      $route_match['callback']->bindTo($app), 
+      $route_match['arguments']);
+  }
+
+  // after hook code (removed for brevity)
+  
+}
+{% endhighlight %}
 
 ### PHP 5.4 Usage
 
@@ -157,7 +244,7 @@ around in the code.
 
 
 
-  [1]: /log/2012/04/19/New-Web-Frameworks.md
+  [1]: {% post_url 2012-04-19-New-Web-Frameworks %}
   [2]: http://sinatrarb.com
   [3]: https://github.com/JohnMurray/pinatra
   [4]: http://en.wikipedia.org/wiki/Domain-specific_language

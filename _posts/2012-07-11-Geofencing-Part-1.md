@@ -22,7 +22,7 @@ I've split it up as follows:
 
 - What is \[a] geofence/geofencing? \[[_this_][1] post]
 - How to build your own geofence-server with Ruby and Mongo \[[link][2]]
-- A walk-through of a sample geofence-server, built just for you \[[link][3]]
+- A sample geofence-server, built just for you \[[link][3]]
 
 Now, on to the blathering!
 
@@ -130,8 +130,8 @@ on over to [Part 2][2] for a whirlwind introduction on building your own
 
 
   [1]: #
-  [2]: /log/2012/09/10/Geofencing--Part-2.md
-  [3]: /log/2012/09/10/Geofencing--Part-3.md
+  [2]: {% post_url 2012-09-10-Geofencing-Part-2 %}
+  [3]: {% post_url 2012-09-11-Geofencing-Part-3 %}
   [4]: /blog-files/geofence/fence_on_map.png
   [5]: http://blog.notdot.net/2009/11/Damn-Cool-Algorithms-Spatial-indexing-with-Quadtrees-and-Hilbert-Curves
   [6]: http://en.wikipedia.org/wiki/Hilbert_curve

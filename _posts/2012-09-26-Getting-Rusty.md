@@ -32,7 +32,17 @@ Okay, if we're going to play around with the language then we'll at least need
 to compile it and get it up and running. For me, I had just setup a new Fedora
 17 instance (no updates at this point) and to compile only required that I do:
 
-<script src="https://gist.github.com/3805064.js?file=compiling-rust.sh"></script>
+{% highlight bash linenos %}
+# get all of the necessary tools to build
+sudo yum install gcc-c++ llvm llvm-devel perl wget
+ 
+# following rust-lang.org's instructions
+wget http://dl.rust-lang.org/dist/rust-0.3.tar.gz
+tar -xzf rust-0.3.tar.gz
+cd rust-0.3
+./configure
+make -j 4 && make install
+{% endhighlight %}
 
 Do note that I use the `-j` option for `make` to speed things up on my
 computer. I'd recommend to change the value of `-j` to however many cores your
@@ -49,13 +59,68 @@ As is tradition, you have to force your newly compiled interpreter/compiler
 to introduce itself to the world. And, in Rust, it's just about as boring as it
 is in any other language:
 
-<script src="https://gist.github.com/3805064.js?file=hello_world.rs"></script>
+{% highlight rust linenos %}
+fn main(args: ~[str]) {
+    io::println("hello world from '" + args[0] + "'!");
+}
+{% endhighlight %}
 
 A slightly more exciting example (shamelessly stolen from rust-lang.org's
 [tutorial][7]), a parallel game of rock-paper-scissors:
 
-<script src="https://gist.github.com/3805064.js?file=parallel_rock_paper_scissors.rs">
-</script>
+{% highlight rust linenos %}
+use std;
+ 
+import comm::{listen, methods};
+import task::spawn;
+import iter::repeat;
+import rand::{seeded_rng, seed};
+import uint::range;
+import io::println;
+ 
+fn main() {
+    // Open a channel to receive game results
+    do listen |result_from_game| {
+ 
+        let times = 10;
+        let player1 = "graydon";
+        let player2 = "patrick";
+ 
+        for repeat(times) {
+            // Start another task to play the game
+            do spawn |copy player1, copy player2| {
+                let outcome = play_game(player1, player2);
+                result_from_game.send(outcome);
+            }
+        }
+ 
+        // Report the results as the games complete
+        for range(0, times) |round| {
+            let winner = result_from_game.recv();
+            println(#fmt("%s wins round #%u", winner, round));
+        }
+    }
+ 
+    fn play_game(player1: str, player2: str) -> str {
+ 
+        // Our rock/paper/scissors types
+        enum gesture {
+            rock, paper, scissors
+        }
+ 
+        let rng = seeded_rng(seed());
+        // A small inline function for picking an RPS gesture
+        let pick = || (~[rock, paper, scissors])[rng.gen_uint() % 3];
+ 
+        // Pick two gestures and decide the result
+        alt (pick(), pick()) {
+            (rock, scissors) | (paper, rock) | (scissors, paper) { copy player1 }
+            (scissors, rock) | (rock, paper) | (paper, scissors) { copy player2 }
+            _ { "tie" }
+        }
+    }
+}
+{% endhighlight %}
 
 
 ### I Want More!

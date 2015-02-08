@@ -470,7 +470,7 @@ the [third post][10] in the series to find out!  ;-)
 
 
 
-  [1]: /log/2012/07/11/Geofencing--Part-1.md
+  [1]: {% post_url 2012-07-11-Geofencing-Part-1 %}
   [2]: /blog-files/geofence/part-2/mongo-spatial-index-and-query.png
   [3]: /blog-files/geofence/part-2/polygon-estimation-conceptual.png
   [4]: /blog-files/geofence/part-2/polygon-query.png
@@ -479,4 +479,4 @@ the [third post][10] in the series to find out!  ;-)
   [7]: /blog-files/geofence/part-2/polygon-estimation-detailed-2.png
   [8]: /blog-files/geofence/part-2/polygon-estimation-detailed-3.png
   [9]: http://www.mongodb.org/display/DOCS/Geospatial+Indexing/
-  [10]: /log/2012/09/10/Geofencing--Part-3.md
+  [10]: {% post_url 2012-09-11-Geofencing-Part-3 %}

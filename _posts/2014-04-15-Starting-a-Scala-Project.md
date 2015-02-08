@@ -35,15 +35,26 @@ vs `sbt`, but that is an easy change to make.
 
 As of right now, my project structure looks like the following:
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=layout-1">
-</script>
+{% highlight text linenos %}
+.
+├── bin
+│   └── sbt-launch.jar
+└── sbt
+{% endhighlight %}
 
 I will note that for the actual `sbt` script I usually just use one of
 my own rather than the super-complex ones that ship with the SBT download. My
 current sbt launch script looks like:
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=sbt">
-</script>
+{% highlight scala linenos %}
+#!/bin/bash
+ 
+JAVA=java
+JAVA_OPTS="-Xmx512m -XX:MaxPermSize=256M"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ 
+$JAVA $JAVA_OPTS -jar "${DIR}/bin/sbt-launch.jar"
+{% endhighlight %}
 
 ## Basic SBT Additions
 
@@ -53,15 +64,17 @@ to add is the [sbt-revolver][2]. This is a very useful plugin that can run
 your project in a forked JVM and reload it on a change. We can add this to
 the project by adding the following to our `project/plugin.sbt`:
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=plugins-line-1.sbt">
-</script>
+{% highlight scala linenos %}
+addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.2")
+{% endhighlight %}
 
 While I'm at it, I'm going to add one more plugin, [sbt-idea][3], that can 
 generate IDE-specific files for IntelliJ IDE with a simple command `gen-idea`:
 
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=plugins-line-2.sbt">
-</script>
+{% highlight scala linenos %}
+addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
+{% endhighlight %}
 
 
 ## Template Build File
@@ -71,8 +84,49 @@ I find it easier and more straight-forward to work with. I like to break my
 build file into several logical sections: resolvers, dependencies, build settings,
 and the application build. My typical build-file looks like:
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=Build.scala">
-</script>
+{% highlight scala linenos %}
+import sbt._
+import Keys._
+import spray.revolver.RevolverPlugin._
+ 
+object Resolvers {
+}
+ 
+object Dependencies {
+   val appDependencies = Seq(
+   )
+}
+ 
+object BuildSettings {
+ 
+   val buildOrganization = "johnmurray.io"
+   val appName = "CHANGE_ME"
+   val buildVersion = "0.0.1-SNAPSHOT"
+   val buildScalaVersion = "2.10.4"
+   val buildScalaOptions = Seq("-unchecked", "-deprecation", "-encoding", "utf8")
+ 
+   import Resolvers._
+   import Dependencies._
+ 
+   val buildSettings = Defaults.defaultSettings ++ Seq(
+      organization        := buildOrganization,
+      version             := buildVersion,
+      scalaVersion        := buildScalaVersion,
+      libraryDependencies := appDependencies,
+      scalacOptions       := buildScalaOptions
+   ) ++ Revolver.settings
+}
+ 
+object ApplicationBuild extends Build {
+ 
+   import BuildSettings._
+ 
+   lazy val main = Project(
+      appName,
+      file("."),
+      settings = buildSettings)
+}
+{% endhighlight %}
 
 Even though this build file is pretty bare (_at the moment_) there are some key
 things that I like to include as part of every build configuration. 
@@ -108,14 +162,24 @@ style checkers, but I've settled on [Scalastyle][5] for now. I don't have much b
 the standard, but I'm sure it'll evolve over time. I added the following to my
 `plugins.sbt` file
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=plugins-line-3-4.sbt">
-</script>
+{% highlight scala linenos %}
+addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.4.0")
+ 
+resolvers += "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/"
+{% endhighlight %}
 
 I've also updated our `buildSettings` in `project/Build.scala` by appending the
 Scalastyle settings
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=scalastyle-build.scala">
-</script>
+{% highlight scala linenos %}
+ val buildSettings = Defaults.defaultSettings ++ Seq(
+  organization        := buildOrganization,
+  version             := buildVersion,
+  scalaVersion        := buildScalaVersion,
+  libraryDependencies := appDependencies,
+  scalacOptions       := buildScalaOptions
+) ++ Revolver.settings ++ ScalastylePlugin.Settings
+{% endhighlight %}
 
 As far as the build configuration goes, my configuration isn't far off the default you
 get by running `sbt scalastyle-generate-config` so I won't list it here. 
@@ -126,8 +190,13 @@ get by running `sbt scalastyle-generate-config` so I won't list it here.
 For testing I typically start with Specs2 and add from there. For this we add to the build
 file simply:
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=Build.specs2.scala">
-</script>
+{% highlight scala linenos %}
+object Dependencies {
+   val appDependencies = Seq(
+      "org.specs2" %% "specs2" % "2.3.10" % "test"
+   )
+}
+{% endhighlight %}
 
 I can easily add others in the same fashion. For example, if I were doing an Akka
 project I would add the `akka-testkit` for the `spray-teskit` for Spray projects.
@@ -136,8 +205,19 @@ If the project I am building is open source, I have to think about CI what build
 system I'm going to use. I personally prefer to use [Travis-CI][4] just because
 it's so darn simple. Since this is usually the case I add the `.travis.yml` file:
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=.travis.yml">
-</script>
+{% highlight yaml linenos %}
+language: scala
+scala:
+  - 2.10.3
+script:
+  - sbt compile test:compile
+  - sbt scalastyle
+  - sbt test
+jdk:
+  - oraclejdk7
+  - openjdk7
+  - oraclejdk8:w
+{% endhighlight %}
 
 
 ## Miscellaneous
@@ -164,21 +244,36 @@ As a final note, I like to add some basic files that I put in most projects:
 Now that I'm done putting together all the pieces to get started, my final directory
 structure is laid out in the following manner:
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=layout-2">
-</script>
+{% highlight text linenos %}
+.
+├── .gitignore
+├── .travis.yml
+├── bin
+│   └── sbt-launch.jar
+├── project
+│   ├── Build.scala
+│   └── plugins.sbt
+├── readme.md
+├── sbt
+└── scalastyle-config.xml
+{% endhighlight %}
 
 As I mentioned in the spoiler up top, I have put this into a git repository for my
 own (and possibly your) convenience [here][1]. You can start any new project using 
 this template simply via:
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=clone-repo.sh">
-</script>
+{% highlight bash linenos %}
+git clone https://github.com/JohnMurray/basic-scala-template.git YOUR_PROJECT_NAME
+{% endhighlight %}
 
 Or, you can clone the repository and add the `scala-new` script to your path which is
 located in the root of the project. With this you can simply do
 
-<script src="https://gist.github.com/JohnMurray/11116775.js?file=scala-new.sh">
-</script>
+{% highlight bash linenos %}
+scala-new my-new-project
+cd my-new-project
+# start working! 
+{% endhighlight %}
 
 This script will take care of updating the repo, creating a directory, and copying
 over all the necessary files. Easy peasy. 
