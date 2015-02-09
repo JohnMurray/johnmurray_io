@@ -17,3 +17,10 @@ defaults:
     values:
       category: "log"
       layout: "default"
+  -
+    scope:
+      path: ""
+      type: "drafts"
+    values:
+      category: "draft"
+      layout: "default"
