@@ -16,11 +16,11 @@ defaults:
       type: "posts"
     values:
       category: "log"
-      layout: "default"
+      layout: "post"
   -
     scope:
       path: ""
       type: "drafts"
     values:
       category: "draft"
-      layout: "default"
+      layout: "post"
