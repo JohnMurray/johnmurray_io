@@ -5,12 +5,12 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 09 Feb 2015 09:53:05 -0500</pubDate>
-    <lastBuildDate>Mon, 09 Feb 2015 09:53:05 -0500</lastBuildDate>
+    <pubDate>Mon, 09 Feb 2015 09:55:41 -0500</pubDate>
+    <lastBuildDate>Mon, 09 Feb 2015 09:55:41 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
-        <title>Disposing Myths - Web Services are Easy</title>
+        <title>Dispousing Myths - Web Services are Easy</title>
         <description>&lt;p&gt;Talk about how everyone always advertises that web services are easy
 to create and it’s only “3 lines of code” to get up and running or how
 you can build a blog in 20 minutes (or all kinds of other lies used for
@@ -34,7 +34,7 @@ for the enterprise / real-world, including things like:&lt;/p&gt;
 people in business who may not be super technical and understand all that it
 takes to get a service out to production. &lt;/p&gt;
 </description>
-        <pubDate>Mon, 09 Feb 2015 09:33:01 -0500</pubDate>
+        <pubDate>Mon, 09 Feb 2015 09:55:40 -0500</pubDate>
         <link>http://www.johnmurray.io/draft/2015/02/09/web-service-myth.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/draft/2015/02/09/web-service-myth.html</guid>
         

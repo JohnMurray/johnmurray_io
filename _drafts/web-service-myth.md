@@ -1,5 +1,5 @@
 ---
-title: "Disposing Myths - Web Services are Easy"
+title: "Dispousing Myths - Web Services are Easy"
 ---
 
 Talk about how everyone always advertises that web services are easy
