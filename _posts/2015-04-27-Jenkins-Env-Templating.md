@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Jenkins EnvVar Templating
+title: "Jenkins EnvVar Templating"
 date:  2015-04-27 12:00:00:00
 ---
 
