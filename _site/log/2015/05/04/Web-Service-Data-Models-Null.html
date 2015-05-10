@@ -101,7 +101,7 @@ Specifically what happens when I send in the following, partial update</p>
 <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="nc">User</span><span class="o">(</span><span class="s">&quot;John M. Murray&quot;</span><span class="o">,</span> <span class="s">&quot;my-other-email@gmail.com&quot;</span><span class="o">,</span> <span class="nc">None</span><span class="o">)</span></code></pre></div>
 
 <p>You can easily see where the breakdown is. Because we do not have a value for the <code>userName</code>
-it has no other choice than to be <code>None</code>. We are conflating the abscense of a value with
+it has no other choice than to be <code>None</code>. We are conflating the absence of a value with
 the value being <code>null</code>. In the case that the value is absent on an edit operation, the user
 does not <em>intend</em> to edit the field. This means that we cannot reliably set the <code>userName</code>
 field to an empty value, <em>ever</em>. To solve this we can introduce the <code>TriState[T]</code> type.</p>
@@ -125,7 +125,7 @@ represent the edit JSON in our model as:</p>
 
 <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="nc">User</span><span class="o">(</span><span class="s">&quot;John M. Murray&quot;</span><span class="o">,</span> <span class="s">&quot;my-other-email@gmail.com&quot;</span><span class="o">,</span> <span class="nc">TriState</span><span class="o">.</span><span class="nc">Absent</span><span class="o">)</span></code></pre></div>
 
-<p>From this, we know not to edit the field, since it is absetnt. Additionally if I were to
+<p>From this, we know not to edit the field, since it is absent. Additionally if I were to
 provide a null value on edit, we would know to set the <code>userName</code> to  <code>null</code>/empty within
 our persistent storage solution. From this we can see that <code>Option</code>, for web services, is
 better replaced with a <code>TriState</code>.</p>

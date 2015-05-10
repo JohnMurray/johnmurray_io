@@ -5,8 +5,8 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 10 May 2015 18:26:56 -0400</pubDate>
-    <lastBuildDate>Sun, 10 May 2015 18:26:56 -0400</lastBuildDate>
+    <pubDate>Sun, 10 May 2015 18:32:48 -0400</pubDate>
+    <lastBuildDate>Sun, 10 May 2015 18:32:48 -0400</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -71,7 +71,7 @@ Specifically what happens when I send in the following, partial update&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;John M. Murray&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;my-other-email@gmail.com&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can easily see where the breakdown is. Because we do not have a value for the &lt;code&gt;userName&lt;/code&gt;
-it has no other choice than to be &lt;code&gt;None&lt;/code&gt;. We are conflating the abscense of a value with
+it has no other choice than to be &lt;code&gt;None&lt;/code&gt;. We are conflating the absence of a value with
 the value being &lt;code&gt;null&lt;/code&gt;. In the case that the value is absent on an edit operation, the user
 does not &lt;em&gt;intend&lt;/em&gt; to edit the field. This means that we cannot reliably set the &lt;code&gt;userName&lt;/code&gt;
 field to an empty value, &lt;em&gt;ever&lt;/em&gt;. To solve this we can introduce the &lt;code&gt;TriState[T]&lt;/code&gt; type.&lt;/p&gt;
@@ -95,7 +95,7 @@ represent the edit JSON in our model as:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;John M. Murray&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;my-other-email@gmail.com&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TriState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Absent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;From this, we know not to edit the field, since it is absetnt. Additionally if I were to
+&lt;p&gt;From this, we know not to edit the field, since it is absent. Additionally if I were to
 provide a null value on edit, we would know to set the &lt;code&gt;userName&lt;/code&gt; to  &lt;code&gt;null&lt;/code&gt;/empty within
 our persistent storage solution. From this we can see that &lt;code&gt;Option&lt;/code&gt;, for web services, is
 better replaced with a &lt;code&gt;TriState&lt;/code&gt;.&lt;/p&gt;
