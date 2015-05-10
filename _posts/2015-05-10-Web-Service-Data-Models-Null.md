@@ -77,7 +77,7 @@ User("John M. Murray", "my-other-email@gmail.com", None)
 {% endhighlight %}
 
 You can easily see where the breakdown is. Because we do not have a value for the `userName`
-it has no other choice than to be `None`. We are conflating the abscense of a value with
+it has no other choice than to be `None`. We are conflating the absence of a value with
 the value being `null`. In the case that the value is absent on an edit operation, the user
 does not _intend_ to edit the field. This means that we cannot reliably set the `userName`
 field to an empty value, _ever_. To solve this we can introduce the `TriState[T]` type.
@@ -105,7 +105,7 @@ represent the edit JSON in our model as:
 User("John M. Murray", "my-other-email@gmail.com", TriState.Absent)
 {% endhighlight %}
 
-From this, we know not to edit the field, since it is absetnt. Additionally if I were to
+From this, we know not to edit the field, since it is absent. Additionally if I were to
 provide a null value on edit, we would know to set the `userName` to  `null`/empty within
 our persistent storage solution. From this we can see that `Option`, for web services, is
 better replaced with a `TriState`.
