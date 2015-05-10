@@ -5,9 +5,110 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 28 Apr 2015 13:13:10 -0400</pubDate>
-    <lastBuildDate>Tue, 28 Apr 2015 13:13:10 -0400</lastBuildDate>
+    <pubDate>Sun, 10 May 2015 18:26:56 -0400</pubDate>
+    <lastBuildDate>Sun, 10 May 2015 18:26:56 -0400</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Web Service Data Models - Null</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;This relates to my other post “&lt;a href=&quot;/log/2015/04/28/Play-Typed-Action.html&quot;&gt;Typed Actions In Play&lt;/a&gt;”. You may want to
+skim it to understand my aim in all this madness.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I’m on quest. I am attempting to create some abstractions that allow me to work
+solely with well-typed models for the purpose of developing web services. I am primarily
+working in JSON which means I just need to come up with a sound data-model for the
+JSON that I expect to send/receive to/from the web-service clients. Sounds like a
+fairly easy task, yes? Well, sadly it is not.&lt;/p&gt;
+
+&lt;h3 id=&quot;living-with-null&quot;&gt;Living with Null&lt;/h3&gt;
+
+&lt;p&gt;Null values in JSON are a very interesting thing to represent in Scala. While Scala
+does have the concept of &lt;code&gt;null&lt;/code&gt;, it seems primarily as a way to survive interop with
+Java, where using &lt;code&gt;null&lt;/code&gt; is very common. However the conventional wisdom in the Scala
+community is to replace &lt;code&gt;null&lt;/code&gt; with &lt;code&gt;Option[T]&lt;/code&gt; for some type &lt;code&gt;T&lt;/code&gt; that is &lt;code&gt;null&lt;/code&gt;‘able.
+&lt;code&gt;T&lt;/code&gt; can then be represented as &lt;code&gt;Some[T]&lt;/code&gt; or &lt;code&gt;None&lt;/code&gt;. This makes a lot of sense, but it
+fails to meet the requirements for JSON in the context of web services, and we’ll see
+why.&lt;/p&gt;
+
+&lt;p&gt;Let’s assume that we’re going to build a service to manage users. The JSON to represent
+a user may look like this&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;John Murray&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;quot;email&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;my-email@gmail.com&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;quot;userName&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;johnmurray_io&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s assert that the &lt;code&gt;userName&lt;/code&gt; can be, in the JSON, either a string value or a &lt;code&gt;null&lt;/code&gt;
+value. Let’s further assert that if the user does not provide this in the &lt;code&gt;POST&lt;/code&gt; JSON
+that it defaults to a &lt;code&gt;null&lt;/code&gt; value.&lt;/p&gt;
+
+&lt;p&gt;For editing the object, let’s assume that we accept partial edits over both &lt;code&gt;PUT&lt;/code&gt; and
+&lt;code&gt;PATCH&lt;/code&gt;. This means that I do not have to supply the full JSON object, only the fields
+that I wish to edit. This is a very common practice in web services.&lt;/p&gt;
+
+&lt;p&gt;If I were only looking at the requirements for object creation, then I might define my
+model like so&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;userName&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Option&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;and the previous data would translate into&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;John Murray&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;my-email@gmail.com&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Some&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;johnmurray_io&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;However, this model does not meet all of our requirements, only those for object creation.
+Specifically what happens when I send in the following, partial update&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;John M. Murray&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;&amp;quot;email&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;my-other-email@gmail.com&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This translates into our model as being&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;John M. Murray&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;my-other-email@gmail.com&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You can easily see where the breakdown is. Because we do not have a value for the &lt;code&gt;userName&lt;/code&gt;
+it has no other choice than to be &lt;code&gt;None&lt;/code&gt;. We are conflating the abscense of a value with
+the value being &lt;code&gt;null&lt;/code&gt;. In the case that the value is absent on an edit operation, the user
+does not &lt;em&gt;intend&lt;/em&gt; to edit the field. This means that we cannot reliably set the &lt;code&gt;userName&lt;/code&gt;
+field to an empty value, &lt;em&gt;ever&lt;/em&gt;. To solve this we can introduce the &lt;code&gt;TriState[T]&lt;/code&gt; type.&lt;/p&gt;
+
+&lt;h3 id=&quot;introducing-the-tristatet&quot;&gt;Introducing the TriState[T]&lt;/h3&gt;
+
+&lt;p&gt;As we have seen, we are in need of a type that can represent more than the two states
+provided by &lt;code&gt;Option[T]&lt;/code&gt;. To handle this, we’re going to introduce a new type called
+&lt;code&gt;TriState[T]&lt;/code&gt; whose name we’re borrowing from the world of electrical engineering. See
+this article on &lt;a href=&quot;http://en.wikipedia.org/wiki/Three-state_logic&quot;&gt;three-state-logic&lt;/a&gt; for more details.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;trait&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TriState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TriState&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Present&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TriState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Absent&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TriState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Nothing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Null&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TriState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Nothing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If we now replace the type of &lt;code&gt;userName&lt;/code&gt; of &lt;code&gt;Option[T]&lt;/code&gt; with &lt;code&gt;TriState[T]&lt;/code&gt;, we can properly
+represent the edit JSON in our model as:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;John M. Murray&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;my-other-email@gmail.com&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TriState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Absent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;From this, we know not to edit the field, since it is absetnt. Additionally if I were to
+provide a null value on edit, we would know to set the &lt;code&gt;userName&lt;/code&gt; to  &lt;code&gt;null&lt;/code&gt;/empty within
+our persistent storage solution. From this we can see that &lt;code&gt;Option&lt;/code&gt;, for web services, is
+better replaced with a &lt;code&gt;TriState&lt;/code&gt;.&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 04 May 2015 12:00:00 -0400</pubDate>
+        <link>http://www.johnmurray.io/log/2015/05/04/Web-Service-Data-Models-Null.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2015/05/04/Web-Service-Data-Models-Null.html</guid>
+        
+        
+        <category>log</category>
+        
+      </item>
     
       <item>
         <title>Typed Actions in Play</title>
@@ -1178,83 +1279,6 @@ around in the code.&lt;/p&gt;
         <pubDate>Mon, 11 Mar 2013 08:00:00 -0400</pubDate>
         <link>http://www.johnmurray.io/log/2013/03/11/Copy-to-Learn.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2013/03/11/Copy-to-Learn.html</guid>
-        
-        
-        <category>log</category>
-        
-      </item>
-    
-      <item>
-        <title>Metric K-Center [A]</title>
-        <description>&lt;p&gt;So, my classes are over and the results are in. I’ve implemented a solution
-to the &lt;a href=&quot;https://en.wikipedia.org/wiki/Metric_k-center&quot;&gt;Metric k-center&lt;/a&gt; problem and, to be honest, the results are not all
-that interesting. But, I’ll go ahead and answer the questions that I proposed
-in my last post.&lt;/p&gt;
-
-&lt;h3 id=&quot;what-will-the-solution-look-like&quot;&gt;What will the solution look like?&lt;/h3&gt;
-
-&lt;p&gt;The solution was composed of two parts, the runner and the viewer. Its
-important to solve the problem (obviously) it is also important to visualize
-you’re results. While it is easy to calculate metrics on how much your
-algorithm improves over a random solution, it’s hard to see where improvements
-can be made (or how they could be made). &lt;/p&gt;
-
-&lt;p&gt;The runner is targetted for JRuby and solves the application in parallel by
-solving for the various values of &lt;em&gt;k&lt;/em&gt;. The output is then persisted to a MySQL
-database so that the logs can later be analyzed and rendered (by the viewer).&lt;/p&gt;
-
-&lt;p&gt;The viewer is just a simple Sinatra app that queries the DB for the latest runs
-and allows you to pick out a specific generation for a particular run and value
-of &lt;em&gt;k&lt;/em&gt; and the results are rendered using the &lt;a href=&quot;http://raphaeljs.com/&quot;&gt;Raphael JS&lt;/a&gt; library. &lt;/p&gt;
-
-&lt;h3 id=&quot;what-approaches-will-be-best-utilized-for-solvingestimating-the-problem&quot;&gt;What approaches will be best utilized for solving/estimating the problem?&lt;/h3&gt;
-
-&lt;p&gt;By approaches I don’t mean frameworks or technologies, I am more referring to
-algorithms. For this, I chose to use a couple of different approaches and
-combine them together. The first is a &lt;a href=&quot;https://en.wikipedia.org/wiki/Genetic_algorithm&quot;&gt;genetic algorithmm&lt;/a&gt; (GA) and the 
-second is the &lt;a href=&quot;https://en.wikipedia.org/wiki/The_Wisdom_of_Crowds&quot;&gt;Wisdom of the Crowd&lt;/a&gt; (WoC). &lt;/p&gt;
-
-&lt;p&gt;The GA allows me to derive
-solutions rather quickly from an initial, random set of solutions (read
-up on the Wikipedia article if you need more information on GAs) but, like all
-solutions to NP-C problems it is merely an estimation to the solution. WoC allows us
-generate a consensus from the set of &lt;em&gt;experts&lt;/em&gt; (top performing members) of a
-given population of solutions. &lt;/p&gt;
-
-&lt;p&gt;These two approaches will be the main driving factor for our runner. &lt;/p&gt;
-
-&lt;h3 id=&quot;how-fast-is-it-because-all-we-care-about-is-speed&quot;&gt;How fast is it? (because all we care about is speed)&lt;/h3&gt;
-
-&lt;p&gt;While I don’t have exact metrics, it takes about 32 seconds to solve a
-problem for 100 nodes for 80 value of &lt;em&gt;k&lt;/em&gt; and 500 evolutions. That’s running
-on my home desktop. &lt;/p&gt;
-
-&lt;p&gt;Now, while I don’t have exact metrics I can talk a little bit about JRuby
-versus MRI Ruby. My choice to go with JRuby is two-fold. The first reason
-is that I get the benefit of &lt;em&gt;real&lt;/em&gt;-threading. By this I mean that there is
-no GIL and when I run multiple threads, I get the benefit of JVM threads
-(running on multiple cores). This means that I can use libraries like
-&lt;a href=&quot;http://peach.rubyforge.org/&quot;&gt;peach&lt;/a&gt;. The second is faster overall runtime of the runner (regardless
-of whether or not threads are used). &lt;/p&gt;
-
-&lt;p&gt;Since these computations can be ran in parallel and since I have a quad-core
-machine, it only makes sense to run the tasks in parallel across multiple cores.
-However, if you’re a Rubyist, then you should be more than familiar with the
-limitations that come along with the GIL. From this, we can see why JRuby, in
-this circumstance, is a much better choice than the current MRI release. &lt;/p&gt;
-
-&lt;h3 id=&quot;what-makes-my-solution-better-than-other-existing-solutions&quot;&gt;What makes my solution better than other existing solutions?&lt;/h3&gt;
-
-&lt;p&gt;Nothing really. There’s not much novel about my solution, but it was fun and
-I did suffice to learn quite a bit. I’ve posted the code (for anyone interested)
-on GitHub at &lt;a href=&quot;https://github.com/JohnMurray/metric-k-center&quot;&gt;JohnMurray/metric-k-center.git&lt;/a&gt;. I’ve also added a writeup
-of the project (PDF) that is included in the repository if you’re inclined
-to know a little more about it.&lt;/p&gt;
-
-</description>
-        <pubDate>Wed, 16 Jan 2013 07:00:00 -0500</pubDate>
-        <link>http://www.johnmurray.io/log/2013/01/16/Metric-K-Center-A.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/01/16/Metric-K-Center-A.html</guid>
         
         
         <category>log</category>
