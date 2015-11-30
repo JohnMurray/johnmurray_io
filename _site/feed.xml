@@ -5,9 +5,99 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 10 May 2015 18:32:48 -0400</pubDate>
-    <lastBuildDate>Sun, 10 May 2015 18:32:48 -0400</lastBuildDate>
+    <pubDate>Mon, 30 Nov 2015 10:57:25 -0500</pubDate>
+    <lastBuildDate>Mon, 30 Nov 2015 10:57:25 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Typed PATCH</title>
+        <description>&lt;p&gt;When building web services we need to define a contract of how the service
+will operate and how the client should communicate with the service. One important
+piece to this is the data that the service returns (usually on read operations)
+and the data the service expects to receive (usually on write operations). One
+really fantastic way to do this, especially when working in a language like Scala,
+is to use types.&lt;/p&gt;
+
+&lt;p&gt;If I were designing a simple service to manage contacts, I might define my type
+to look like:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Long&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;                 &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;         &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;                 &lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;     &lt;span class=&quot;kt&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;                 &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;        &lt;span class=&quot;kt&quot;&gt;Email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt;                 &lt;span class=&quot;n&quot;&gt;address&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;      &lt;span class=&quot;kt&quot;&gt;Option&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Address&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;],&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt;                 &lt;span class=&quot;n&quot;&gt;createdOn&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;7&lt;/span&gt;                 &lt;span class=&quot;n&quot;&gt;lastModified&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This type accurately represents what I believe a contact, in the context of my
+API, is defined as. All pieces except &lt;code&gt;address&lt;/code&gt; are required 
+and I also expect a few meta-data fields to exist such as &lt;code&gt;id&lt;/code&gt;, 
+&lt;code&gt;createdOn&lt;/code&gt; and &lt;code&gt;lastModified&lt;/code&gt;. This type works great when defining objects
+in my system, but it starts to break down as a definition for a contract with a
+consumer of my web-service. &lt;/p&gt;
+
+&lt;p&gt;While this works decently well for read operations, where the full object
+is returned, what does this look like for a create (&lt;code&gt;POST&lt;/code&gt;) operation? To start I
+no longer need any of what I’ll call &lt;em&gt;“system provided”&lt;/em&gt; fields such as &lt;code&gt;id&lt;/code&gt;, 
+&lt;code&gt;createdOn&lt;/code&gt; and &lt;code&gt;lastModified&lt;/code&gt;. Some of you might be saying one of two things right
+about now:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Default the fields to &lt;code&gt;null&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Make fields that aren’t required an &lt;code&gt;Option&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I’m going to stop you right now. The purpose of this type is &lt;em&gt;supposed&lt;/em&gt; to be a way
+to expose a contract to the user. Making fields that will &lt;em&gt;always&lt;/em&gt; exist on reads
+an &lt;code&gt;Option&lt;/code&gt; is really just a lie and not very useful for defining a complete contract.
+To truly use types as our contract here, we need to define a create-specific type.
+In our case, it might look like:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UserCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;     &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;                       &lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;                       &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;Email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;                       &lt;span class=&quot;n&quot;&gt;address&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;kt&quot;&gt;Option&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Address&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This gets us where we want to be at the price of having to create and maintain another
+type in our application. &lt;/p&gt;
+
+&lt;p&gt;Now it’s time to think about how we would support operations such as PATCH which
+are based around the idea of partial edits. Since, by the nature of partial edits,
+everything is optional you can see that we can’t use the same model that we used
+for create. Also, since we will need to know the difference between null and absent,
+we’ll need to use a &lt;code&gt;TriState&lt;/code&gt; value to represent any types that are currently 
+nullable (or non-required by our default model).&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UserCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;       &lt;span class=&quot;kt&quot;&gt;Long&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;                       &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;     &lt;span class=&quot;kt&quot;&gt;Option&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;],&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;                       &lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Option&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;],&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;                       &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;Option&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;],&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt;                       &lt;span class=&quot;n&quot;&gt;address&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;kt&quot;&gt;TriState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Address&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In the above model, we assume &lt;code&gt;Option&lt;/code&gt; to be a matter of presence (not nullability) and
+&lt;code&gt;TriState&lt;/code&gt; to represent both presence and nullability.&lt;/p&gt;
+
+&lt;p&gt;Ta-da! We now have models that represent create, read, and partial edit. With this, we can
+now work on optimizing our workflow. I think the proper step is to define an
+abstract language that can define our service contract and allow our tooling to
+generate our corresponding models for us. As a matter of fact, this is what we do
+in Fireglass (an internal web-service framework) used at &lt;a href=&quot;http://appnexus.com&quot;&gt;AppNexus&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;However, this framework is not (yet, maybe someday) open source. After some quick
+looking around, I came across an older project that aimed to solve the problem via
+macros. While I don’t necessarily agree with the approach, it is a solution that is
+available today.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/pathikrit/metarest&quot;&gt;https://github.com/pathikrit/metarest&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sun, 29 Nov 2015 12:00:00 -0500</pubDate>
+        <link>http://www.johnmurray.io/log/2015/11/29/Typed-PATCH.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2015/11/29/Typed-PATCH.html</guid>
+        
+        
+        <category>log</category>
+        
+      </item>
     
       <item>
         <title>Web Service Data Models - Null</title>
@@ -1054,231 +1144,6 @@ help you out (just a little).&lt;/p&gt;
         <pubDate>Mon, 15 Jul 2013 08:00:00 -0400</pubDate>
         <link>http://www.johnmurray.io/log/2013/07/15/SSH-FS-Script.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2013/07/15/SSH-FS-Script.html</guid>
-        
-        
-        <category>log</category>
-        
-      </item>
-    
-      <item>
-        <title>Copy to Learn</title>
-        <description>&lt;p&gt;While I have stated my opinion in the past that you should think twice before
-creating another web framework, it can be a useful tool. In particular, if you
-are familiar with a web framework in your language of choice, it may be a
-good learning exercise to try and implement that framework in another
-language. &lt;strong&gt;Note&lt;/strong&gt; however that you should likely not try to get people to use
-your new framework if it is only for learning purposes. If you are seriously
-considering creating a new web framework, please read my post &lt;a href=&quot;/log/2012/04/19/New-Web-Frameworks.html&quot;&gt;New Web
-Frameworks&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;background&quot;&gt;Background&lt;/h2&gt;
-&lt;p&gt;I’ve recently (as of the time this post was written) taken a new position in
-AdTech doing PHP for the purpose of web services. I really don’t know too much
-about PHP and it’s been a while since I’ve last encountered real PHP code. So,
-I figured that a little homework was in order. &lt;/p&gt;
-
-&lt;p&gt;I figured that the best way to learn would be to create a fun project in PHP
-that could utilize many of PHP’s newer features. For this, I wanted to create
-a (very) simple clone of my favorite web-app framework, &lt;a href=&quot;http://sinatrarb.com&quot;&gt;Sinatra&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;goals&quot;&gt;Goals&lt;/h2&gt;
-
-&lt;p&gt;Obviously the main goal is to better learn PHP’s main language features, but
-let’s talk more about what the goal of the project will be:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Implement basic Sinatra/HTTP routing methods (GET, POST, PUT, DELETE)&lt;/li&gt;
-  &lt;li&gt;Provide pre and post hooks&lt;/li&gt;
-  &lt;li&gt;Implement parameratized routes in Sinatra fashion&lt;/li&gt;
-  &lt;li&gt;Use lambdas to provide an &lt;em&gt;authentic&lt;/em&gt; Sinatra-experience&lt;/li&gt;
-  &lt;li&gt;Use PHP 5.4 features (where possible/applicable)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;result&quot;&gt;Result&lt;/h2&gt;
-
-&lt;p&gt;The result is a framework called Pinatra (to make it even more obvious my
-intent) that is available on my Github &lt;a href=&quot;https://github.com/JohnMurray/pinatra&quot;&gt;here&lt;/a&gt;. Let’s see how well I did
-at meeting the aforementioned goals:&lt;/p&gt;
-
-&lt;h3 id=&quot;basic-routing&quot;&gt;Basic Routing&lt;/h3&gt;
-
-&lt;p&gt;This was relatively simple. To get started, I created a main class &lt;code&gt;Pinatra&lt;/code&gt;
-that I could use to register my routes with. I then created methods for each
-HTTP verb I would be supporting (GET, POST, PUT, DELETE) that took a path (a
-string) and a handler. The handler would then be called if the incoming
-request could be matched against the route. The method for registering a GET
-request looked generally like:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php5&quot; data-lang=&quot;php5&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;public static function get($match, $callback) {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $app = Pinatra::instance();&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $app-&amp;gt;register(&amp;#39;get&amp;#39;, $match, $callback);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;As you can see, we are simply taking the route to match (the &lt;code&gt;$match&lt;/code&gt;) and a
-callback (a callable) and sending that on to the &lt;code&gt;register&lt;/code&gt; function. So, to
-look at the register function:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php5&quot; data-lang=&quot;php5&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;private function register($method, $match, $callback) {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $match = $this-&amp;gt;compute_regex($match);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $this-&amp;gt;routes[$method][$match] = $callback;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;You can see here that we are extracting a regex out of the given match (we’ll
-look more at that later) and we are registering the route in a local hash based
-on the HTTP verb (&lt;code&gt;$method&lt;/code&gt;).&lt;/p&gt;
-
-&lt;p&gt;We can use this very simply now as:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php5&quot; data-lang=&quot;php5&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;Pinatra::get(&amp;#39;/hi&amp;#39;, function () {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  return &amp;#39;hello world&amp;#39;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Very similar, we can register POST method like the following:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php5&quot; data-lang=&quot;php5&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;Pinatra::post(&amp;#39;/name&amp;#39;, function ($data) {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  return &amp;#39;Hello &amp;#39; . $data[&amp;#39;name&amp;#39;];&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;prepost-hooks&quot;&gt;Pre/Post Hooks&lt;/h3&gt;
-
-&lt;p&gt;Using the same functionality used to register the routes on a particular HTTP
-verb, we can also register before and after hooks. When we create them in our
-application, it is as simple as:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php5&quot; data-lang=&quot;php5&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;Pinatra::before(&amp;#39;*&amp;#39;, function () {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  header(&amp;#39;AppVersion: 0.0.1&amp;#39;);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php5&quot; data-lang=&quot;php5&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;Pinatra::after(&amp;#39;*&amp;#39;, function () {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  Logger::log_request(&amp;#39;served yet another request&amp;#39;);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;parameratized-routes&quot;&gt;Parameratized Routes&lt;/h3&gt;
-
-&lt;p&gt;This is a way of representing data in a given route that is extracted
-automatically. For example, given the following route:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; /authors/:author_id/books/:book_id&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;I should be able to extract the two values, &lt;code&gt;:author_id&lt;/code&gt; and &lt;code&gt;:book_id&lt;/code&gt;.
-Earlier you saw a method for building up the regular expression. This is
-what we’ll use to create our route and the match-patterns will be used
-to extract the route-data. The method for generating our regex from the
-user-supplied route is seen below.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php5&quot; data-lang=&quot;php5&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;private $URIParser_PLACEHOLDER = &amp;#39;([^\/]+)&amp;#39;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;private $URIParser_GLOB = &amp;#39;.*?&amp;#39;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;/**&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;x&quot;&gt; * Private: Generate a PHP (Perl) regular expression given the&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; &lt;span class=&quot;x&quot;&gt; *          Sinatra-style expression in the get/post/put/etc. functions.&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; &lt;span class=&quot;x&quot;&gt; */&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;private function compute_regex($match) {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  // get the URI parts of the match-pattern given&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $parts = array_filter(explode(&amp;#39;/&amp;#39;, $match), function ($val) { &lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    return !empty($val);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  });&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  // build our pattern-matching regex from given route&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $regex= &amp;#39;/^&amp;#39;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  foreach ($parts as $part) {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    if ($part[0] === &amp;#39;:&amp;#39;) {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;      $regex .= &amp;#39;\/&amp;#39; . $this-&amp;gt;URIParser_PLACEHOLDER;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    }&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    else if ($part[0] === &amp;#39;*&amp;#39;){&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;      $regex .= &amp;#39;\/&amp;#39; . $this-&amp;gt;URIParser_GLOB;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    }&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    else {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;      $regex .= &amp;#39;\/&amp;#39; . $part;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    }&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  }&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;28&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $regex .= &amp;#39;\/?$/&amp;#39;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;29&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  return $regex;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;30&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;You can see how the match patterns could be used to extract data from
-the URI. This can then be passed to the route-methods. An example of how
-this would look is as such:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php5&quot; data-lang=&quot;php5&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;Pinatra::get(&amp;#39;/hello/:name&amp;#39;, function($name) {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  return $this-&amp;gt;json([&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    &amp;#39;key&amp;#39; =&amp;gt; &amp;#39;hello-route has been matched!&amp;#39;, &lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    &amp;#39;name&amp;#39; =&amp;gt; $name&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  ]);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;You’ll also notice a JSON helper function (I’ll leave that one for your own
-exploration).&lt;/p&gt;
-
-&lt;h3 id=&quot;lambdas&quot;&gt;Lambdas&lt;/h3&gt;
-
-&lt;p&gt;You’ve already seen the use of lambdas (anonymous functions) in my examples
-so far, so suffice it to say, I met that goal. One important thing to note is
-that newer versions of PHP provide easy way to rebind anonymous methods making
-it possible to use them here. Take a look at the method that actually matches
-a request to a route and calls a lambda:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php5&quot; data-lang=&quot;php5&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;/**&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;   * Method that is called when we actually want to process an incoming&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;   * request based on the method and uri provided. This method (expecting&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;   * to be given a URI and method) can also be used for re-routing requests&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;   * internally.&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;   */&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;public static function handle_request($method, $uri) {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $app = Pinatra::instance();&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  // before hook code (removed for brevity)&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  // find and call route-handler&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $route_match = $app-&amp;gt;find_route($app-&amp;gt;routes, $method, $uri);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  if ($route_match !== null) {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;      &lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    $request_body_data = $app-&amp;gt;get_body_data($method);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    if ($request_body_data !== null) {&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;      array_unshift($route_match[&amp;#39;arguments&amp;#39;], $request_body_data);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    }&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    $route_res = call_user_func_array(&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;      $route_match[&amp;#39;callback&amp;#39;]-&amp;gt;bindTo($app), &lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;      $route_match[&amp;#39;arguments&amp;#39;]);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  }&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  // after hook code (removed for brevity)&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;28&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  &lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;29&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;php-54-usage&quot;&gt;PHP 5.4 Usage&lt;/h3&gt;
-
-&lt;p&gt;Several features were used, but the main new 5.4’ish feature that got used
-was traits. They were fun, but I probably used them wrong. Anyways, I’ll leave it
-up to you to check out my usage, however I will say that I mainly used them
-as modules and not so much as re-usable traits. &lt;/p&gt;
-
-&lt;h2 id=&quot;what-was-learned&quot;&gt;What Was Learned&lt;/h2&gt;
-
-&lt;p&gt;While I already knew that a PHP script ran every time a new request was made,
-I learned that PHP may not be the best language in which to implement a
-Sinatra-like &lt;a href=&quot;http://en.wikipedia.org/wiki/Domain-specific_language&quot;&gt;DSL&lt;/a&gt;. Simply put, we must register all of the routes on every
-request. Since we cannot cache these results, we end up doing a lot of parsing
-and string manipulation on every request. This means that as you add new routes,
-you incur overhead on every new request, even if that route is never called.
-This is unlike other languages in which the application starts up once and then
-those computed routes (regex’s) can be cached and re-used. &lt;/p&gt;
-
-&lt;h2 id=&quot;final-notes&quot;&gt;Final Notes&lt;/h2&gt;
-
-&lt;p&gt;Like I had mentioned previously, this project was to learn. That being said, there
-is probably a lot of debug code and comments left in this project and I would not
-recommend it for real-world use. So, if you do want to play around with it, you might
-have to remove some &lt;code&gt;echo&lt;/code&gt; and &lt;code&gt;var_dump&lt;/code&gt; statements that might still be hanging
-around in the code.&lt;/p&gt;
-
-</description>
-        <pubDate>Mon, 11 Mar 2013 08:00:00 -0400</pubDate>
-        <link>http://www.johnmurray.io/log/2013/03/11/Copy-to-Learn.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/03/11/Copy-to-Learn.html</guid>
         
         
         <category>log</category>
