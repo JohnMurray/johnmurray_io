@@ -5,8 +5,8 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 02 Feb 2016 08:33:46 -0500</pubDate>
-    <lastBuildDate>Tue, 02 Feb 2016 08:33:46 -0500</lastBuildDate>
+    <pubDate>Tue, 02 Feb 2016 08:36:44 -0500</pubDate>
+    <lastBuildDate>Tue, 02 Feb 2016 08:36:44 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -135,9 +135,10 @@ a user may look like this&lt;/p&gt;
 value. Let’s further assert that if the user does not provide this in the &lt;code&gt;POST&lt;/code&gt; JSON
 that it defaults to a &lt;code&gt;null&lt;/code&gt; value.&lt;/p&gt;
 
-&lt;p&gt;For editing the object, let’s assume that we accept partial edits over both &lt;code&gt;PUT&lt;/code&gt; and
-&lt;code&gt;PATCH&lt;/code&gt;. This means that I do not have to supply the full JSON object, only the fields
-that I wish to edit. This is a very common practice in web services.&lt;/p&gt;
+&lt;p&gt;For editing the object, let’s assume that we accept partial edits over &lt;code&gt;PUT&lt;/code&gt; and/or
+&lt;code&gt;PATCH&lt;/code&gt; (depending on which philosophy you subscribe to). This means that I do not 
+have to supply the full JSON object, only the fields that I wish to edit. This is a 
+very common practice in web services.&lt;/p&gt;
 
 &lt;p&gt;If I were only looking at the requirements for object creation, then I might define my
 model like so&lt;/p&gt;

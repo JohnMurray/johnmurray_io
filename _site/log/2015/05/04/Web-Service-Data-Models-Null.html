@@ -75,9 +75,10 @@ a user may look like this</p>
 value. Let’s further assert that if the user does not provide this in the <code>POST</code> JSON
 that it defaults to a <code>null</code> value.</p>
 
-<p>For editing the object, let’s assume that we accept partial edits over both <code>PUT</code> and
-<code>PATCH</code>. This means that I do not have to supply the full JSON object, only the fields
-that I wish to edit. This is a very common practice in web services.</p>
+<p>For editing the object, let’s assume that we accept partial edits over <code>PUT</code> and/or
+<code>PATCH</code> (depending on which philosophy you subscribe to). This means that I do not 
+have to supply the full JSON object, only the fields that I wish to edit. This is a 
+very common practice in web services.</p>
 
 <p>If I were only looking at the requirements for object creation, then I might define my
 model like so</p>
