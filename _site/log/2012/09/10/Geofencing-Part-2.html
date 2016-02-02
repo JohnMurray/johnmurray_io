@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Geofencing - Part 2</title>
+  <meta name="description" content="Building Your Own Geofence Server">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/log/2012/09/10/Geofencing-Part-2.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2015. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+    <header class="post-header">
+        <h1 class="post-title">Geofencing - Part 2</h1>
+    </header>
+
+    <article class="post-content">
+        <h1 id="building-your-own-geofence-server">Building Your Own Geofence Server</h1>
+
+<p>Well, it looks like I might have peaked your interest enough from the
+previous post for you to keep reading. Good for me! If you’ve stumbled
+across this post, then you might want to know that it is part of a series
+(of which you are reading part 2). If you wish to read (or re-read) part
+1, you can do so <a href="/log/2012/07/11/Geofencing-Part-1.html">here</a>.</p>
+
+<p>In this post, I’m going to walk you through the mechanics of creating a
+(very) simple geofence server. We’ll start first with the conceptual
+approach that we will be taking, then we’ll see how we can make those
+ideas a reality. And, when it is all said and done, I have a little
+surprise for you.</p>
+
+<h1 id="conceptual-approach">Conceptual Approach</h1>
+
+<p>Before we get into the nitty-gritty details, we’ll go over the conceptual
+approach that we will be taking. My hope is that the theoretical foundation
+will aid in understanding the concrete details. </p>
+
+<h3 id="utilizing-mongo">Utilizing Mongo</h3>
+
+<p>As we’re planning our geofence server, we know we want to use existing
+technologies, where possible, to aid in development time. In this example,
+we’re going to use some of the geo-spatial indexing and search features
+that are available in Mongo. </p>
+
+<p>In particular, Mongo allows you index Lat-Lon points and search within
+a specified radius. To visualize this, I’ve put together a map full of
+points (on the left) and a nearby-search query with a specified radius
+(on the right) for you below.</p>
+
+<p><img src="/blog-files/geofence/part-2/mongo-spatial-index-and-query.png" alt="Mongo geo-spatial index and query visualization" /></p>
+
+<p>Although Mongo does not currently provide support for full-featured 
+geofences, this particular feature will save us a lot of time as we
+build our own geofence server.</p>
+
+<h3 id="geofences-as-grids">Geofences as Grids</h3>
+
+<p>Knowing that we can utilize Mongo’s geo-spatial indexing capabilities
+with points, we now have to think about how we can store our geofence
+within Mongo as a set of points (so that we can most take advantage
+of the hard work that the open source community has put into Mongo).</p>
+
+<p>My approach is to visualize that we are drawing our geofence (really
+just a polygon) on a grid. Then we can estimate our polygon by using
+only the grid-blocks that lie within the polygon (or at least their
+center-points lie within the polygon). We can then take the estimated
+polygon (the set of grid-blocks) and get their center-points. It is these
+center-points which we can then store in Mongo.</p>
+
+<p><img src="/blog-files/geofence/part-2/polygon-estimation-conceptual.png" alt="polygon estimation with grids, grid-blocks, and center-points" /></p>
+
+<p>You might thinking that this is all fine and dandy, but how are we going to
+use this to determine if someone or something is inside or outside of the
+fence?</p>
+
+<p>Simple! If we think of each point as the conceptual grid-block, from which
+the point was derived, then we can do a nearby-search in Mongo with a
+radius of one-half the length of the diagonal of the grid-block (plus a
+little extra to account for some rare edge-cases). To illustrate:</p>
+
+<p><img src="/blog-files/geofence/part-2/polygon-query.png" alt="polygon query with points and nearby-search" /></p>
+
+<p>Voilà! Now if you search the points (your geofence) with a specific point
+and the pre-determined radius, you’ll either get back 0 points (meaning
+that you are outside of the fence) or 1 to 4 points (meaning that you are
+inside of the fence).</p>
+
+<h3 id="turning-polygons-into-grids">Turning Polygons into Grids</h3>
+<p>So far, things have been pretty easy (although possibly not easy to follow
+along the first time through) conceptually. Now you might have to get some
+pin a paper out to draw this next piece to fully understand how we are
+going to do this. </p>
+
+<p>Our objective is to turn a random, regular polygon into a set of grid-blocks
+which estimate its shape. We’re going to be using an algorithm similar to
+how you get the <a href="http://alienryderflex.com/polygon_area/">area of a polygon</a>. I’ll give you the steps, then I’ll
+lay it out visually for you.</p>
+
+<ol>
+  <li>Create an array to contain your estimated polygon (array of grid-blocks),
+we’ll call it <strong>E</strong></li>
+  <li>Generate a grid that contians your polygon</li>
+  <li>For each latitude (y-value on an x-y plane), draw a horizontal line</li>
+  <li>For each area in-between the horizontal lines:
+    <ol>
+      <li>Get all grid-blocks that are between the lines, we’ll call this list <strong>G</strong></li>
+      <li>Get all lines that intersect the horizontal-section, and for each one, called <strong>l</strong>:
+        <ol>
+          <li>Get all grid-blocks in <strong>G</strong> to the left of <strong>l</strong>, called <strong>G<sub>2</sub></strong></li>
+          <li>For each grid-block in <strong>G<sub>2</sub></strong>, called <strong>g</strong>:
+            <ol>
+              <li>If <strong>g</strong> is in <strong>E</strong>, remove <strong>g</strong> from <strong>E</strong></li>
+              <li>If <strong>g</strong> is not in <strong>E</strong>, add <strong>g</strong> to <strong>E</strong></li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+  <li>Store grid-block center-points from <strong>E</strong> in Mongo. Done!</li>
+</ol>
+
+<p><br />
+If you didn’t quite follow that (or can’t visualize that well), then no
+worries. Here is a visual:</p>
+
+<p><img src="/blog-files/geofence/part-2/polygon-estimation-detailed-1.png" alt="detailed estimation visualization 1" />
+<img src="/blog-files/geofence/part-2/polygon-estimation-detailed-2.png" alt="detailed estimation visualization 2" />
+<img src="/blog-files/geofence/part-2/polygon-estimation-detailed-3.png" alt="detailed estimation visualization 3" /></p>
+
+<h1 id="coding-time">Coding Time</h1>
+
+<p>Okay, now that we have gone through evertyhing at the conceptual level, it’s
+time for some real code. If you had any trouble understanding the previous
+sections, it will be worth your time to go back with pen and paper and draw
+out all of the steps until it makes sense.</p>
+
+<h2 id="creating-our-grid">Creating Our Grid</h2>
+
+<p>Assuming that we’re going to get out polygon in the form of some Lat-Lon
+points, then we can generate our grid like the following:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno"> 1</span> <span class="c1"># Assuming that the coordinates for the polygon adhere to the</span>
+<span class="lineno"> 2</span> <span class="c1"># format of:</span>
+<span class="lineno"> 3</span> <span class="c1"># [</span>
+<span class="lineno"> 4</span> <span class="c1">#   [:lon, :lat],</span>
+<span class="lineno"> 5</span> <span class="c1">#   [:lon, :lat],</span>
+<span class="lineno"> 6</span> <span class="c1">#   ...</span>
+<span class="lineno"> 7</span> <span class="c1"># ]</span>
+<span class="lineno"> 8</span> <span class="c1">#</span>
+<span class="lineno"> 9</span> <span class="c1"># We can use the following methods:</span>
+<span class="lineno">10</span>  
+<span class="lineno">11</span>  
+<span class="lineno">12</span>  
+<span class="lineno">13</span> <span class="c1"># Method to get the min and max values for the polygon (plus</span>
+<span class="lineno">14</span> <span class="c1"># some padding) that the grid can be generated within</span>
+<span class="lineno">15</span> <span class="k">def</span> <span class="nf">get_bounding_box</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+<span class="lineno">16</span>   <span class="c1"># get max and min coords</span>
+<span class="lineno">17</span>   <span class="n">max</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">inject</span><span class="p">({</span><span class="ss">lat</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="ss">lon</span><span class="p">:</span><span class="mi">0</span><span class="p">})</span> <span class="k">do</span> <span class="o">|</span><span class="n">max</span><span class="p">,</span> <span class="n">c</span><span class="o">|</span>
+<span class="lineno">18</span>     <span class="n">max</span><span class="o">[</span><span class="ss">:lon</span><span class="o">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="k">if</span> <span class="n">c</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">max</span><span class="o">[</span><span class="ss">:lon</span><span class="o">]</span>
+<span class="lineno">19</span>     <span class="n">max</span><span class="o">[</span><span class="ss">:lat</span><span class="o">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="k">if</span> <span class="n">c</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">max</span><span class="o">[</span><span class="ss">:lat</span><span class="o">]</span>
+<span class="lineno">20</span>     <span class="n">max</span>
+<span class="lineno">21</span>   <span class="k">end</span>
+<span class="lineno">22</span>   <span class="n">min</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">inject</span><span class="p">({</span><span class="ss">lat</span><span class="p">:</span><span class="no">MAX_LAT</span><span class="p">,</span> <span class="ss">lon</span><span class="p">:</span><span class="no">MAX_LON</span><span class="p">})</span> <span class="k">do</span> <span class="o">|</span><span class="n">min</span><span class="p">,</span> <span class="n">c</span><span class="o">|</span>
+<span class="lineno">23</span>     <span class="n">min</span><span class="o">[</span><span class="ss">:lon</span><span class="o">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="k">if</span> <span class="n">c</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">&lt;</span> <span class="n">min</span><span class="o">[</span><span class="ss">:lon</span><span class="o">]</span>
+<span class="lineno">24</span>     <span class="n">min</span><span class="o">[</span><span class="ss">:lat</span><span class="o">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="k">if</span> <span class="n">c</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">&lt;</span> <span class="n">min</span><span class="o">[</span><span class="ss">:lat</span><span class="o">]</span>
+<span class="lineno">25</span>     <span class="n">min</span>
+<span class="lineno">26</span>   <span class="k">end</span>
+<span class="lineno">27</span>   <span class="c1"># add a little padding to the max and min</span>
+<span class="lineno">28</span>   <span class="n">max</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span><span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span> <span class="n">max</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">1</span> <span class="p">}</span>
+<span class="lineno">29</span>   <span class="n">min</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span><span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span> <span class="n">min</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">-=</span> <span class="mi">1</span> <span class="p">}</span>
+<span class="lineno">30</span>  
+<span class="lineno">31</span>   <span class="p">{</span><span class="ss">min</span><span class="p">:</span> <span class="n">min</span><span class="p">,</span> <span class="ss">max</span><span class="p">:</span> <span class="n">max</span><span class="p">}</span>
+<span class="lineno">32</span> <span class="k">end</span>
+<span class="lineno">33</span>  
+<span class="lineno">34</span>  
+<span class="lineno">35</span> <span class="c1"># We need to create a conceptual grid in which to do our estimation</span>
+<span class="lineno">36</span> <span class="c1"># against. We&#39;re actually going to represent our grid-blocks by their</span>
+<span class="lineno">37</span> <span class="c1"># centerpoint. Ex:</span>
+<span class="lineno">38</span> <span class="c1"># </span>
+<span class="lineno">39</span> <span class="c1">#  _______</span>
+<span class="lineno">40</span> <span class="c1"># |       |</span>
+<span class="lineno">41</span> <span class="c1"># |   +   |  -- Box and center-point</span>
+<span class="lineno">42</span> <span class="c1"># |_______|</span>
+<span class="lineno">43</span> <span class="c1"># </span>
+<span class="lineno">44</span> <span class="c1"># We&#39;re representing our blocks as points because that&#39;s how we&#39;re</span>
+<span class="lineno">45</span> <span class="c1"># going store and index our fence in Mongo when it&#39;s all said and</span>
+<span class="lineno">46</span> <span class="c1"># done.</span>
+<span class="lineno">47</span> <span class="c1"># </span>
+<span class="lineno">48</span> <span class="c1"># Note: In real-life, we might want to adjust the size of the grid-block</span>
+<span class="lineno">49</span> <span class="c1">#       based on how large the geofence is, how granular your estimation</span>
+<span class="lineno">50</span> <span class="c1">#       will be, etc. For this example, we&#39;re going to use a fixed size</span>
+<span class="lineno">51</span> <span class="c1">#       grid block of  0.5 x 0.5</span>
+<span class="lineno">52</span> <span class="k">def</span> <span class="nf">generate_grid</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
+<span class="lineno">53</span>   <span class="n">lon_range</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">[</span><span class="ss">:min</span><span class="o">][</span><span class="ss">:lon</span><span class="o">].</span><span class="n">.</span><span class="o">.</span><span class="n">bounds</span><span class="o">[</span><span class="ss">:max</span><span class="o">][</span><span class="ss">:lon</span><span class="o">]</span>
+<span class="lineno">54</span>   <span class="n">lat_range</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">[</span><span class="ss">:min</span><span class="o">][</span><span class="ss">:lat</span><span class="o">].</span><span class="n">.</span><span class="o">.</span><span class="n">bounds</span><span class="o">[</span><span class="ss">:max</span><span class="o">][</span><span class="ss">:lat</span><span class="o">]</span>
+<span class="lineno">55</span>  
+<span class="lineno">56</span>   <span class="n">grid</span> <span class="o">=</span> <span class="o">[]</span>
+<span class="lineno">57</span>   <span class="n">lon_range</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">lon</span><span class="o">|</span>
+<span class="lineno">58</span>     <span class="n">lat_range</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">lat</span><span class="o">|</span>
+<span class="lineno">59</span>       <span class="n">grid</span> <span class="o">&lt;&lt;</span> <span class="o">[</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">0</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span> <span class="n">lat</span> <span class="o">+</span> <span class="mi">0</span><span class="o">.</span><span class="mi">25</span><span class="o">]</span>
+<span class="lineno">60</span>       <span class="n">grid</span> <span class="o">&lt;&lt;</span> <span class="o">[</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">0</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span> <span class="n">lat</span> <span class="o">+</span> <span class="mi">0</span><span class="o">.</span><span class="mi">75</span><span class="o">]</span>
+<span class="lineno">61</span>       <span class="n">grid</span> <span class="o">&lt;&lt;</span> <span class="o">[</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">0</span><span class="o">.</span><span class="mi">75</span><span class="p">,</span> <span class="n">lat</span> <span class="o">+</span> <span class="mi">0</span><span class="o">.</span><span class="mi">25</span><span class="o">]</span>
+<span class="lineno">62</span>       <span class="n">grid</span> <span class="o">&lt;&lt;</span> <span class="o">[</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">0</span><span class="o">.</span><span class="mi">75</span><span class="p">,</span> <span class="n">lat</span> <span class="o">+</span> <span class="mi">0</span><span class="o">.</span><span class="mi">75</span><span class="o">]</span>
+<span class="lineno">63</span>     <span class="k">end</span>
+<span class="lineno">64</span>   <span class="k">end</span>
+<span class="lineno">65</span>  
+<span class="lineno">66</span>   <span class="n">grid</span>
+<span class="lineno">67</span> <span class="k">end</span>
+<span class="lineno">68</span>  
+<span class="lineno">69</span>  
+<span class="lineno">70</span>  
+<span class="lineno">71</span> <span class="c1"># And they would be called like so:</span>
+<span class="lineno">72</span> <span class="n">bounds</span> <span class="o">=</span> <span class="n">get_bounding_box</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+<span class="lineno">73</span> <span class="n">grid</span> <span class="o">=</span> <span class="n">generate_grid</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span></code></pre></div>
+
+<h2 id="getting-our-horizontal-sections">Getting our Horizontal Sections</h2>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno"> 1</span> <span class="c1"># The horizontal sections generated are the spaces in-between each</span>
+<span class="lineno"> 2</span> <span class="c1"># pair of contiguous horizontal lines (derived from the latitude</span>
+<span class="lineno"> 3</span> <span class="c1"># value).</span>
+<span class="lineno"> 4</span> <span class="c1">#</span>
+<span class="lineno"> 5</span> <span class="c1"># Horizontal sections in format of:</span>
+<span class="lineno"> 6</span> <span class="c1"># [</span>
+<span class="lineno"> 7</span> <span class="c1">#   [&lt;latN&gt;, &lt;lat1&gt;],</span>
+<span class="lineno"> 8</span> <span class="c1">#   [&lt;lat1&gt;, &lt;lat2&gt;],</span>
+<span class="lineno"> 9</span> <span class="c1">#   ..., </span>
+<span class="lineno">10</span> <span class="c1">#   [&lt;latN-1&gt;, &lt;latN&gt;]</span>
+<span class="lineno">11</span> <span class="c1"># ]</span>
+<span class="lineno">12</span> <span class="k">def</span> <span class="nf">get_horizontals</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+<span class="lineno">13</span>   <span class="c1">#get all individual horizontals</span>
+<span class="lineno">14</span>   <span class="n">h1</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[]</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">arr</span><span class="p">,</span> <span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span><span class="o">|</span>
+<span class="lineno">15</span>     <span class="n">arr</span> <span class="o">&lt;&lt;</span> <span class="n">lat</span> <span class="k">unless</span> <span class="n">arr</span><span class="o">.</span><span class="n">include?</span> <span class="n">lat</span>
+<span class="lineno">16</span>     <span class="n">arr</span>
+<span class="lineno">17</span>   <span class="k">end</span>
+<span class="lineno">18</span>  
+<span class="lineno">19</span>   <span class="c1">#wrap those individuals up into cyclic pairs</span>
+<span class="lineno">20</span>   <span class="n">h1</span><span class="o">.</span><span class="n">sort!</span>
+<span class="lineno">21</span>   <span class="n">h2</span> <span class="o">=</span> <span class="n">h1</span><span class="o">.</span><span class="n">dup</span>
+<span class="lineno">22</span>   <span class="n">h1</span><span class="o">.</span><span class="n">pop</span>
+<span class="lineno">23</span>   <span class="n">h2</span><span class="o">.</span><span class="n">shift</span>
+<span class="lineno">24</span>   <span class="n">h1</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">h2</span><span class="p">)</span>
+<span class="lineno">25</span> <span class="k">end</span></code></pre></div>
+
+<p>Once we have our horizontal sections, we can then filter our grid-items to
+only process those that are included in the sub-section. This would look
+something like:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno">1</span> <span class="n">horizontals</span> <span class="o">=</span> <span class="n">get_horizontals</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+<span class="lineno">2</span>  
+<span class="lineno">3</span> <span class="n">horizontals</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">horizontal</span><span class="o">|</span>
+<span class="lineno">4</span>   <span class="n">sub_grid</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">select</span> <span class="k">do</span> <span class="o">|</span><span class="n">g</span><span class="o">|</span>
+<span class="lineno">5</span>     <span class="n">g</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">between?</span><span class="p">(</span><span class="n">horizontal</span><span class="o">.</span><span class="n">first</span><span class="p">,</span> <span class="n">horizontal</span><span class="o">.</span><span class="n">last</span><span class="p">)</span>
+<span class="lineno">6</span>   <span class="k">end</span>
+<span class="lineno">7</span>  
+<span class="lineno">8</span>   <span class="c1"># ... some more processing...</span>
+<span class="lineno">9</span> <span class="k">end</span></code></pre></div>
+
+<h2 id="intersecting-lines">Intersecting Lines</h2>
+
+<p>Alright! Now we just need to get the intersecting lines though the sub-grid
+and we’ll be one step away from adding grid-blocks into our estimated polygon
+array. (If you don’t know what I’m talking about, please review the conceptual
+aproach, and visuals, above.)</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno"> 1</span> <span class="c1"># Given a horizonal (two lat points) and the set of lines that constitute</span>
+<span class="lineno"> 2</span> <span class="c1"># our polygon, determine what lines intersect the space created by the</span>
+<span class="lineno"> 3</span> <span class="c1"># horizontal (or horizontal sub-section if you prefer to think of it that</span>
+<span class="lineno"> 4</span> <span class="c1"># way)</span>
+<span class="lineno"> 5</span> <span class="c1"># </span>
+<span class="lineno"> 6</span> <span class="c1"># </span>
+<span class="lineno"> 7</span> <span class="c1"># ---*------------------------------------------------</span>
+<span class="lineno"> 8</span> <span class="c1">#     \</span>
+<span class="lineno"> 9</span> <span class="c1">#      \  - intersecting line           [horizontal section]</span>
+<span class="lineno">10</span> <span class="c1">#       \</span>
+<span class="lineno">11</span> <span class="c1"># -------*--------------------------------------------</span>
+<span class="lineno">12</span> <span class="c1">#        |</span>
+<span class="lineno">13</span> <span class="c1">#        |</span>
+<span class="lineno">14</span> <span class="c1">#        |   </span>
+<span class="lineno">15</span> <span class="c1">#        ... </span>
+<span class="lineno">16</span> <span class="c1"># </span>
+<span class="lineno">17</span> <span class="c1"># </span>
+<span class="lineno">18</span> <span class="c1"># h  = horizontal</span>
+<span class="lineno">19</span> <span class="c1"># ls = lines</span>
+<span class="lineno">20</span> <span class="k">def</span> <span class="nf">intersecting_lines</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">ls</span><span class="p">)</span> 
+<span class="lineno">21</span>   <span class="n">ls</span><span class="o">.</span><span class="n">select</span> <span class="k">do</span> <span class="o">|</span><span class="n">l</span><span class="o">|</span> 
+<span class="lineno">22</span>     <span class="n">l</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">last</span> <span class="o">&lt;=</span> <span class="n">h</span><span class="o">.</span><span class="n">first</span> <span class="o">&amp;&amp;</span> <span class="n">l</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">last</span> <span class="o">&gt;=</span> <span class="n">h</span><span class="o">.</span><span class="n">last</span>
+<span class="lineno">23</span>   <span class="k">end</span> 
+<span class="lineno">24</span> <span class="k">end</span>
+<span class="lineno">25</span>  
+<span class="lineno">26</span>  
+<span class="lineno">27</span>  
+<span class="lineno">28</span> <span class="c1"># The &quot;lines&quot; is the set of all lines for the polygon.</span>
+<span class="lineno">29</span> <span class="n">lines</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">dup</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="lineno">30</span> <span class="n">lines</span><span class="o">.</span><span class="n">map!</span> <span class="p">{</span><span class="o">|</span><span class="n">l</span><span class="o">|</span> <span class="n">l</span><span class="o">.</span><span class="n">sort!</span> <span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">|</span> <span class="n">a</span><span class="o">.</span><span class="n">last</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">last</span> <span class="p">}</span> <span class="p">}</span>
+<span class="lineno">31</span>  
+<span class="lineno">32</span> <span class="c1"># Assuming that we already have our horizontals</span>
+<span class="lineno">33</span> <span class="n">horizontals</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">horizontal</span><span class="o">|</span>
+<span class="lineno">34</span>   <span class="n">intersects</span> <span class="o">=</span> <span class="n">intersecting_lines</span><span class="p">(</span><span class="n">horizontal</span><span class="p">,</span> <span class="n">lines</span><span class="p">)</span>
+<span class="lineno">35</span>   <span class="c1"># ... more processing ...</span>
+<span class="lineno">36</span> <span class="k">end</span></code></pre></div>
+
+<h2 id="is-a-point-to-the-left-or-right">Is a Point to the Left or Right?</h2>
+
+<p>Now that we can get out intersecting lines, we need to determine, for each
+point within the sub-grid, if that point is to the left of the intersecting
+line or to the right of the line. If it is to the left of the line, then
+two things can happen. If that point is already included in the 
+estimated-polygon array, then it will be removed and if it was not in the
+array, then it will be added. And finally, the code:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno"> 1</span> <span class="c1"># Get the determinant of a line and a point. This is conceptually</span>
+<span class="lineno"> 2</span> <span class="c1"># represented by the following:</span>
+<span class="lineno"> 3</span> <span class="c1"># </span>
+<span class="lineno"> 4</span> <span class="c1"># point = (a,b)</span>
+<span class="lineno"> 5</span> <span class="c1"># line  = [(x1, y1), (x2, y2)], such that y2 &gt; y1</span>
+<span class="lineno"> 6</span> <span class="c1"># </span>
+<span class="lineno"> 7</span> <span class="c1"># matrix:</span>
+<span class="lineno"> 8</span> <span class="c1"># | (x2 - x1)    (a-x1) |</span>
+<span class="lineno"> 9</span> <span class="c1"># | (y2 - y1)    (b-y1) |</span>
+<span class="lineno">10</span> <span class="c1"># </span>
+<span class="lineno">11</span> <span class="c1"># determinent: </span>
+<span class="lineno">12</span> <span class="c1">#   (x2 - x1)*(b-y1)  -  (y2-y1)*(a-x1)</span>
+<span class="lineno">13</span> <span class="c1"># </span>
+<span class="lineno">14</span> <span class="c1"># </span>
+<span class="lineno">15</span> <span class="c1"># Assertions:</span>
+<span class="lineno">16</span> <span class="c1">#   determinent &gt; 0  &lt;-&gt;  point lies to left of line</span>
+<span class="lineno">17</span> <span class="c1">#   determinent = 0  &lt;-&gt;  point lies on the line</span>
+<span class="lineno">18</span> <span class="c1">#   determinent &lt; 0  &lt;-&gt;  pont lies to right of line</span>
+<span class="lineno">19</span> <span class="c1">#</span>
+<span class="lineno">20</span> <span class="c1"># Line:  [[x1,y1],[x2,y2]]</span>
+<span class="lineno">21</span> <span class="c1"># Point: [a,b]</span>
+<span class="lineno">22</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">det</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+<span class="lineno">23</span>   <span class="n">x1</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">first</span>
+<span class="lineno">24</span>   <span class="n">y1</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">last</span>
+<span class="lineno">25</span>  
+<span class="lineno">26</span>   <span class="n">x2</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">first</span>
+<span class="lineno">27</span>   <span class="n">y2</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">last</span>
+<span class="lineno">28</span>  
+<span class="lineno">29</span>   <span class="n">a</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="n">first</span>
+<span class="lineno">30</span>   <span class="n">b</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="n">last</span>
+<span class="lineno">31</span>  
+<span class="lineno">32</span>   <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span>  <span class="o">-</span>  <span class="p">(</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">x1</span><span class="p">)</span>
+<span class="lineno">33</span> <span class="k">end</span>
+<span class="lineno">34</span>  
+<span class="lineno">35</span>  
+<span class="lineno">36</span>  
+<span class="lineno">37</span> <span class="c1"># Process each grid-item for each intersecting line</span>
+<span class="lineno">38</span> <span class="n">estimated_polygon</span> <span class="o">=</span> <span class="o">[]</span>
+<span class="lineno">39</span> <span class="n">intersecting_lines</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">line</span><span class="o">|</span>
+<span class="lineno">40</span>   <span class="n">sub_grid</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">grid_item</span><span class="o">|</span>
+<span class="lineno">41</span>     <span class="k">if</span> <span class="n">det</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">grid_item</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="lineno">42</span>       <span class="k">if</span> <span class="n">estimated_polygon</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">grid_item</span><span class="p">)</span>
+<span class="lineno">43</span>         <span class="n">estimated_polygon</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">grid_item</span><span class="p">)</span>
+<span class="lineno">44</span>       <span class="k">else</span>
+<span class="lineno">45</span>         <span class="n">estimated_polygon</span> <span class="o">&lt;&lt;</span> <span class="n">grid_item</span>
+<span class="lineno">46</span>       <span class="k">end</span>
+<span class="lineno">47</span>     <span class="k">end</span>
+<span class="lineno">48</span>   <span class="k">end</span>
+<span class="lineno">49</span> <span class="k">end</span></code></pre></div>
+
+<h2 id="estimation-complete">Estimation Complete!</h2>
+
+<p>While it may not seem like you are done, trust me when I say you have
+completed all of the necessary steps to estimate a geofence. The only
+thing missing is to put all of the steps together (stay tuned). Now
+that we have our estimation, we simply need to store it in Mongo.</p>
+
+<h2 id="mongo-land">Mongo-Land</h2>
+
+<p>Okay, now that we have our estimated polygon/fence, it’s time to store
+those points in Mongo-land. First, we need to understand what our
+resulting estimation looks like:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno">1</span> <span class="o">[</span>
+<span class="lineno">2</span>   <span class="o">[</span><span class="ss">:lon</span><span class="p">,</span> <span class="ss">:lat</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">3</span>   <span class="o">[</span><span class="ss">:lon</span><span class="p">,</span> <span class="ss">:lat</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">4</span>   <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+<span class="lineno">5</span> <span class="o">]</span></code></pre></div>
+
+<p>The <strong>:lon</strong> and <strong>:lat</strong> would obviously be replaced with real values.
+We’re going to tranform this array of points to store in Mongo in the
+following format:</p>
+
+<div class="highlight"><pre><code class="language-js" data-lang="js"><span class="lineno">1</span> <span class="p">{</span>
+<span class="lineno">2</span>   <span class="nx">_id</span><span class="o">:</span> <span class="nx">ObjectId</span><span class="p">(),</span>
+<span class="lineno">3</span>   <span class="nx">coordinates</span><span class="o">:</span> <span class="p">[</span>
+<span class="lineno">4</span>     <span class="p">{</span> <span class="nx">lon</span><span class="o">:</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">lat</span><span class="o">:</span> <span class="nx">y</span> <span class="p">},</span>
+<span class="lineno">5</span>     <span class="p">{</span> <span class="nx">lon</span><span class="o">:</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">lat</span><span class="o">:</span> <span class="nx">y</span> <span class="p">},</span>
+<span class="lineno">6</span>     <span class="p">...</span>
+<span class="lineno">7</span>   <span class="p">]</span>
+<span class="lineno">8</span> <span class="p">}</span></code></pre></div>
+
+<p>We have to use this particular format because it is required for us to
+apply our geo-spatial index (which I’ll show in a moment). If you want more
+info on Mongo’s geo-spatial indexes, check out <a href="http://www.mongodb.org/display/DOCS/Geospatial+Indexing/">their docs</a>.</p>
+
+<p>To store our estimated polygon/fence into mongo, we’re going to use the
+following code:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno"> 1</span> <span class="c1"># Fence Document in Mongo looks like:</span>
+<span class="lineno"> 2</span> <span class="c1"># {</span>
+<span class="lineno"> 3</span> <span class="c1">#   _id: ObjectId(),#   coordinates: [</span>
+<span class="lineno"> 4</span> <span class="c1">#     { lon: x, lat: y },</span>
+<span class="lineno"> 5</span> <span class="c1">#     ...</span>
+<span class="lineno"> 6</span> <span class="c1">#   ]</span>
+<span class="lineno"> 7</span> <span class="c1"># }</span>
+<span class="lineno"> 8</span> <span class="k">def</span> <span class="nf">store_fence</span><span class="p">(</span><span class="n">fence</span><span class="p">)</span>
+<span class="lineno"> 9</span>   <span class="c1"># TODO test mongo driver</span>
+<span class="lineno">10</span>   <span class="c1"># convert fence from array to format above</span>
+<span class="lineno">11</span>   <span class="n">mongo_fence</span> <span class="o">=</span> <span class="o">[]</span>
+<span class="lineno">12</span>   <span class="n">fence</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">coord</span><span class="o">|</span>
+<span class="lineno">13</span>     <span class="n">mongo_fence</span> <span class="o">&lt;&lt;</span> <span class="p">{</span>
+<span class="lineno">14</span>       <span class="ss">lon</span><span class="p">:</span> <span class="n">coord</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span>
+<span class="lineno">15</span>       <span class="ss">lat</span><span class="p">:</span> <span class="n">coord</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+<span class="lineno">16</span>     <span class="p">}</span>
+<span class="lineno">17</span>   <span class="k">end</span>
+<span class="lineno">18</span>   <span class="c1"># store fence in Mongo</span>
+<span class="lineno">19</span>   <span class="vi">@coll</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span> <span class="p">{</span> <span class="ss">coordinates</span><span class="p">:</span> <span class="n">mongo_fence</span> <span class="p">}</span> <span class="p">)</span>
+<span class="lineno">20</span>   <span class="c1"># ensure the index is applied</span>
+<span class="lineno">21</span>   <span class="vi">@coll</span><span class="o">.</span><span class="n">ensure_index</span><span class="p">(</span><span class="o">[[</span><span class="ss">:coordinates</span><span class="p">,</span> <span class="no">Mongo</span><span class="o">::</span><span class="no">GEO2D</span><span class="o">]]</span><span class="p">)</span>
+<span class="lineno">22</span> <span class="k">end</span></code></pre></div>
+
+<h2 id="querying-mongo">Querying Mongo</h2>
+
+<p>Now that we have everything stored in Mongo, it’s time to utilize the DB’s
+geo-spatial indexing features to bring out geofences to life! And it’s so
+simple; the code is only:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno"> 1</span> <span class="c1"># Coord is of format:</span>
+<span class="lineno"> 2</span> <span class="c1"># {</span>
+<span class="lineno"> 3</span> <span class="c1">#   lon: x,</span>
+<span class="lineno"> 4</span> <span class="c1">#   lat: y</span>
+<span class="lineno"> 5</span> <span class="c1"># }</span>
+<span class="lineno"> 6</span> <span class="k">def</span> <span class="nf">within_fence?</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+<span class="lineno"> 7</span>   <span class="c1"># search for fence in Mongo given coordinate</span>
+<span class="lineno"> 8</span>   <span class="n">radius</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">26</span>    <span class="c1"># same as 0.5 ** 2 + 0.01</span>
+<span class="lineno"> 9</span>   <span class="vi">@coll</span><span class="o">.</span><span class="n">find</span><span class="p">({</span>
+<span class="lineno">10</span>     <span class="ss">coordinates</span><span class="p">:</span> <span class="p">{</span>
+<span class="lineno">11</span>       <span class="p">:</span><span class="vg">$near</span>         <span class="o">=&gt;</span> <span class="o">[</span><span class="n">coord</span><span class="o">[</span><span class="ss">:lon</span><span class="o">]</span><span class="p">,</span> <span class="n">coord</span><span class="o">[</span><span class="ss">:lat</span><span class="o">]]</span><span class="p">,</span>
+<span class="lineno">12</span>       <span class="p">:</span><span class="vg">$maxDistance</span>  <span class="o">=&gt;</span> <span class="n">radius</span>
+<span class="lineno">13</span>     <span class="p">}</span>
+<span class="lineno">14</span>   <span class="p">})</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span>
+<span class="lineno">15</span> <span class="k">end</span></code></pre></div>
+
+<p>Of course, I’m only returning if the count is greater than zero. You could
+do whatever you please with the cursor. I think the cursor is nil if nothing
+is found in Mongo, so you could just return the result of the find operation.</p>
+
+<h1 id="suprise">Suprise!</h1>
+
+<p>It’s time to find out what’s at the end of the rainbow. I’ve been promising
+<em>something</em> this whole time. Well, you’re just going to have to go to
+the <a href="/log/2012/09/11/Geofencing-Part-3.html">third post</a> in the series to find out!  ;-)</p>
+
+
+
+        <br /> <br />
+        <hr />
+        <br /> <br />
+
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Footer Advertisement -->
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8460014050417630" data-ad-slot="9924998708" data-ad-format="auto"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+    </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11511983-4']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); 
+        ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+
+</html>

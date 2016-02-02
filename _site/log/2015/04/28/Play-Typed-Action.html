@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Typed Actions in Play</title>
+  <meta name="description" content="This is just something I was playing around with when discussing how to buildproper tooling for our teams at work. Play has the idea of an Action whichis bas...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/log/2015/04/28/Play-Typed-Action.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2015. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+    <header class="post-header">
+        <h1 class="post-title">Typed Actions in Play</h1>
+    </header>
+
+    <article class="post-content">
+        <p>This is just something I was playing around with when discussing how to build
+proper tooling for our teams at work. Play has the idea of an <code>Action</code> which
+is basically a function that takes a <code>Request</code> object and returns a <code>Result</code>
+object. Each of those can be parameterized for the content type being transmitted.</p>
+
+<p>However, when you’re working in an API, you typically work with some exchange format
+(e.g. JSON) and then serialize and de-serialize to/from your internal data model. If
+you are using Scala, then possibly some case classes. Rather than having to worry
+about the exchange format, developers should really just worry about these data-models
+when writing their code.</p>
+
+<p>So, just the result of me playing with the idea for a few minutes:</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno"> 1</span> <span class="k">object</span> <span class="nc">TypedAction</span> <span class="o">{</span>
+<span class="lineno"> 2</span>   <span class="k">def</span> <span class="nc">TypedAction</span><span class="o">[</span><span class="kt">A</span>,<span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">reader</span><span class="k">:</span> <span class="kt">Reads</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">writer</span><span class="k">:</span> <span class="kt">Writes</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span> <span class="k">:</span> <span class="kt">Action</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span>
+<span class="lineno"> 3</span>     <span class="nc">Action</span><span class="o">.</span><span class="n">async</span><span class="o">(</span><span class="nc">BodyParsers</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">tolerantText</span><span class="o">)</span> <span class="o">{</span> <span class="n">request</span> <span class="k">=&gt;</span>
+<span class="lineno"> 4</span>       <span class="k">val</span> <span class="n">json</span> <span class="k">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="o">)</span>
+<span class="lineno"> 5</span>       <span class="nc">Future</span><span class="o">.</span><span class="n">successful</span> <span class="o">{</span>
+<span class="lineno"> 6</span>         <span class="k">val</span> <span class="n">badRequest</span><span class="k">:</span> <span class="kt">Result</span> <span class="o">=</span> <span class="nc">Results</span><span class="o">.</span><span class="nc">BadRequest</span><span class="o">(</span><span class="s">&quot;Could not parse input&quot;</span><span class="o">)</span>
+<span class="lineno"> 7</span>         <span class="n">json</span><span class="o">.</span><span class="n">asOpt</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">reader</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="n">f</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="k">_</span><span class="o">)(</span><span class="n">writer</span><span class="o">)).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">toString</span><span class="o">()).</span><span class="n">map</span><span class="o">(</span><span class="nc">Results</span><span class="o">.</span><span class="nc">Ok</span><span class="o">(</span><span class="k">_</span><span class="o">)).</span><span class="n">getOrElse</span><span class="o">(</span><span class="n">badRequest</span><span class="o">)</span>
+<span class="lineno"> 8</span>       <span class="o">}</span> <span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Result</span><span class="o">]</span>
+<span class="lineno"> 9</span>     <span class="o">}</span>
+<span class="lineno">10</span> 
+<span class="lineno">11</span>   <span class="k">def</span> <span class="nc">TypedAction</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="o">()</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">writer</span><span class="k">:</span> <span class="kt">Writes</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Action</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span>
+<span class="lineno">12</span>     <span class="nc">Action</span><span class="o">.</span><span class="n">async</span><span class="o">(</span><span class="nc">BodyParsers</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">tolerantText</span><span class="o">)</span> <span class="o">{</span> <span class="n">request</span> <span class="k">=&gt;</span>
+<span class="lineno">13</span>       <span class="nc">Future</span><span class="o">.</span><span class="n">successful</span> <span class="o">{</span>
+<span class="lineno">14</span>         <span class="nc">Results</span><span class="o">.</span><span class="nc">Ok</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="n">f</span><span class="o">())(</span><span class="n">writer</span><span class="o">).</span><span class="n">toString</span><span class="o">)</span>
+<span class="lineno">15</span>       <span class="o">}</span>
+<span class="lineno">16</span>     <span class="o">}</span>
+<span class="lineno">17</span> <span class="o">}</span></code></pre></div>
+
+<p>And then using the model</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">UserModel</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+<span class="lineno">2</span> 
+<span class="lineno">3</span> <span class="k">object</span> <span class="nc">UserModel</span> <span class="o">{</span>
+<span class="lineno">4</span>   <span class="k">implicit</span> <span class="k">val</span> <span class="n">reads</span> <span class="k">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">reads</span><span class="o">[</span><span class="kt">UserModel</span><span class="o">]</span>
+<span class="lineno">5</span>   <span class="k">implicit</span> <span class="k">val</span> <span class="n">writes</span> <span class="k">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">writes</span><span class="o">[</span><span class="kt">UserModel</span><span class="o">]</span>
+<span class="lineno">6</span> <span class="o">}</span></code></pre></div>
+
+<p>We can create a controller that looks like</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno"> 1</span> <span class="k">object</span> <span class="nc">UserController</span> <span class="k">extends</span> <span class="nc">Controller</span> <span class="o">{</span>
+<span class="lineno"> 2</span> 
+<span class="lineno"> 3</span>   <span class="k">var</span> <span class="n">userStore</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">(</span>
+<span class="lineno"> 4</span>     <span class="mi">1</span> <span class="o">-&gt;</span> <span class="nc">UserModel</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">&quot;Joe Schmoe&quot;</span><span class="o">),</span>
+<span class="lineno"> 5</span>     <span class="mi">2</span> <span class="o">-&gt;</span> <span class="nc">UserModel</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="s">&quot;Susy Jane&quot;</span><span class="o">),</span>
+<span class="lineno"> 6</span>     <span class="mi">3</span> <span class="o">-&gt;</span> <span class="nc">UserModel</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="s">&quot;Jenny Jackson&quot;</span><span class="o">)</span>
+<span class="lineno"> 7</span>   <span class="o">)</span>
+<span class="lineno"> 8</span> 
+<span class="lineno"> 9</span>   <span class="k">def</span> <span class="n">getUser</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="nc">TypedAction</span><span class="o">[</span><span class="kt">UserModel</span><span class="o">]</span> <span class="o">{</span> <span class="o">()</span> <span class="k">=&gt;</span>
+<span class="lineno">10</span>     <span class="n">userStore</span><span class="o">(</span><span class="n">id</span><span class="o">)</span>
+<span class="lineno">11</span>   <span class="o">}</span>
+<span class="lineno">12</span> 
+<span class="lineno">13</span>   <span class="k">def</span> <span class="n">storeUser</span> <span class="k">=</span> <span class="nc">TypedAction</span><span class="o">[</span><span class="kt">UserModel</span>, <span class="kt">UserModel</span><span class="o">]</span> <span class="o">{</span> <span class="n">userIn</span> <span class="k">=&gt;</span>
+<span class="lineno">14</span>     <span class="k">val</span> <span class="n">nextKey</span> <span class="k">=</span> <span class="n">userStore</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">max</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="lineno">15</span>     <span class="n">userStore</span> <span class="o">+=</span> <span class="n">nextKey</span> <span class="o">-&gt;</span> <span class="n">userIn</span>
+<span class="lineno">16</span>     <span class="n">userIn</span><span class="o">.</span><span class="n">copy</span><span class="o">(</span><span class="n">id</span> <span class="k">=</span> <span class="n">nextKey</span><span class="o">)</span>
+<span class="lineno">17</span>   <span class="o">}</span>
+<span class="lineno">18</span> 
+<span class="lineno">19</span> <span class="o">}</span></code></pre></div>
+
+<p>We could also create different input and output models within the same
+controller method. In addition, if you really wanted to do something like
+this you would need to handle errors much better, both from the user code
+and from the parsing code. I’m also not really doing anything with the
+<code>Action.async</code> portion above, so that could be improved as well.</p>
+
+<p>But yeah, just some (light) food for thought.</p>
+
+
+        <br /> <br />
+        <hr />
+        <br /> <br />
+
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Footer Advertisement -->
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8460014050417630" data-ad-slot="9924998708" data-ad-format="auto"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+    </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11511983-4']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); 
+        ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+
+</html>

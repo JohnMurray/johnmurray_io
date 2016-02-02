@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Instantly Better Monitoring</title>
+  <meta name="description" content="Monitoring and alerting can be a very difficult thing to get right, and many of usdon’t. I’ve been wondering how I can improve systems at my current work whe...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/draft/2016/02/02/Nagios-Buffering-Agent.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2015. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+    <header class="post-header">
+        <h1 class="post-title">Instantly Better Monitoring</h1>
+    </header>
+
+    <article class="post-content">
+        <p>Monitoring and alerting can be a very difficult thing to get right, and many of us
+don’t. I’ve been wondering how I can improve systems at my current work when I came
+up with a simple way to get some minor improvements in our application alerting that
+I thought might be meaningful to share.</p>
+
+<h1 id="context">Context</h1>
+
+<p>At my current place of employment we make use of Nagios to perform checks and manage
+alerts, a very common setup for many companies. However we have thousands of machines,
+hundreds of applications, and a few hundred engineers all of which, for us, imply at
+least two things:</p>
+
+<ul>
+  <li>Applications have moved heavily toward passive checks to reduce the amount of
+Nagios infrastructure require to keep up with active checks</li>
+  <li>Each application and/or team handles alerting in a different way, most resulting
+in noisy applications that generate many false alarms</li>
+</ul>
+
+<p>With those conditions, being on pager has the potential to be a nightmare. A week or
+two of no sleep will get you thinking about how you can reduce pager noise, and quickly.
+In general most of our pain was around</p>
+
+<ol>
+  <li>Transient pages - alerts once and then goes green</li>
+  <li>Passive checks that do not clear (only alert on error)</li>
+  <li>Unneeded / duplicate checks. Flooding Nagios with errors when something bad happens or
+flooding Nagios with OK checks.</li>
+</ol>
+
+<p>The general thinking went something like this:</p>
+
+<blockquote>
+  <p>Well, I could just improve existing patterns around alerting. However, that’s 15+ applications
+to mess with. <strong>Nope, not fast.</strong></p>
+
+  <p>Hrm… I could switch to using metrics-based alerting. There <em>is</em> some work happening there
+within my company. <strong>Nope, still not fast.</strong></p>
+
+  <p>I wonder if there is a way to implement some best-practice patterns <em>outside</em> of the
+application that is applicable to a variety of app types? <strong>Yes, this sounds faster.</strong></p>
+</blockquote>
+
+<h1 id="solution">Solution</h1>
+
+<p>Going with the idea of “implementing some alerting best practices <em>oustide</em> of the application”,
+I came up with <a href="https://github.com/JohnMurray/nbad.git">NBAd</a> (Nagios Buffering Agent <sub style="font-size:12px;">daemon</sub>).
+NBAd runs alongside your application on the same machine and impersonates the Nagios NSCA
+interface. Under the covers the application will:</p>
+
+<ul>
+  <li>Buffer incoming messages and keep a cache of last-seen messages, flushing to nagios
+on some interval</li>
+  <li>Proxy messages that represent a change in state from the last-seen messages (if still
+within the cache window)</li>
+  <li>Automatically clear error conditions after the message expires from the cache (receiving
+constant alerts will keep this value from clearing)</li>
+</ul>
+
+<p>Because the application mimics the NSCA interface, integrating this with your application simply
+means pointing your NSCA configs to use <code>localhost:5667</code> as the remote server. This effectively
+makes NBAd a drop-in solution that doesn’t require code changes to utilize. Now I can slightly
+improve alerting across all my applications with a simple update to the puppet recipes (to
+install NBAd) and an application config change.</p>
+
+<p>For more information on the project, see the <code>readme.md</code> file on GitHub at
+<a href="https://github.com/JohnMurray/nbad.git">https://github.com/JohnMurray/nbad</a>.</p>
+
+
+
+        <br /> <br />
+        <hr />
+        <br /> <br />
+
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Footer Advertisement -->
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8460014050417630" data-ad-slot="9924998708" data-ad-format="auto"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+    </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11511983-4']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); 
+        ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+
+</html>

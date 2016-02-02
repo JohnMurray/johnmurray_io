@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Web Service Data Models - Null</title>
+  <meta name="description" content="  This relates to my other post “[Typed Actions In Play][1]”. You may want toskim it to understand my aim in all this madness.">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/log/2015/05/04/Web-Service-Data-Models-Null.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2015. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+    <header class="post-header">
+        <h1 class="post-title">Web Service Data Models - Null</h1>
+    </header>
+
+    <article class="post-content">
+        <blockquote>
+  <p>This relates to my other post “<a href="/log/2015/04/28/Play-Typed-Action.html">Typed Actions In Play</a>”. You may want to
+skim it to understand my aim in all this madness.</p>
+</blockquote>
+
+<p>I’m on quest. I am attempting to create some abstractions that allow me to work
+solely with well-typed models for the purpose of developing web services. I am primarily
+working in JSON which means I just need to come up with a sound data-model for the
+JSON that I expect to send/receive to/from the web-service clients. Sounds like a
+fairly easy task, yes? Well, sadly it is not.</p>
+
+<h3 id="living-with-null">Living with Null</h3>
+
+<p>Null values in JSON are a very interesting thing to represent in Scala. While Scala
+does have the concept of <code>null</code>, it seems primarily as a way to survive interop with
+Java, where using <code>null</code> is very common. However the conventional wisdom in the Scala
+community is to replace <code>null</code> with <code>Option[T]</code> for some type <code>T</code> that is <code>null</code>‘able.
+<code>T</code> can then be represented as <code>Some[T]</code> or <code>None</code>. This makes a lot of sense, but it
+fails to meet the requirements for JSON in the context of web services, and we’ll see
+why.</p>
+
+<p>Let’s assume that we’re going to build a service to manage users. The JSON to represent
+a user may look like this</p>
+
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="lineno">1</span> <span class="p">{</span>
+<span class="lineno">2</span>   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;John Murray&quot;</span><span class="p">,</span>
+<span class="lineno">3</span>   <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;my-email@gmail.com&quot;</span><span class="p">,</span>
+<span class="lineno">4</span>   <span class="nt">&quot;userName&quot;</span><span class="p">:</span> <span class="s2">&quot;johnmurray_io&quot;</span>
+<span class="lineno">5</span> <span class="p">}</span></code></pre></div>
+
+<p>Let’s assert that the <code>userName</code> can be, in the JSON, either a string value or a <code>null</code>
+value. Let’s further assert that if the user does not provide this in the <code>POST</code> JSON
+that it defaults to a <code>null</code> value.</p>
+
+<p>For editing the object, let’s assume that we accept partial edits over <code>PUT</code> and/or
+<code>PATCH</code> (depending on which philosophy you subscribe to). This means that I do not
+have to supply the full JSON object, only the fields that I wish to edit. This is a
+very common practice in web services.</p>
+
+<p>If I were only looking at the requirements for object creation, then I might define my
+model like so</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">email</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">userName</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span></code></pre></div>
+
+<p>and the previous data would translate into</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="nc">User</span><span class="o">(</span><span class="s">&quot;John Murray&quot;</span><span class="o">,</span> <span class="s">&quot;my-email@gmail.com&quot;</span><span class="o">,</span> <span class="nc">Some</span><span class="o">(</span><span class="s">&quot;johnmurray_io&quot;</span><span class="o">))</span></code></pre></div>
+
+<p>However, this model does not meet all of our requirements, only those for object creation.
+Specifically what happens when I send in the following, partial update</p>
+
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="lineno">1</span> <span class="p">{</span>
+<span class="lineno">2</span>   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;John M. Murray&quot;</span><span class="p">,</span>
+<span class="lineno">3</span>   <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;my-other-email@gmail.com&quot;</span>
+<span class="lineno">4</span> <span class="p">}</span></code></pre></div>
+
+<p>This translates into our model as being</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="nc">User</span><span class="o">(</span><span class="s">&quot;John M. Murray&quot;</span><span class="o">,</span> <span class="s">&quot;my-other-email@gmail.com&quot;</span><span class="o">,</span> <span class="nc">None</span><span class="o">)</span></code></pre></div>
+
+<p>You can easily see where the breakdown is. Because we do not have a value for the <code>userName</code>
+it has no other choice than to be <code>None</code>. We are conflating the absence of a value with
+the value being <code>null</code>. In the case that the value is absent on an edit operation, the user
+does not <em>intend</em> to edit the field. This means that we cannot reliably set the <code>userName</code>
+field to an empty value, <em>ever</em>. To solve this we can introduce the <code>TriState[T]</code> type.</p>
+
+<h3 id="introducing-the-tristatet">Introducing the TriState[T]</h3>
+
+<p>As we have seen, we are in need of a type that can represent more than the two states
+provided by <code>Option[T]</code>. To handle this, we’re going to introduce a new type called
+<code>TriState[T]</code> whose name we’re borrowing from the world of electrical engineering. See
+this article on <a href="http://en.wikipedia.org/wiki/Three-state_logic">three-state-logic</a> for more details.</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="k">trait</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
+<span class="lineno">2</span> <span class="nc">object</span> <span class="nc">TriState</span> <span class="o">{</span>
+<span class="lineno">3</span>   <span class="k">case</span> <span class="k">class</span> <span class="nc">Present</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">value</span><span class="k">:</span> <span class="kt">T</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
+<span class="lineno">4</span>   <span class="k">case</span> <span class="k">class</span> <span class="nc">Absent</span> <span class="k">extends</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span>
+<span class="lineno">5</span>   <span class="k">case</span> <span class="k">class</span> <span class="nc">Null</span> <span class="k">extends</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span>
+<span class="lineno">6</span> <span class="o">}</span></code></pre></div>
+
+<p>If we now replace the type of <code>userName</code> of <code>Option[T]</code> with <code>TriState[T]</code>, we can properly
+represent the edit JSON in our model as:</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="nc">User</span><span class="o">(</span><span class="s">&quot;John M. Murray&quot;</span><span class="o">,</span> <span class="s">&quot;my-other-email@gmail.com&quot;</span><span class="o">,</span> <span class="nc">TriState</span><span class="o">.</span><span class="nc">Absent</span><span class="o">)</span></code></pre></div>
+
+<p>From this, we know not to edit the field, since it is absent. Additionally if I were to
+provide a null value on edit, we would know to set the <code>userName</code> to  <code>null</code>/empty within
+our persistent storage solution. From this we can see that <code>Option</code>, for web services, is
+better replaced with a <code>TriState</code>.</p>
+
+
+
+        <br /> <br />
+        <hr />
+        <br /> <br />
+
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Footer Advertisement -->
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8460014050417630" data-ad-slot="9924998708" data-ad-format="auto"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+    </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11511983-4']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); 
+        ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+
+</html>

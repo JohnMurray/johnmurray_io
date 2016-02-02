@@ -1,6 +1,5 @@
 ---
 title: "Instantly Better Monitoring"
-date:  2016-01-31 12:00:00:00
 ---
 
 Monitoring and alerting can be a very difficult thing to get right, and many of us
