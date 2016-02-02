@@ -92,7 +92,7 @@ this article on [three-state-logic][4] for more details.
 {% highlight scala linenos %}
 trait TriState[T]
 object TriState {
-  case class Present[T] extends TriState[T]
+  case class Present[T](value: T) extends TriState[T]
   case class Absent extends TriState[Nothing]
   case class Null extends TriState[Nothing]
 }
