@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "Typed Actions in Play"
 date:  2015-04-28 12:00:00:00
 ---
@@ -77,6 +76,6 @@ We could also create different input and output models within the same
 controller method. In addition, if you really wanted to do something like
 this you would need to handle errors much better, both from the user code
 and from the parsing code. I'm also not really doing anything with the
-`Action.async` portion above, so that could be improved as well. 
+`Action.async` portion above, so that could be improved as well.
 
 But yeah, just some (light) food for thought.

@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "Web Service Data Models - Null"
 date:  2015-05-04 12:00:00:00
 ---
@@ -44,8 +43,8 @@ value. Let's further assert that if the user does not provide this in the `POST`
 that it defaults to a `null` value.
 
 For editing the object, let's assume that we accept partial edits over `PUT` and/or
-`PATCH` (depending on which philosophy you subscribe to). This means that I do not 
-have to supply the full JSON object, only the fields that I wish to edit. This is a 
+`PATCH` (depending on which philosophy you subscribe to). This means that I do not
+have to supply the full JSON object, only the fields that I wish to edit. This is a
 very common practice in web services.
 
 If I were only looking at the requirements for object creation, then I might define my
