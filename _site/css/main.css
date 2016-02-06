@@ -262,6 +262,35 @@ pre {
       .post-content h4 {
         font-size: 18px; } }
 
+/**
+ * Post-Nav
+ */
+.footer-navigation {
+  border-bottom: 1px solid #333;
+  display: block;
+  height: 60px;
+  margin: 50px 0 40px 0;
+  text-align: center; }
+  .footer-navigation .previous {
+    display: block;
+    margin: 0 auto; }
+  .footer-navigation .next {
+    display: block;
+    margin: 0 auto; }
+
+@media (min-width: 760px) {
+  .footer-navigation {
+    height: 30px; }
+    .footer-navigation .previous {
+      display: block;
+      float: left;
+      margin: 0;
+      text-align: left; }
+    .footer-navigation .next {
+      display: block;
+      float: right;
+      margin: 0;
+      text-align: right; } }
 .highlight {
   background: #ffffff; }
 

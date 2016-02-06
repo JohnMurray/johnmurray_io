@@ -5,259 +5,9 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 03 Feb 2016 10:27:30 -0500</pubDate>
-    <lastBuildDate>Wed, 03 Feb 2016 10:27:30 -0500</lastBuildDate>
+    <pubDate>Sat, 06 Feb 2016 13:03:50 -0500</pubDate>
+    <lastBuildDate>Sat, 06 Feb 2016 13:03:50 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
-    
-      <item>
-        <title>20 Percent is Mandatory</title>
-        <description>&lt;p&gt;We’re all familiar with Google’s &lt;em&gt;20%&lt;/em&gt;. The developers’ dream of spending company time on personally
-interesting projects. Every developer seems to desire this, but very few companies are truly offering
-it. I’m gonna make a claim that 20% time is not a “nice to have” but a mandatory practice that all
-companies should be following.&lt;/p&gt;
-
-&lt;p&gt;I would like to redefine 20% a bit for my purposes to means&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Twenty percent of employee time spent on projects outside of their current mandate that relate
-to company initiatives and goals, the technical platform’s stability and performance, or engineering
-velocity.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Google’s 20% may follow rules such as this as well (not familiar enough with their process), but the basic
-point is that the work should be &lt;em&gt;related&lt;/em&gt; to the company in some way and not &lt;em&gt;entirely&lt;/em&gt; personal projects.&lt;/p&gt;
-
-&lt;h1 id=&quot;the-normal-grind&quot;&gt;The Normal Grind&lt;/h1&gt;
-
-&lt;p&gt;So this sounds nice and all, but why should this be mandatory? Well, let me know if any of the following
-scenarios sound familiar to you.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Product Rules&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;The company is hyper-focused on delivering product as fast as possible. You are either in startup-mode and
-attempting to be lean or possibly an enterprise going after large business opportunities. Either way, product
-teams dominate and all of the engineering resources are dedicated to developing features as fast as possible.
-As products are pushed out, technical-debt increases at a rapid pace, slowly taking more and more of a toll
-on engineering velocity.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Retro-Active Infrastructure Development&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;For a variety of reasons (possibly due to a “Product Rules” scenario), the infrastructure that powers your
-company is ignored. It was built long ago and has “worked” up till now, so no resources have been allocated
-to maintain it. However one or more core / critical components are starting to buckle under the stress of the
-organization (or already have) and now we must make fixes or we’re doomed. The company is now in emergency
-mode that can be anywhere as severe as losing a client or going out of business if the issue cannot be fixed
-in a timely manner.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Wow That’s Old&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;All of your work is built on top of &lt;em&gt;some&lt;/em&gt; framework. That framework could either be something that was built
-in-house or an open-source framework. Regardless, it’s old and out-dated. Don’t get me wrong, it still works and
-functions as it should. However there is a lot of opportunities for productivity that are lost because the
-framework has not been given the proper amount of attention in either continued development (in-house) or upgrading
-to more recent versions (open-source). While this doesn’t have an immediate impact on &lt;em&gt;current&lt;/em&gt; velocity, there
-are certainly missed opportunities for productivity which means your competition might have a leg-up on you here.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Internal Open Source&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;At some point in the past a framework, library, or tool was developed. After it was created it was sent around
-and the source was put up on some VCS server. The original writer doesn’t really have time to maintain it so he
-“internally open sources” the project. Even though the project is oft used, no one touches the code, even if
-there are issues because they don’t have time.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;The Wall&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Large companies often build software that is dependent upon other components / systems that are built by other
-teams. When an issue is encountered it is simply thrown “over the wall”, meaning &lt;em&gt;to the team that owns the
-system the bug is filed against&lt;/em&gt;. However both teams have already planned their quarters and don’t really have
-time to fix the issue. Months go by until eventually the team that filed the bug either lives with it or
-escalates their product as being a “company priority”; re-prioritizing the owning team to fix the bug as part
-of their &lt;em&gt;planned work&lt;/em&gt; for the quarter.&lt;/p&gt;
-
-&lt;h1 id=&quot;all-about-the-debt&quot;&gt;All About the Debt&lt;/h1&gt;
-
-&lt;p&gt;I hear what you’re saying, “this is all just fancy ways of saying &lt;em&gt;‘technical debt’&lt;/em&gt;.” Well, kind of, but there’s
-more to it than that, technical debt is just a side-effect. It’s about your engineers not working collaboratively
-or with shared goals. When engineers are expected to dedicate 100 percent of their time to company initiatives,
-they don’t like to go out of their way to collaborate with other teams for fear that it could impact their own
-deadlines. You can see silos developing as engineers become hyper-focused (or &lt;em&gt;“laser-focused”&lt;/em&gt; if you prefer) and
-engineers working without context of other projects outside of their teams.&lt;/p&gt;
-
-&lt;h1 id=&quot;the-improved-flow&quot;&gt;The Improved Flow&lt;/h1&gt;
-
-&lt;p&gt;So all of this sounds bad, or typical depending on your perspective, and your wondering if 20% really fixes any
-of this. Again the answer is, &lt;em&gt;kind of&lt;/em&gt;. Simply introducing a 20% time and no structure may not get you the
-results you desire. That’s not to say that &lt;em&gt;some&lt;/em&gt; of the above can’t be achieved without structure:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Internal Open Source&lt;/strong&gt; - Community managed projects are fret with small issues, feature requests, etc that are
-                           easily solvable with small amounts of time. Additionally knowledge of the
-                           framework/library/etc can be built over time, allowing developers to tackle larger
-                           improvements down the road.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;The Wall&lt;/strong&gt;             - More time to track down root-causes to issues and possibly propose fixes to systems
-                           not “owned” by the engineer’s team.&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;Other Small Stuff&lt;/em&gt;      - It’s easy for a single engineer to tackle small stuff on their own in relatively short
-                           periods of time. Allowing your entire organization to follow the “boy scout rule” (leave
-                           things nicer than you found them) can have a large impact over time.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;!-- TODO: make capitalization of &quot;Guild&quot; and &quot;Working Groups&quot; consistent (upper case please) --&gt;
-
-&lt;p&gt;However, how do you handle the larger issues that exist? This takes coordination and planning. But how do you
-bundle that in with 20% time? While there are likely many ways to approach this, I propose approaching it with
-two strategies. Since I suck at naming I’ll call these two strategies Guilds and Working Groups. Let’s define
-them&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Guild&lt;/strong&gt;         - Permanent group (members can change) with a specified subject-focus (e.g. metrics, performance,
-                    analytics, etc).&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Working Group&lt;/strong&gt; - Ephemeral group formed for solving a pre-determined problem. Group disbands once the problem
-                    has been solved / addressed.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;If both of these strategies are meant to address larger issues, what is the difference? Let’s look at something like
-metrics. Metrics is a problem with most tech organizations. Either we’re doing it wrong or there is much more that
-can be gained. The Guild strategy is useful here as it creates a long-lasting organization to solve both the
-current problems with metrics but to foster a culture of good metrics and push for continual improvement going
-forward. The problem is never really solved and there is always room for improvement.&lt;/p&gt;
-
-&lt;p&gt;Now, what about upgrading that web-framework you’re using so you can support HTTP/2 and Web-Sockets? While this
-may be a large task (lots of code to update) it has a very clear start and end. This is where the Working Group
-strategy shines. A group can be formed with interested members who divvy up the work and make progress toward
-a shared goal. A Working Group can take on small or large projects, as long as the end-goal is very clearly
-defined.&lt;/p&gt;
-
-&lt;p&gt;There is also a relationship that exists between Guilds and Working Groups. While a Guild is focusing on the long-term,
-it may still identify issues that would best be served by a Working Group. In this situation, the Guild can be
-a facilitator to help organize (and possibly manage) Working Groups.&lt;/p&gt;
-
-&lt;h1 id=&quot;sounds-like-a-lot&quot;&gt;20% Sounds Like a Lot&lt;/h1&gt;
-
-&lt;p&gt;20% is just what Google does (or claims to do), not some magic value that will solve all your woes. Pick some
-percentage or allotment of time that allows your engineers to work in the &lt;strong&gt;Improved Flow&lt;/strong&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Wed, 03 Feb 2016 10:27:29 -0500</pubDate>
-        <link>http://www.johnmurray.io/draft/2016/02/03/20-Percent-is-Mandatory.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/draft/2016/02/03/20-Percent-is-Mandatory.html</guid>
-        
-        
-        <category>draft</category>
-        
-      </item>
-    
-      <item>
-        <title>Instantly Better Monitoring</title>
-        <description>&lt;p&gt;Monitoring and alerting can be a very difficult thing to get right, and many of us
-don’t. I’ve been wondering how I can improve systems at my current work when I came
-up with a simple way to get some minor improvements in our application alerting that
-I thought might be meaningful to share.&lt;/p&gt;
-
-&lt;h1 id=&quot;context&quot;&gt;Context&lt;/h1&gt;
-
-&lt;p&gt;At my current place of employment we make use of Nagios to perform checks and manage
-alerts, a very common setup for many companies. However we have thousands of machines,
-hundreds of applications, and a few hundred engineers all of which, for us, imply at
-least two things:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Applications have moved heavily toward passive checks to reduce the amount of
-Nagios infrastructure require to keep up with active checks&lt;/li&gt;
-  &lt;li&gt;Each application and/or team handles alerting in a different way, most resulting
-in noisy applications that generate many false alarms&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;With those conditions, being on pager has the potential to be a nightmare. A week or
-two of no sleep will get you thinking about how you can reduce pager noise, and quickly.
-In general most of our pain was around&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Transient pages - alerts once and then goes green&lt;/li&gt;
-  &lt;li&gt;Passive checks that do not clear (only alert on error)&lt;/li&gt;
-  &lt;li&gt;Unneeded / duplicate checks. Flooding Nagios with errors when something bad happens or
-flooding Nagios with OK checks.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;The general thinking went something like this:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Well, I could just improve existing patterns around alerting. However, that’s 15+ applications
-to mess with. &lt;strong&gt;Nope, not fast.&lt;/strong&gt;&lt;/p&gt;
-
-  &lt;p&gt;Hrm… I could switch to using metrics-based alerting. There &lt;em&gt;is&lt;/em&gt; some work happening there
-within my company. &lt;strong&gt;Nope, still not fast.&lt;/strong&gt;&lt;/p&gt;
-
-  &lt;p&gt;I wonder if there is a way to implement some best-practice patterns &lt;em&gt;outside&lt;/em&gt; of the
-application that is applicable to a variety of app types? &lt;strong&gt;Yes, this sounds faster.&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;/h1&gt;
-
-&lt;p&gt;Going with the idea of “implementing some alerting best practices &lt;em&gt;oustide&lt;/em&gt; of the application”,
-I came up with &lt;a href=&quot;https://github.com/JohnMurray/nbad.git&quot;&gt;NBAd&lt;/a&gt; (Nagios Buffering Agent &lt;sub style=&quot;font-size:12px;&quot;&gt;daemon&lt;/sub&gt;).
-NBAd runs alongside your application on the same machine and impersonates the Nagios NSCA
-interface. Under the covers the application will:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Buffer incoming messages and keep a cache of last-seen messages, flushing to nagios
-on some interval&lt;/li&gt;
-  &lt;li&gt;Proxy messages that represent a change in state from the last-seen messages (if still
-within the cache window)&lt;/li&gt;
-  &lt;li&gt;Automatically clear error conditions after the message expires from the cache (receiving
-constant alerts will keep this value from clearing)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Because the application mimics the NSCA interface, integrating this with your application simply
-means pointing your NSCA configs to use &lt;code&gt;localhost:5667&lt;/code&gt; as the remote server. This effectively
-makes NBAd a drop-in solution that doesn’t require code changes to utilize. Now I can slightly
-improve alerting across all my applications with a simple update to the puppet recipes (to
-install NBAd) and an application config change.&lt;/p&gt;
-
-&lt;p&gt;For more information on the project, see the &lt;code&gt;readme.md&lt;/code&gt; file on GitHub at
-&lt;a href=&quot;https://github.com/JohnMurray/nbad.git&quot;&gt;https://github.com/JohnMurray/nbad&lt;/a&gt;.&lt;/p&gt;
-
-</description>
-        <pubDate>Tue, 02 Feb 2016 10:10:29 -0500</pubDate>
-        <link>http://www.johnmurray.io/draft/2016/02/02/Nagios-Buffering-Agent.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/draft/2016/02/02/Nagios-Buffering-Agent.html</guid>
-        
-        
-        <category>draft</category>
-        
-      </item>
-    
-      <item>
-        <title>Dispousing Myths - Web Services are Easy</title>
-        <description>&lt;p&gt;Talk about how everyone always advertises that web services are easy
-to create and it’s only “3 lines of code” to get up and running or how
-you can build a blog in 20 minutes (or all kinds of other lies used for
-advertising frameworks).&lt;/p&gt;
-
-&lt;p&gt;Talk about all the other stuff that is required to truly build an application
-for the enterprise / real-world, including things like:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;monitoring&lt;/li&gt;
-  &lt;li&gt;instrumentation / metrics&lt;/li&gt;
-  &lt;li&gt;release process&lt;/li&gt;
-  &lt;li&gt;production server setup (puppet / chef)&lt;/li&gt;
-  &lt;li&gt;handling error conditions gracefully&lt;/li&gt;
-  &lt;li&gt;load balancers / DNS / GSLB&lt;/li&gt;
-  &lt;li&gt;Databases and DB redundancy&lt;/li&gt;
-  &lt;li&gt;etc&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Focus the article on new graduates or people still in school and those
-people in business who may not be super technical and understand all that it
-takes to get a service out to production.&lt;/p&gt;
-</description>
-        <pubDate>Tue, 02 Feb 2016 10:09:17 -0500</pubDate>
-        <link>http://www.johnmurray.io/draft/2016/02/02/web-service-myth.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/draft/2016/02/02/web-service-myth.html</guid>
-        
-        
-        <category>draft</category>
-        
-      </item>
     
       <item>
         <title>Typed PATCH</title>
@@ -1152,6 +902,249 @@ from each article that you read.&lt;/p&gt;
         <pubDate>Sun, 17 Nov 2013 07:00:00 -0500</pubDate>
         <link>http://www.johnmurray.io/log/2013/11/17/Read-Less-HN.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2013/11/17/Read-Less-HN.html</guid>
+        
+        
+        <category>log</category>
+        
+      </item>
+    
+      <item>
+        <title>Scala By Example</title>
+        <description>&lt;p&gt;I believe that the best way to learn a new language or technology, or anything for that
+matter, is to really get your hands dirty. This is especially true when it comes to learning
+a new programming language. You really absorb the details of the language by writing code
+and small/toy applications in that language. However, just getting started can be a little
+hard sometimes. In part because you can’t yet get your hands dirty until you’ve spent a fair
+amount of time reading and understanding the basic principals of the language.&lt;/p&gt;
+
+&lt;p&gt;Recently I taught an introductory Scala course to my team at AppNexus and I spent a fair amount
+of time thinking about how I could get everyone involved while still learning the beginner concepts.
+Scala makes this relatively easy by the use of Worksheets. Worksheets are an IDE feature that
+allows you to execute a file’s worth of code in a REPL like environment. That being the case, I
+created my lessons as a series of worksheets. I walked through each of these explaining various
+concepts and answering questions while everyone else was able to immediately start playing with
+Scala code.&lt;/p&gt;
+
+&lt;p&gt;I hope, and feel, that this was a useful tool. That being said, if you would like to do something
+similar with your team, or for yourself, then you can access the worksheets on GitHub. If you find
+this useful, please contribute back to the project and socialize it to other developers you know who
+might be interested in learning Scala or teaching it to their engineering team.&lt;/p&gt;
+
+&lt;p&gt;Github Repo: &lt;a href=&quot;https://github.com/JohnMurray/learn-scala-worksheets&quot;&gt;https://github.com/JohnMurray/learn-scala-worksheets&lt;/a&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 05 Oct 2013 08:00:00 -0400</pubDate>
+        <link>http://www.johnmurray.io/log/2013/10/05/Scala-by-Example.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/10/05/Scala-by-Example.html</guid>
+        
+        
+        <category>log</category>
+        
+      </item>
+    
+      <item>
+        <title>Getting Started with Akka</title>
+        <description>&lt;p&gt;For those not familiar, &lt;a href=&quot;http://akka.io&quot;&gt;Akka&lt;/a&gt; is a &lt;a href=&quot;http://scala-lang.org&quot;&gt;Scala&lt;/a&gt; library for implementing the
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Actor_model&quot;&gt;Actor Model&lt;/a&gt;. Technically you can use Java as well, but things are a little
+more concise and idiomatic in Scala.&lt;/p&gt;
+
+&lt;p&gt;Let’s get started shall we. The first thing you should have installed is &lt;a href=&quot;http://www.scala-sbt.org/0.12.4/docs/Getting-Started/Setup.html&quot;&gt;sbt&lt;/a&gt;.
+Then you’ll want to create a new folder for your project &lt;code&gt;hello-akka&lt;/code&gt;. Within that
+folder, let’s create a &lt;code&gt;build.sbt&lt;/code&gt; file with the following contents:&lt;/p&gt;
+
+&lt;!-- build.sbt gist --&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; name := &amp;quot;Hello Akka&amp;quot;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; version := &amp;quot;0.0.1&amp;quot;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; scalaVersion := &amp;quot;2.10.2&amp;quot;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; resolvers += &amp;quot;Typesafe Repository&amp;quot; at &amp;quot;http://repo.typesafe.com/typesafe/releases/&amp;quot;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt; libraryDependencies += &amp;quot;com.typesafe.akka&amp;quot; %% &amp;quot;akka-actor&amp;quot; % &amp;quot;2.2.0&amp;quot;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; libraryDependencies += &amp;quot;com.typesafe.akka&amp;quot; %% &amp;quot;akka-kernel&amp;quot; % &amp;quot;2.2.0&amp;quot;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You can see that we just have some basic setup with names and versions. You’ll also
+notice that we’re delcaring &lt;code&gt;akka-actor&lt;/code&gt; and &lt;code&gt;akka-kernel&lt;/code&gt; as our dependencies. The
+main library is &lt;code&gt;akka-actor&lt;/code&gt; which we will (obviously) define our actor in. The second
+is a little less obvious, &lt;code&gt;akka-kernel&lt;/code&gt;, and will be used to define our akka-instance
+as a standalone setup (not as a library within another project).&lt;/p&gt;
+
+&lt;p&gt;The next thing we want to do is create a couple of actors to perform an asynchronous
+hello-world:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;akka.actor.&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Actor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HelloWorldActor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Tick&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HelloWorldActor&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Actor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;greeter&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;actorOf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Greeter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;greeter&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Actor.Receive&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HelloWorldActor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Tick&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;greeter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Greeter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Greet&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;akka.actor.Actor&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Greeter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Greet&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Greeter&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Actor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Greeter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Greet&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;Hello, World&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Take note that these files were created within the directory &lt;code&gt;src/main/scala&lt;/code&gt; within
+the &lt;code&gt;hello-akka&lt;/code&gt; directory. From the above, you’ll notice that the HelloWorldActor
+receives a &lt;code&gt;Tick&lt;/code&gt; event and then sends a message to the &lt;code&gt;Greeter&lt;/code&gt; actor which then
+prints &lt;code&gt;&quot;Hello, World&quot;&lt;/code&gt;. You may be wondering what is sending the &lt;code&gt;Tick&lt;/code&gt; event to the
+HelloWorldActor to start with. For this we have to define our kernel:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;akka.actor.&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;ActorSystem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;akka.kernel.Bootable&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scala.concurrent.duration._&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HelloWorldKernel&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Bootable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;system&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ActorSystem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;helloworldkernel&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;system.dispatcher&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;startup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;helloWorldActor&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;actorOf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;HelloWorldActor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scheduler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schedule&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;       &lt;span class=&quot;mi&quot;&gt;500&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;helloWorldActor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;       &lt;span class=&quot;nc&quot;&gt;HelloWorldActor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Tick&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shutdown&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shutdown&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This is the entry-point for our application. You can see that we are creating an instance
+of the &lt;code&gt;HelloWorldActor&lt;/code&gt; and scheduling a message be sent (&lt;code&gt;Tick&lt;/code&gt;) every 500 milliseconds.&lt;/p&gt;
+
+&lt;h2 id=&quot;done&quot;&gt;Done!&lt;/h2&gt;
+
+&lt;p&gt;That’s all there is to creating a standalone Akka, pretty simple. There are various ways you
+can run your application, but I feel the easiest is with scripts that ship with Akka. To add
+that to your project, run the following script from within the &lt;code&gt;hello-akka&lt;/code&gt; directory:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; wget http://downloads.typesafe.com/akka/akka-2.2.1.tgz
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; tar xzf akka-2.2.1.tgz
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; mv akka-2.2.1 akka
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; rm akka-2.2.1.tgz
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; dos2unix akka/bin/akka&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I typically create a Makefile for running my project just because I find that easier. You could
+do something like the following:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-make&quot; data-lang=&quot;make&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;build&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;deploy&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;build&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;deploy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;   sbt package:clean
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;   sbt package
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;   ./akka/bin/akka HelloWorldKernel
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;deploy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;   mv target/scala-2.10/hello-akka_2.10-0.0.1.jar akka/deploy/&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And then just run &lt;code&gt;make run&lt;/code&gt; to start your project. You should see something like the following:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; Starting Akka...
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; Running Akka 2.2.0
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; Deploying file:/Users/jmurray/IdeaProjects/HelloAkka/akka/deploy/hello-akka_2.10-0.0.1.jar
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; Starting up HelloWorldKernel
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; Successfully started Akka
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; Hello, World
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; Hello, World
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; Hello, World
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt; Hello, World
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; ...&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+</description>
+        <pubDate>Sat, 31 Aug 2013 08:00:00 -0400</pubDate>
+        <link>http://www.johnmurray.io/log/2013/08/31/Hello-Akka.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/08/31/Hello-Akka.html</guid>
+        
+        
+        <category>log</category>
+        
+      </item>
+    
+      <item>
+        <title>SSH FS Script</title>
+        <description>&lt;p&gt;Due to my employer’s server-configuration, I find myself developing
+on remote machines often. However, I find it a pain to setup a dev
+environment on every new machine. So, I usually just end up working
+local as much as possible via SSH-FS. For anyone else that had to
+do this as well, here is a handly little script that will hopefully
+help you out (just a little).&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;subprocess&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;servers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;     &lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;some.remote.host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;          &lt;span class=&quot;c&quot;&gt;# host to connect to&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;     &lt;span class=&quot;s&quot;&gt;&amp;#39;dir&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;/usr/local/supersecret/&amp;#39;&lt;/span&gt;    &lt;span class=&quot;c&quot;&gt;# remote dir to mount&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;     &lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;some.other.remote.host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;     &lt;span class=&quot;s&quot;&gt;&amp;#39;dir&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;/home/USER/&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;USER&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt;   &lt;span class=&quot;sd&quot;&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;sd&quot;&gt;  Connect SSH-FS&amp;#39;s&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;sd&quot;&gt;  &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;servers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;connecting to &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;------------------------------&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;sudo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;mkdir&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;-p&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;/Volumes/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])])&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;sudo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;chown&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;-R&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;/Volumes/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])])&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;28&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;sshfs&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;29&lt;/span&gt;                      &lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;dir&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;30&lt;/span&gt;                      &lt;span class=&quot;s&quot;&gt;&amp;quot;/Volumes/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])])&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;31&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;32&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;33&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;connected&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;34&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;mounted locally at /Volumes/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;35&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;mounted remotely at &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;dir&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;36&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;37&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;Unexpected error:&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exc_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;38&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;finally&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;39&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;40&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;41&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;42&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_sudo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;43&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;echo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;Running as root. Beware!! (mwahahahaha)&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;44&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;sudo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;echo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;45&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;46&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;47&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_sudo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;48&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+</description>
+        <pubDate>Mon, 15 Jul 2013 08:00:00 -0400</pubDate>
+        <link>http://www.johnmurray.io/log/2013/07/15/SSH-FS-Script.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/07/15/SSH-FS-Script.html</guid>
         
         
         <category>log</category>
