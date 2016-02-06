@@ -10,9 +10,18 @@ layout: default
     <article class="post-content">
         {{ content }}
 
-        <br /> <br />
-        <hr />
-        <br /> <br />
+        <div class="footer-navigation">
+            {% if page.previous.url %}
+                <span class="previous"><a href="{{page.previous.url}}">
+                    &laquo;{{ page.previous.title }}
+                </a></span>
+            {% endif %}
+            {% if page.next.url %}
+                <span class="next"><a href="{{page.next.url}}">
+                    {{ page.next.title }}&raquo;
+                </a></span>
+            {% endif %}
+        </div>
 
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <!-- Footer Advertisement -->
@@ -24,7 +33,7 @@ layout: default
         <script>
         (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
-        
+
     </article>
 
 </div>
