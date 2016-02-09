@@ -5,9 +5,152 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 09 Feb 2016 08:03:57 -0500</pubDate>
-    <lastBuildDate>Tue, 09 Feb 2016 08:03:57 -0500</lastBuildDate>
+    <pubDate>Tue, 09 Feb 2016 08:40:58 -0500</pubDate>
+    <lastBuildDate>Tue, 09 Feb 2016 08:40:58 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>20 Percent is Mandatory</title>
+        <description>&lt;p&gt;We’re all familiar with Google’s &lt;em&gt;20%&lt;/em&gt;. The developers’ dream of spending company time on personally
+interesting projects. Every developer seems to desire this, but very few companies are truly offering
+it. I’m gonna make a claim that 20% time is not a “nice to have” but a mandatory practice that all
+companies should be following.&lt;/p&gt;
+
+&lt;p&gt;Before you go wailing about how this is entirely impractical and the product of pampered and spoiled employees,
+I would like to redefine 20% a bit for my purposes to mean&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Twenty percent of employee time spent on projects outside of their current mandate that relate
+to company initiatives and goals, the technical platform’s stability and performance, or engineering
+velocity.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Google’s 20% may follow rules such as this as well (not familiar enough with their process), but the basic
+point is that the work should be &lt;em&gt;related&lt;/em&gt; to the company in some way and not &lt;em&gt;entirely&lt;/em&gt; personal projects
+(although personal interest and motivation in a problem is necessary).&lt;/p&gt;
+
+&lt;p&gt;I should also clarify up front that the requirement (the &lt;em&gt;Mandatory&lt;/em&gt; in the title of this post) is with the
+company, not the employee. Meaning that it should be offered to, but not required of, the employee.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-normal-grind&quot;&gt;The Normal Grind&lt;/h1&gt;
+
+&lt;p&gt;So this sounds nice and all, but why should this be mandatory? Well, let me know if any of the following
+scenarios sound familiar to you.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Product Rules&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The company is hyper-focused on delivering product as fast as possible. You are either in startup-mode and
+attempting to be lean or possibly an enterprise going after large business opportunities. Either way, product
+teams dominate and all of the engineering resources are dedicated to developing features as fast as possible.
+As products are pushed out, technical-debt increases at a rapid pace, slowly taking more and more of a toll
+on engineering velocity.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Retro-Active Infrastructure Development&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;For a variety of reasons (possibly due to a “Product Rules” scenario), the infrastructure that powers your
+company is ignored. It was built long ago and has “worked” up till now, so no resources have been allocated
+to maintain it. However one or more core / critical components are starting to buckle under the stress of the
+organization (or already have) and now we must make fixes or we’re doomed. The company is now in emergency
+mode that can be as severe as losing a client or going out of business if the issue cannot be fixed
+in a timely manner.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Wow That’s Old&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;All of your work is built on top of &lt;em&gt;some&lt;/em&gt; framework. That framework could either be something that was built
+in-house or an open-source framework. Regardless, it’s old and out-dated. Don’t get me wrong, it still works and
+functions as it should. However there is a lot of opportunities for productivity that are lost because the
+framework has not been given the proper amount of attention in either continued development (in-house) or upgrading
+to more recent versions (open-source). While this doesn’t have an immediate impact on &lt;em&gt;current&lt;/em&gt; velocity, there
+are certainly missed opportunities for productivity which gives your competition an opportunity to have a leg-up.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Internal Open &lt;span style=&quot;text-decoration:line-through;&quot;&gt;Death&lt;/span&gt; Source&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;At some point in the past a framework, library, or tool was developed. After it was created it was sent around
+and the source was put up on some VCS server. The original writer doesn’t really have time to maintain it so he
+“internally open sources” the project. Even though the project is oft used, no one touches the code, even if
+there are issues because they don’t have time. Eventually a problem is encountered that cannot be worked around
+and either the problem is fixed (yay) or as oft is the case, a new version that is &lt;em&gt;“sane”&lt;/em&gt; is re-written and the
+process starts all over again.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The Wall&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Large companies often build software that is dependent upon other components / systems that are built by other
+teams. When an issue is encountered it is simply thrown “over the wall”, meaning &lt;em&gt;to the team that owns the
+system the bug is filed against&lt;/em&gt;. However both teams have already planned their quarters and don’t really have
+time to fix the issue. Months go by until eventually the team that filed the bug either lives with it or
+escalates their product as being a “company priority”; re-prioritizing the owning team to fix the bug as part
+of their &lt;em&gt;planned work&lt;/em&gt; for the quarter.&lt;/p&gt;
+
+&lt;h1 id=&quot;all-about-the-debt&quot;&gt;All About the Debt&lt;/h1&gt;
+
+&lt;p&gt;I hear what you’re saying, “this is all just fancy ways of saying &lt;em&gt;‘technical debt’&lt;/em&gt;.” Well, kind of, but there’s
+more to it than that, technical debt is just a side-effect. It’s about your engineers not working collaboratively
+or with shared goals. When engineers are expected to dedicate 100 percent of their time to company initiatives,
+they don’t like to go out of their way to collaborate with other teams for fear that it could impact their own
+deadlines. You can see silos developing as engineers become hyper-focused (or &lt;em&gt;“laser-focused”&lt;/em&gt; if you prefer) and
+engineers working without context of projects outside of their teams.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-improved-flow&quot;&gt;The Improved Flow&lt;/h1&gt;
+
+&lt;p&gt;So all of this sounds bad, or typical depending on your perspective, but I think we can all agree that the above
+is non-desirable for long-term sustainability of your technical platform. However I would expect that you’re also
+skeptical if just &lt;em&gt;giving&lt;/em&gt; your engineers 20% time really fixes any of this (and you should be skeptical, it’s 
+healthy). And the answer to “will this really work?” is &lt;em&gt;kind of&lt;/em&gt;. Simply introducing a 20% time and no structure
+may not get you the results you desire. That’s not to say that &lt;em&gt;some&lt;/em&gt; of the above can’t be achieved without structure:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Internal Open Source&lt;/strong&gt; - Community managed projects are fret with small issues, feature requests, etc. that are
+                           easily solvable with small amounts of time. Additionally knowledge of the
+                           framework/library/etc can be built over time, allowing developers to tackle larger
+                           improvements down the road.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;The Wall&lt;/strong&gt;             - More time to track down root-causes to issues and possibly propose fixes to systems
+                           not “owned” by the engineer’s team (i.e. small-scale collaboration).&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Other Small Stuff&lt;/em&gt;      - It’s easy for a single engineer to tackle small stuff on their own in relatively short
+                           periods of time. Allowing your entire organization to follow the “boy scout rule” (leave
+                           things nicer than you found them) can have a large impact over time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;However, how do you handle the larger issues that exist? This takes coordination and planning. But how do you
+bundle that in with 20% time? While there are likely many ways to approach this, I propose approaching it with
+two strategies. Since I suck at naming I’ll call these two strategies Guilds and Working Groups since they function
+in similar ways to what I have at my current employment. Let’s define them&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Guild&lt;/strong&gt;         - Permanent group (members can change) with a specified subject-focus (e.g. metrics, performance,
+                    analytics, etc).&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Working Group&lt;/strong&gt; - Ephemeral group formed for solving a pre-determined problem. Group disbands once the problem
+                    has been solved / addressed.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If both of these strategies are meant to address larger issues, what is the difference? Let’s look at something like
+metrics. Metrics is a problem with most tech organizations. Either we’re doing it wrong or there is much more that
+can be gained. The Guild strategy is useful here as it creates a long-lasting organization to solve both the
+current problems with metrics but to foster a culture of good metrics and push for continual improvement going
+forward. The problem is never really solved and there is always room for improvement.&lt;/p&gt;
+
+&lt;p&gt;Now, what about upgrading that web-framework you’re using so you can support HTTP/2 and Web-Sockets? While this
+may be a large task (lots of code to update) it has a very clear start and end. This is where the Working Group
+strategy shines. A group can be formed with interested members who divvy up the work and make progress toward
+a shared goal. A Working Group can take on small or large projects, as long as the end-goal is very clearly
+defined.&lt;/p&gt;
+
+&lt;p&gt;There is also a relationship that exists between Guilds and Working Groups. While a Guild is focusing on the long-term,
+it may still identify issues that would best be served by a Working Group. In this situation, the Guild can be
+a facilitator to help organize (and possibly manage) Working Groups.&lt;/p&gt;
+
+&lt;h1 id=&quot;sounds-like-a-lot&quot;&gt;20% Sounds Like a Lot&lt;/h1&gt;
+
+&lt;p&gt;20% is just what Google does (or claims to do), not some magic value that will solve all your woes. Pick some
+percentage or allotment of time that allows your engineers to work in the &lt;strong&gt;Improved Flow&lt;/strong&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 09 Feb 2016 00:00:00 -0500</pubDate>
+        <link>http://www.johnmurray.io/log/2016/02/09/20-Percent-is-Mandatory.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2016/02/09/20-Percent-is-Mandatory.html</guid>
+        
+        
+        <category>log</category>
+        
+      </item>
     
       <item>
         <title>Typed PATCH</title>
@@ -81,7 +224,7 @@ nullable (or non-required by our default model).&lt;/p&gt;
 now work on optimizing our workflow. I think the proper step is to define an
 abstract language that can define our service contract and allow our tooling to
 generate our corresponding models for us. As a matter of fact, this is what we do
-in Fireglass (an internal web-service framework) used at &lt;a href=&quot;http://appnexus.com&quot;&gt;AppNexus&lt;/a&gt;.&lt;/p&gt;
+in Fireglass (an internal web-service framework) used at my current employment.&lt;/p&gt;
 
 &lt;p&gt;However, this framework is not (yet, maybe someday) open source. After some quick
 looking around, I came across an older project that aimed to solve the problem via
@@ -917,7 +1060,7 @@ and small/toy applications in that language. However, just getting started can b
 hard sometimes. In part because you can’t yet get your hands dirty until you’ve spent a fair
 amount of time reading and understanding the basic principals of the language.&lt;/p&gt;
 
-&lt;p&gt;Recently I taught an introductory Scala course to my team at AppNexus and I spent a fair amount
+&lt;p&gt;Recently I taught an introductory Scala course to my team at work and I spent a fair amount
 of time thinking about how I could get everyone involved while still learning the beginner concepts.
 Scala makes this relatively easy by the use of Worksheets. Worksheets are an IDE feature that
 allows you to execute a file’s worth of code in a REPL like environment. That being the case, I
@@ -1077,74 +1220,6 @@ do something like the following:&lt;/p&gt;
         <pubDate>Sat, 31 Aug 2013 08:00:00 -0400</pubDate>
         <link>http://www.johnmurray.io/log/2013/08/31/Hello-Akka.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2013/08/31/Hello-Akka.html</guid>
-        
-        
-        <category>log</category>
-        
-      </item>
-    
-      <item>
-        <title>SSH FS Script</title>
-        <description>&lt;p&gt;Due to my employer’s server-configuration, I find myself developing
-on remote machines often. However, I find it a pain to setup a dev
-environment on every new machine. So, I usually just end up working
-local as much as possible via SSH-FS. For anyone else that had to
-do this as well, here is a handly little script that will hopefully
-help you out (just a little).&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#!/usr/bin/env python&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;subprocess&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;servers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;     &lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;some.remote.host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;          &lt;span class=&quot;c&quot;&gt;# host to connect to&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;     &lt;span class=&quot;s&quot;&gt;&amp;#39;dir&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;/usr/local/supersecret/&amp;#39;&lt;/span&gt;    &lt;span class=&quot;c&quot;&gt;# remote dir to mount&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;     &lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;some.other.remote.host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;     &lt;span class=&quot;s&quot;&gt;&amp;#39;dir&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;/home/USER/&amp;#39;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;USER&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt;   &lt;span class=&quot;sd&quot;&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;sd&quot;&gt;  Connect SSH-FS&amp;#39;s&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;sd&quot;&gt;  &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;servers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;connecting to &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;------------------------------&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;sudo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;mkdir&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;-p&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;/Volumes/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])])&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;sudo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;chown&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;-R&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;/Volumes/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])])&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;28&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;sshfs&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;29&lt;/span&gt;                      &lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;dir&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;30&lt;/span&gt;                      &lt;span class=&quot;s&quot;&gt;&amp;quot;/Volumes/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])])&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;31&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;32&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;33&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;connected&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;34&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;mounted locally at /Volumes/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;host&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;35&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;mounted remotely at &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;dir&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;36&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;37&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;Unexpected error:&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exc_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;38&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;finally&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;39&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;40&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;41&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;42&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_sudo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;43&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;echo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;Running as root. Beware!! (mwahahahaha)&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;44&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;sudo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;echo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;45&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;46&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;47&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_sudo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;48&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-</description>
-        <pubDate>Mon, 15 Jul 2013 08:00:00 -0400</pubDate>
-        <link>http://www.johnmurray.io/log/2013/07/15/SSH-FS-Script.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/07/15/SSH-FS-Script.html</guid>
         
         
         <category>log</category>
