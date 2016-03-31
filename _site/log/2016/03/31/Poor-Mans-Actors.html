@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Poor Man's Actors in Java</title>
+  <meta name="description" content="[Actors][actor-wikipedia] are a fantastic way to model concurrency and a much easier mental modelthan when working with plain threads and shared memory. Howe...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/log/2016/03/31/Poor-Mans-Actors.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2016. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+    <header class="post-header">
+        <h1 class="post-title">Poor Man's Actors in Java</h1>
+    </header>
+
+    <article class="post-content">
+        <p><a href="https://en.wikipedia.org/wiki/Actor_model">Actors</a> are a fantastic way to model concurrency and a much easier mental model
+than when working with plain threads and shared memory. However let’s say that you’re
+writing a very simple library that needs to run some simple background tasks. You could
+pull in one of the popular Actor implementation libraries out there, but they don’t come
+for free and can sometimes be heavy-weight.</p>
+
+<p>There is a small movement in the JVM communities to move toward completely self-contained
+libraries. I am personally in favor of this movement, but it does mean it can make writing
+libraries a touch more difficult. So, if I’m writing a library and I want to do some async
+stuff and I <em>really</em> like using actors, what do I do? Well I personally like to program in
+the actor model (primarily) for two things</p>
+
+<ul>
+  <li>Messages are immutable</li>
+  <li>Message passing as a way of communicating</li>
+</ul>
+
+<p>So the question is, can we get this with zero runtime dependencies? Of course we can, but
+how much work is it going to be? Let’s find out.</p>
+
+<h2 id="the-exercise">The Exercise</h2>
+
+<p>Before we jump right into the meaty bits, we need to setup a problem that our examples will
+be trying to solve.
+Let’s say that I’m writing a library that will do some local file-caching. As part of this,
+the library needs to handle <em>active</em> cache expiry. Active meaning that we don’t wait until
+the value is read again to do the cleanup, meaning we need some sort of asynchronous monitor.</p>
+
+<h2 id="immutable-messages">Immutable Messages</h2>
+
+<p>There is nothing stopping from creating immutable data-structures in Java. However it may not be
+as easy as using say case classes in Scala. However it is most certainly <em>possible</em>. However, this
+one is pretty easy to get with very little work on our part.  Java has long had annotation 
+processors, which is a way to generate code based on annotations at compile time. You can imagine 
+that this is very useful, especially for defining immutable objects. Luckily for us, someone 
+has already went through the work to create a generator for immutable data. If you are not 
+already familiar, meet <a href="http://immutables.github.io">Immutables</a>.</p>
+
+<p>Let’s define some models that we’ll use later</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="nd">@Value.Immutable</span>
+<span class="lineno"> 2</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">CacheCreated</span> <span class="o">{</span>
+<span class="lineno"> 3</span>   <span class="n">Path</span> <span class="nf">getFilePath</span><span class="o">();</span>
+<span class="lineno"> 4</span>   <span class="n">Long</span> <span class="nf">getTtl</span><span class="o">();</span>
+<span class="lineno"> 5</span>   <span class="n">TimeUnit</span> <span class="nf">getTtlUnit</span><span class="o">();</span>
+<span class="lineno"> 6</span> <span class="o">}</span>
+<span class="lineno"> 7</span> 
+<span class="lineno"> 8</span> <span class="nd">@Value.Immutable</span>
+<span class="lineno"> 9</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">CacheExpired</span> <span class="o">{</span>
+<span class="lineno">10</span>   <span class="n">Path</span> <span class="nf">getFilePath</span><span class="o">();</span>
+<span class="lineno">11</span> <span class="o">}</span></code></pre></div>
+
+<p>That’s it! We now have immutable data-objects that are easy to work with. Let’s move on to the Actors.</p>
+
+<h2 id="actors">Actors</h2>
+
+<p>Well we already know we have threads for running concurrent operations, but how do we handle the message
+passing? Simple, we define a mailbox that actors receive messages into and process out of. But what is
+a mailbox if not just a simple queue. Java has a bunch of those! In fact, there is a nice thread-safe
+one that works for us, the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentLinkedQueue.html"><code>ConcurrentLinkedQueue</code></a>. So that means we can define an actor as</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="kd">final</span> <span class="n">ConcurrentLinkedQueue</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">mailbox</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConcurrentLinkedQueue</span><span class="o">&lt;&gt;();</span>
+<span class="lineno"> 2</span> 
+<span class="lineno"> 3</span> <span class="n">Thread</span> <span class="n">actor</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Thread</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+<span class="lineno"> 4</span> 
+<span class="lineno"> 5</span>   <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 6</span>     <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+<span class="lineno"> 7</span> 
+<span class="lineno"> 8</span>     <span class="n">Object</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+<span class="lineno"> 9</span>     <span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">10</span>       <span class="k">continue</span><span class="o">;</span>
+<span class="lineno">11</span>     <span class="o">}</span>
+<span class="lineno">12</span> 
+<span class="lineno">13</span>     <span class="k">try</span> <span class="o">{</span>
+<span class="lineno">14</span>       <span class="c1">// process message</span>
+<span class="lineno">15</span>     <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">16</span>       <span class="c1">// handle exception(s)</span>
+<span class="lineno">17</span>     <span class="o">}</span>
+<span class="lineno">18</span>   <span class="o">}</span>
+<span class="lineno">19</span> 
+<span class="lineno">20</span> <span class="o">});</span>
+<span class="lineno">21</span> <span class="n">actor</span><span class="o">.</span><span class="na">start</span><span class="o">();</span></code></pre></div>
+
+<p>Let’s break this down so we understand all that is happening here. First the mailbox</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">final</span> <span class="n">ConcurrentLinkedQueue</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">mailbox</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConcurrentLinkedQueue</span><span class="o">&lt;&gt;();</span></code></pre></div>
+
+<p>All variables used within lambdas or anonymous inner classes must be effective final, thus the <code>final</code>. Note
+that we are also typing the collection to <code>Object</code>, why? This allows us to send any kind of messages to our
+actors and the actors can pattern match to find out what the message is. Since we’re in Java, pattern matching
+really just means doing a bunch of <code>instaceof</code> statements.</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span></code></pre></div>
+
+<p>To keep the actor alive, the thread cannot end or be “done.” Because of this, we have the thread run in
+an infinite loop. However we also don’t want our process in a “busy wait.” To get around this we sleep for
+10ms at the beginning of each loop. 10ms is arbitrary and is just represents the trade-off between using
+resources and responding to events in a timely manner.</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Object</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">continue</span><span class="o">;</span>
+<span class="o">}</span></code></pre></div>
+
+<p>Attempt to read the first thing in the mailbox (if anything is there). If there is nothing in the mailbox then
+<code>null</code> is returned. In this case we simply jump back up to the beginning of the infinite loop which causes us to
+sleep for 10ms before checking again.</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Object</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">mailbox</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+<span class="k">try</span> <span class="o">{</span>
+  <span class="c1">// process message</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// handle exception(s)</span>
+<span class="o">}</span></code></pre></div>
+
+<p>For the same reason that we put everything into a <code>while</code>, we also need to catch any errors that might occur.
+If an exception is thrown, then we need to have code to handle the error and allow the actor to continue
+processing. Otherwise the exception could crash our thread and effectively kill our actor. Note that supervision
+is not something our implementation has.</p>
+
+<h1 id="file-caching-actors">File-Caching Actors</h1>
+
+<p>For my system I will define two actors. One actor to receive created events and monitor <em>when</em> cache
+items should be expired. This actor will send messages to another actor which will take care of the
+actual file deletion.</p>
+
+<p>Putting what we defined above to good use, I can define my actor as</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="kd">final</span> <span class="n">ConcurrentLinkedQueue</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">ttlWatcherMailbox</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConcurrentLinkedQueue</span><span class="o">&lt;&gt;();</span>
+<span class="lineno">2</span> <span class="kd">final</span> <span class="n">ConcurrentLinkedQueue</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">cacheDeleterMailbox</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConcurrentLinkedQueue</span><span class="o">&lt;&gt;();</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="n">Thread</span> <span class="n">cacheWatcher</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Thread</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+<span class="lineno"> 2</span>   <span class="n">Map</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">,</span> <span class="n">DateTime</span><span class="o">&gt;</span> <span class="n">cacheExpiry</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+<span class="lineno"> 3</span>   <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+<span class="lineno"> 4</span>   <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 5</span>     <span class="k">try</span> <span class="o">{</span>
+<span class="lineno"> 6</span>       <span class="n">count</span><span class="o">++;</span>
+<span class="lineno"> 7</span>       <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+<span class="lineno"> 8</span> 
+<span class="lineno"> 9</span>       <span class="c1">// check for new items to store</span>
+<span class="lineno">10</span>       <span class="n">Object</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">ttlWatcherMailbox</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+<span class="lineno">11</span>       <span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">break</span><span class="o">;</span>
+<span class="lineno">12</span>       <span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="k">instanceof</span> <span class="n">CacheCreated</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">13</span>         <span class="n">CacheCreated</span> <span class="n">cc</span> <span class="o">=</span> <span class="o">(</span><span class="n">CacheCreated</span><span class="o">)</span> <span class="n">msg</span><span class="o">;</span>
+<span class="lineno">14</span>         <span class="n">cacheExpiry</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">cc</span><span class="o">.</span><span class="na">getFilePath</span><span class="o">(),</span> <span class="n">calculateExpiryDate</span><span class="o">(</span><span class="n">cc</span><span class="o">.</span><span class="na">getTtl</span><span class="o">(),</span> <span class="n">cc</span><span class="o">.</span><span class="na">getTtlUnit</span><span class="o">());</span>
+<span class="lineno">15</span>       <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="lineno">16</span>         <span class="c1">// log unhandled message</span>
+<span class="lineno">17</span>       <span class="o">}</span>
+<span class="lineno">18</span> 
+<span class="lineno">19</span>       <span class="c1">// scan cached objects (every 100ms, roughly)</span>
+<span class="lineno">20</span>       <span class="k">if</span> <span class="o">(</span><span class="n">count</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="k">continue</span><span class="o">;</span>
+<span class="lineno">21</span>       <span class="k">for</span><span class="o">(</span> <span class="n">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">,</span> <span class="n">DateTime</span><span class="o">&gt;</span> <span class="n">entry</span> <span class="o">:</span> <span class="n">cacheExpiry</span><span class="o">.</span><span class="na">iterator</span><span class="o">()</span> <span class="o">)</span> <span class="o">{</span>
+<span class="lineno">22</span>         <span class="k">if</span> <span class="o">(</span><span class="n">isExpired</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">())</span> <span class="o">{</span>
+<span class="lineno">23</span>           <span class="n">cacheDeleterMailbox</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">ImmutableCacheExpired</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+<span class="lineno">24</span>               <span class="o">.</span><span class="na">filePath</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">())</span>
+<span class="lineno">25</span>               <span class="o">.</span><span class="na">build</span><span class="o">());</span>
+<span class="lineno">26</span>         <span class="o">}</span>
+<span class="lineno">27</span>       <span class="o">}</span>
+<span class="lineno">28</span>     <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">29</span>       <span class="c1">// log out errors</span>
+<span class="lineno">30</span>     <span class="o">}</span>
+<span class="lineno">31</span>   <span class="o">}</span>
+<span class="lineno">32</span> <span class="o">});</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="n">Thread</span> <span class="n">cacheDeleter</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Thread</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+<span class="lineno"> 2</span>   <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 3</span>     <span class="k">try</span> <span class="o">{</span>
+<span class="lineno"> 4</span>       <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+<span class="lineno"> 5</span> 
+<span class="lineno"> 6</span>       <span class="n">Object</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">cacheDeleterMailbox</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+<span class="lineno"> 7</span>       <span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">continue</span><span class="o">;</span>
+<span class="lineno"> 8</span>       <span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="k">instanceof</span> <span class="n">CacheExpired</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 9</span>         <span class="n">CacheExpired</span> <span class="n">ce</span> <span class="o">=</span> <span class="o">(</span><span class="n">CacheExpired</span><span class="o">)</span> <span class="n">msg</span><span class="o">;</span>
+<span class="lineno">10</span>         <span class="n">deleteFile</span><span class="o">(</span><span class="n">ce</span><span class="o">.</span><span class="na">getFilePath</span><span class="o">());</span>
+<span class="lineno">11</span>       <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="lineno">12</span>         <span class="c1">// log unhandled message</span>
+<span class="lineno">13</span>       <span class="o">}</span>
+<span class="lineno">14</span>     <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">15</span>       <span class="c1">// log out errors</span>
+<span class="lineno">16</span>     <span class="o">}</span>
+<span class="lineno">17</span>   <span class="o">}</span>
+<span class="lineno">18</span> <span class="o">});</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="n">cacheWatcher</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="lineno">2</span> <span class="n">cacheDeleter</span><span class="o">.</span><span class="na">start</span><span class="o">();</span></code></pre></div>
+
+<p>Bam! We now have simple actors performing our background jobs and communicate by message passing. We
+could take this further if wanted and use some of Java’s concurrent blocking queues which would give
+us back-pressure as well. And like that, there are many small things you could do to add the features
+that you most value in a full-blown actor framework / library.</p>
+
+<h2 id="improving-our-api">Improving our API</h2>
+
+<p>If we want to take our working code a little bit further we can improve the current API to abstract
+some of the details for how this is working. First let’s define a central place to create our actors
+and store all of our mailboxes. Also, mailboxes should have an address, let’s do this by naming our
+actors / mailboxes.</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="kd">class</span> <span class="nc">ActorRef</span> <span class="o">{</span>
+<span class="lineno"> 2</span>   <span class="kd">private</span> <span class="n">ConcurrentLinkedQueue</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">mailbox</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConcurrentLinkedQueue</span><span class="o">&lt;&gt;();</span>
+<span class="lineno"> 3</span>   <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+<span class="lineno"> 4</span> 
+<span class="lineno"> 5</span>   <span class="kd">public</span> <span class="nf">ActorRef</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 6</span>     <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+<span class="lineno"> 7</span>   <span class="o">}</span>
+<span class="lineno"> 8</span> 
+<span class="lineno"> 9</span>   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">tell</span><span class="o">(</span><span class="n">Object</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">10</span>     <span class="n">mailbox</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">msg</span><span class="o">);</span>
+<span class="lineno">11</span>   <span class="o">}</span>
+<span class="lineno">12</span> 
+<span class="lineno">13</span>   <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getLetter</span><span class="o">()</span> <span class="o">{</span>
+<span class="lineno">14</span>     <span class="k">return</span> <span class="n">mailbox</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+<span class="lineno">15</span>   <span class="o">}</span>
+<span class="lineno">16</span> 
+<span class="lineno">17</span>   <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getLetterCount</span><span class="o">()</span> <span class="o">{</span>
+<span class="lineno">18</span>     <span class="k">return</span> <span class="n">mailbox</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>
+<span class="lineno">19</span>   <span class="o">}</span>
+<span class="lineno">20</span> <span class="o">}</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="kd">class</span> <span class="nc">ActorSystem</span> <span class="o">{</span>
+<span class="lineno"> 2</span>   <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">ActorRef</span><span class="o">&gt;</span> <span class="n">registry</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+<span class="lineno"> 3</span> 
+<span class="lineno"> 4</span>   <span class="kd">public</span> <span class="n">ActorRef</span> <span class="nf">actor</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">Consumer</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">f</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 5</span>     <span class="n">ActorRef</span> <span class="n">ref</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ActorRef</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+<span class="lineno"> 6</span>     <span class="n">registry</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">ref</span><span class="o">);</span>
+<span class="lineno"> 7</span> 
+<span class="lineno"> 8</span>     <span class="n">Thread</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Thread</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+<span class="lineno"> 9</span>       <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">10</span>         <span class="k">if</span> <span class="o">(</span><span class="n">ref</span><span class="o">.</span><span class="na">getLetterCount</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">11</span>           <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+<span class="lineno">12</span>         <span class="o">}</span>
+<span class="lineno">13</span>         <span class="n">f</span><span class="o">.</span><span class="na">accept</span><span class="o">(</span><span class="n">ref</span><span class="o">.</span><span class="na">getLetter</span><span class="o">());</span>
+<span class="lineno">14</span>       <span class="o">}</span>
+<span class="lineno">15</span>     <span class="o">});</span>
+<span class="lineno">16</span>     <span class="n">t</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="lineno">17</span> 
+<span class="lineno">18</span>     <span class="k">return</span> <span class="n">ref</span><span class="o">;</span>
+<span class="lineno">19</span>   <span class="o">}</span>
+<span class="lineno">20</span> 
+<span class="lineno">21</span>   <span class="kd">public</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">ActorRef</span><span class="o">&gt;</span> <span class="nf">lookup</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">22</span>     <span class="n">ActorRef</span> <span class="n">ref</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+<span class="lineno">23</span>     <span class="k">return</span> <span class="n">Optional</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">ref</span><span class="o">);</span>
+<span class="lineno">24</span>   <span class="o">}</span>
+<span class="lineno">25</span> <span class="o">}</span></code></pre></div>
+
+<p>Modeling this off of Akka, we now have an <code>ActorRef</code> which wraps the mailbox and an <code>ActorSystem</code> that tracks
+all of the actors in our system and also creates some easier utilities for creating actors. We can now define
+actors in our system as</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="n">ActorSystem</span> <span class="n">system</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ActorSystem</span><span class="o">();</span>
+<span class="lineno">2</span> 
+<span class="lineno">3</span> <span class="n">ActorRef</span> <span class="n">echoActor</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="na">actor</span><span class="o">(</span><span class="s">&quot;echo&quot;</span><span class="o">,</span> <span class="o">(</span><span class="n">Object</span> <span class="n">msg</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+<span class="lineno">4</span>   <span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="k">instanceof</span> <span class="n">String</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">5</span>     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="n">String</span><span class="o">)</span> <span class="n">msg</span><span class="o">);</span>
+<span class="lineno">6</span>   <span class="o">}</span>
+<span class="lineno">7</span> <span class="o">});</span>
+<span class="lineno">8</span> 
+<span class="lineno">9</span> <span class="n">echoActor</span><span class="o">.</span><span class="na">tell</span><span class="o">(</span><span class="s">&quot;Hello, World!&quot;</span><span class="o">);</span></code></pre></div>
+
+<p>and we can handle communication between two named actors as</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="n">ActorSystem</span> <span class="n">system</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ActorSystem</span><span class="o">();</span>
+<span class="lineno"> 2</span> 
+<span class="lineno"> 3</span> <span class="n">ActorRef</span> <span class="n">ping</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="na">actor</span><span class="o">(</span><span class="s">&quot;ping&quot;</span><span class="o">,</span> <span class="o">(</span><span class="n">Object</span> <span class="n">msg</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+<span class="lineno"> 4</span>   <span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="k">instanceof</span> <span class="n">String</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 5</span>     <span class="n">String</span> <span class="n">sMsg</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">msg</span><span class="o">;</span>
+<span class="lineno"> 6</span>     <span class="k">if</span> <span class="o">(</span><span class="n">sMsg</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;ping&quot;</span><span class="o">))</span> <span class="o">{</span>
+<span class="lineno"> 7</span>       <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;ping&quot;</span><span class="o">);</span>
+<span class="lineno"> 8</span>       <span class="n">system</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="s">&quot;pong&quot;</span><span class="o">).</span><span class="na">ifPresent</span><span class="o">((</span><span class="n">ActorRef</span> <span class="n">pong</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">pong</span><span class="o">.</span><span class="na">tell</span><span class="o">(</span><span class="s">&quot;pong&quot;</span><span class="o">));</span>
+<span class="lineno"> 9</span>     <span class="o">}</span>
+<span class="lineno">10</span>   <span class="o">}</span>
+<span class="lineno">11</span> <span class="o">}</span>
+<span class="lineno">12</span> <span class="n">ActorRef</span> <span class="n">pong</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="na">actor</span><span class="o">(</span><span class="s">&quot;pong&quot;</span><span class="o">,</span> <span class="o">(</span><span class="n">Object</span> <span class="n">msg</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+<span class="lineno">13</span>   <span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="k">instanceof</span> <span class="n">String</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">14</span>     <span class="n">String</span> <span class="n">sMsg</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">msg</span><span class="o">;</span>
+<span class="lineno">15</span>     <span class="k">if</span> <span class="o">(</span><span class="n">sMsg</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;pong&quot;</span><span class="o">))</span> <span class="o">{</span>
+<span class="lineno">16</span>       <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;pong&quot;</span><span class="o">);</span>
+<span class="lineno">17</span>       <span class="n">system</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="s">&quot;ping&quot;</span><span class="o">).</span><span class="na">ifPresent</span><span class="o">((</span><span class="n">ActorRef</span> <span class="n">ping</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">ping</span><span class="o">.</span><span class="na">tell</span><span class="o">(</span><span class="s">&quot;ping&quot;</span><span class="o">));</span>
+<span class="lineno">18</span>     <span class="o">}</span>
+<span class="lineno">19</span>   <span class="o">}</span>
+<span class="lineno">20</span> <span class="o">}</span></code></pre></div>
+
+<p>Sweet! Now we have two actors that can look each other up and communicate back and forth endlessly.
+Not that this is a useful example, but it shows out our API improvements work.</p>
+
+<p>Of course you can continue adding little improvements like this until you are eventually building
+a full actor implementation (which you shouldn’t do). So this brings us to our next question.</p>
+
+<h2 id="should-you-do-this">Should You Do This?</h2>
+
+<p>So we’ve seen how we can create some really bare-bones actors but the question really is, “is it
+worth it?” The answer to this question depends on what you’re doing. If all you need is some very simple
+concurrency within your library, then this solution is fantastic as it’s zero-dependency. However if
+you are performing very complex concurrent tasks that require a lot of coordination or cooperation, then
+using a more full-featured framework may be to your benefit. The title did say this was a “poor man’s”
+implementation, which means we’re missing <em>many</em> of the feature that would come in a typical actor
+framework / library.</p>
+
+<p>And actually, if you take a look at Akka (a popular Actor framework on the JVM), you’ll notice that the
+dependency tree is surprisingly small. So, if you <em>must</em> require all the power of a full-blown actor
+implementation, at least it’s not bloating your dependency tree <em>too</em> much.</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">sbt&gt; akka-actor/dependencyGraph
+
+             +-------------------+
+             |akka-actor_2.11 [S]|
+             | com.typesafe.akka |
+             |   2.4-SNAPSHOT    |
+             +-------------------+
+                |          |
+                |          -------------
+                |                      |
+                v                      v
+  +---------------------------+ +------------+
+  |scala-java8-compat_2.11 [S]| |   config   |
+  |  org.scala-lang.modules   | |com.typesafe|
+  |           0.7.0           | |   1.3.0    |
+  +---------------------------+ +------------+</code></pre></div>
+
+
+
+        <div class="footer-navigation">
+            
+                <span class="previous"><a href="/log/2016/02/09/20-Percent-is-Mandatory.html">
+                    &laquo;20 Percent is Mandatory
+                </a></span>
+            
+            
+        </div>
+
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Footer Advertisement -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-8460014050417630"
+             data-ad-slot="9924998708"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+    </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11511983-4']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); 
+        ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+
+</html>
