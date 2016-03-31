@@ -11,7 +11,7 @@ and small/toy applications in that language. However, just getting started can b
 hard sometimes. In part because you can't yet get your hands dirty until you've spent a fair
 amount of time reading and understanding the basic principals of the language.
 
-Recently I taught an introductory Scala course to my team at AppNexus and I spent a fair amount
+Recently I taught an introductory Scala course to my team at work and I spent a fair amount
 of time thinking about how I could get everyone involved while still learning the beginner concepts.
 Scala makes this relatively easy by the use of Worksheets. Worksheets are an IDE feature that
 allows you to execute a file's worth of code in a REPL like environment. That being the case, I

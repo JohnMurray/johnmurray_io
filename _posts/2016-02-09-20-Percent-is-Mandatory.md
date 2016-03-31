@@ -7,14 +7,19 @@ interesting projects. Every developer seems to desire this, but very few compani
 it. I'm gonna make a claim that 20% time is not a "nice to have" but a mandatory practice that all
 companies should be following.
 
-I would like to redefine 20% a bit for my purposes to means
+Before you go wailing about how this is entirely impractical and the product of pampered and spoiled employees,
+I would like to redefine 20% a bit for my purposes to mean
 
 > Twenty percent of employee time spent on projects outside of their current mandate that relate
 > to company initiatives and goals, the technical platform's stability and performance, or engineering
 > velocity.
 
 Google's 20% may follow rules such as this as well (not familiar enough with their process), but the basic
-point is that the work should be _related_ to the company in some way and not _entirely_ personal projects.
+point is that the work should be _related_ to the company in some way and not _entirely_ personal projects
+(although personal interest and motivation in a problem is necessary).
+
+I should also clarify up front that the requirement (the _Mandatory_ in the title of this post) is with the
+company, not the employee. Meaning that it should be offered to, but not required of, the employee.
 
 # The Normal Grind
 
@@ -35,7 +40,7 @@ For a variety of reasons (possibly due to a "Product Rules" scenario), the infra
 company is ignored. It was built long ago and has "worked" up till now, so no resources have been allocated
 to maintain it. However one or more core / critical components are starting to buckle under the stress of the
 organization (or already have) and now we must make fixes or we're doomed. The company is now in emergency
-mode that can be anywhere as severe as losing a client or going out of business if the issue cannot be fixed
+mode that can be as severe as losing a client or going out of business if the issue cannot be fixed
 in a timely manner.
 
 __Wow That's Old__
@@ -45,14 +50,16 @@ in-house or an open-source framework. Regardless, it's old and out-dated. Don't 
 functions as it should. However there is a lot of opportunities for productivity that are lost because the
 framework has not been given the proper amount of attention in either continued development (in-house) or upgrading
 to more recent versions (open-source). While this doesn't have an immediate impact on _current_ velocity, there
-are certainly missed opportunities for productivity which means your competition might have a leg-up on you here.
+are certainly missed opportunities for productivity which gives your competition an opportunity to have a leg-up.
 
-__Internal Open Source__
+<b>Internal Open <span style="text-decoration:line-through;">Death</span> Source</b>
 
 At some point in the past a framework, library, or tool was developed. After it was created it was sent around
 and the source was put up on some VCS server. The original writer doesn't really have time to maintain it so he
 "internally open sources" the project. Even though the project is oft used, no one touches the code, even if
-there are issues because they don't have time.
+there are issues because they don't have time. Eventually a problem is encountered that cannot be worked around
+and either the problem is fixed (yay) or as oft is the case, a new version that is _"sane"_ is re-written and the
+process starts all over again.
 
 __The Wall__
 
@@ -70,30 +77,30 @@ more to it than that, technical debt is just a side-effect. It's about your engi
 or with shared goals. When engineers are expected to dedicate 100 percent of their time to company initiatives,
 they don't like to go out of their way to collaborate with other teams for fear that it could impact their own
 deadlines. You can see silos developing as engineers become hyper-focused (or _"laser-focused"_ if you prefer) and
-engineers working without context of other projects outside of their teams.
+engineers working without context of projects outside of their teams.
 
 # The Improved Flow
 
-So all of this sounds bad, or typical depending on your perspective, and your wondering if 20% really fixes any
-of this. Again the answer is, _kind of_. Simply introducing a 20% time and no structure may not get you the
-results you desire. That's not to say that _some_ of the above can't be achieved without structure:
+So all of this sounds bad, or typical depending on your perspective, but I think we can all agree that the above
+is non-desirable for long-term sustainability of your technical platform. However I would expect that you're also
+skeptical if just _giving_ your engineers 20% time really fixes any of this (and you should be skeptical, it's 
+healthy). And the answer to "will this really work?" is _kind of_. Simply introducing a 20% time and no structure
+may not get you the results you desire. That's not to say that _some_ of the above can't be achieved without structure:
 
-+ __Internal Open Source__ - Community managed projects are fret with small issues, feature requests, etc that are
++ __Internal Open Source__ - Community managed projects are fret with small issues, feature requests, etc. that are
                              easily solvable with small amounts of time. Additionally knowledge of the
                              framework/library/etc can be built over time, allowing developers to tackle larger
                              improvements down the road.
 + __The Wall__             - More time to track down root-causes to issues and possibly propose fixes to systems
-                             not "owned" by the engineer's team.
+                             not "owned" by the engineer's team (i.e. small-scale collaboration).
 + _Other Small Stuff_      - It's easy for a single engineer to tackle small stuff on their own in relatively short
                              periods of time. Allowing your entire organization to follow the "boy scout rule" (leave
                              things nicer than you found them) can have a large impact over time.
 
-<!-- TODO: make capitalization of "Guild" and "Working Groups" consistent (upper case please) -->
-
 However, how do you handle the larger issues that exist? This takes coordination and planning. But how do you
 bundle that in with 20% time? While there are likely many ways to approach this, I propose approaching it with
-two strategies. Since I suck at naming I'll call these two strategies Guilds and Working Groups. Let's define
-them
+two strategies. Since I suck at naming I'll call these two strategies Guilds and Working Groups since they function
+in similar ways to what I have at my current employment. Let's define them
 
 + __Guild__         - Permanent group (members can change) with a specified subject-focus (e.g. metrics, performance,
                       analytics, etc).

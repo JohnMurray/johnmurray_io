@@ -8,3 +8,6 @@ deploy:
 	g ci -m "rebuild of _site/ dir for release"
 	g push github master
 	g push heroku master
+
+serve:
+	bundle exec jekyll serve --drafts

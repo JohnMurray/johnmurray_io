@@ -77,7 +77,7 @@ Ta-da! We now have models that represent create, read, and partial edit. With th
 now work on optimizing our workflow. I think the proper step is to define an
 abstract language that can define our service contract and allow our tooling to
 generate our corresponding models for us. As a matter of fact, this is what we do
-in Fireglass (an internal web-service framework) used at [AppNexus](http://appnexus.com).
+in Fireglass (an internal web-service framework) used at my current employment.
 
 However, this framework is not (yet, maybe someday) open source. After some quick
 looking around, I came across an older project that aimed to solve the problem via
