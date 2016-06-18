@@ -5,9 +5,68 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 31 Mar 2016 09:17:06 -0400</pubDate>
-    <lastBuildDate>Thu, 31 Mar 2016 09:17:06 -0400</lastBuildDate>
+    <pubDate>Sat, 18 Jun 2016 22:27:51 +0000</pubDate>
+    <lastBuildDate>Sat, 18 Jun 2016 22:27:51 +0000</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Don&#39;t Do Open Source</title>
+        <description>&lt;p&gt;I know… the title is a little provocative, and partially a lie. But hey, you’re here,
+so you might as well read what I have to say.&lt;/p&gt;
+
+&lt;h2 id=&quot;i-dont-do-open-source&quot;&gt;I don’t do open source&lt;/h2&gt;
+
+&lt;p&gt;I’ve always felt this cultural push to do and work on open source projects. It’s the
+way to achieve programmer greatness. The way you prove your chops as a great programmer
+to the rest of the world. It’s stupid.&lt;/p&gt;
+
+&lt;p&gt;I’m not saying open source isn’t great (it’s fantastic) and I’m not saying that you shouldn’t
+contribute. I’m just saying that it’s not personally for me. And I’m honestly a little
+tired of the industry notion that great programmers all contribute to open source. Obviously
+not everyone holds these beliefs, but I’ve seen enough job postings (from recruiters and sites
+like Indeed to engineers posting jobs in chat rooms and Hacker News) to see that this &lt;em&gt;is&lt;/em&gt;
+a trend.&lt;/p&gt;
+
+&lt;h2 id=&quot;my-github-is-full-of-unfinished-projects&quot;&gt;My GitHub is full of unfinished projects&lt;/h2&gt;
+
+&lt;p&gt;My GitHub account is not a place where “real” software lives. It’s a place where I express ideas,
+tinker with shiny new toys, and experiment. Some projects have README’s that detail the intent; some
+projects work while others don’t even compile or run.&lt;/p&gt;
+
+&lt;p&gt;Whenever I have a new thing I want to try out or a new idea that I want to try and express, I’ll usually
+create a GitHub repository to host it. It may not lead to anything, but that is not the point.&lt;/p&gt;
+
+&lt;h2 id=&quot;i-like-it-this-way&quot;&gt;I like it this way&lt;/h2&gt;
+
+&lt;p&gt;For a while now I’ve been attempting to merge the concepts of exploration and experimentation with open
+source. My primary motivation being to build a “portfolio” of work that demonstrates my abilities. But
+this inevitably led me to burn out time after time. When I burn out I get depressed, watch a bunch of 
+TV, and spend way to much time playing video games.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog-files/dont-do-open-source-1.png&quot; width=&quot;300px&quot; alt=&quot;burn out&quot; style=&quot;margin:0 auto;display: block;&quot; align=&quot;center&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I realized that my experiments are not open source projects (in the traditional sense) and that
+open source is probably not for me, at least not right now. Each person needs to find what they
+really enjoy and stick with it. For me that means learning through experimentation and small
+toy projects. And when an idea grabs my attention, I need to follow it.&lt;/p&gt;
+
+&lt;p&gt;This likely means I’ll stop working on “projects” mid-way though, when all the interesting bits seem
+answered. It also means jumping from idea to idea, depending on my mood or what I find most interesting.
+These are not bad things, because these are the things that keep me motivated, keep me learning. &lt;/p&gt;
+
+&lt;h1 id=&quot;because-something-is-better-than-nothing&quot;&gt;Because something is better than nothing&lt;/h1&gt;
+
+&lt;p&gt;Even if this attitude of “to be a good programmer you must of open source” continues/grows, I’m
+still better off doing what keeps me motivated, happy, and continually learning. &lt;/p&gt;
+</description>
+        <pubDate>Sat, 18 Jun 2016 12:00:00 +0000</pubDate>
+        <link>http://www.johnmurray.io/log/2016/06/18/Dont-do-Open-Source.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2016/06/18/Dont-do-Open-Source.html</guid>
+        
+        
+        <category>log</category>
+        
+      </item>
     
       <item>
         <title>Poor Man&#39;s Actors in Java</title>
@@ -332,7 +391,7 @@ implementation, at least it’s not bloating your dependency tree &lt;em&gt;too&
   +---------------------------+ +------------+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 </description>
-        <pubDate>Thu, 31 Mar 2016 00:00:00 -0400</pubDate>
+        <pubDate>Thu, 31 Mar 2016 00:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2016/03/31/Poor-Mans-Actors.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2016/03/31/Poor-Mans-Actors.html</guid>
         
@@ -475,7 +534,7 @@ a facilitator to help organize (and possibly manage) Working Groups.&lt;/p&gt;
 &lt;p&gt;20% is just what Google does (or claims to do), not some magic value that will solve all your woes. Pick some
 percentage or allotment of time that allows your engineers to work in the &lt;strong&gt;Improved Flow&lt;/strong&gt;.&lt;/p&gt;
 </description>
-        <pubDate>Tue, 09 Feb 2016 00:00:00 -0500</pubDate>
+        <pubDate>Tue, 09 Feb 2016 00:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2016/02/09/20-Percent-is-Mandatory.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2016/02/09/20-Percent-is-Mandatory.html</guid>
         
@@ -565,7 +624,7 @@ available today.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/pathikrit/metarest&quot;&gt;https://github.com/pathikrit/metarest&lt;/a&gt;&lt;/p&gt;
 </description>
-        <pubDate>Sun, 29 Nov 2015 12:00:00 -0500</pubDate>
+        <pubDate>Sun, 29 Nov 2015 12:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2015/11/29/Typed-PATCH.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2015/11/29/Typed-PATCH.html</guid>
         
@@ -667,7 +726,7 @@ our persistent storage solution. From this we can see that &lt;code&gt;Option&lt
 better replaced with a &lt;code&gt;TriState&lt;/code&gt;.&lt;/p&gt;
 
 </description>
-        <pubDate>Mon, 04 May 2015 12:00:00 -0400</pubDate>
+        <pubDate>Mon, 04 May 2015 12:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2015/05/04/Web-Service-Data-Models-Null.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2015/05/04/Web-Service-Data-Models-Null.html</guid>
         
@@ -748,7 +807,7 @@ and from the parsing code. I’m also not really doing anything with the
 
 &lt;p&gt;But yeah, just some (light) food for thought.&lt;/p&gt;
 </description>
-        <pubDate>Tue, 28 Apr 2015 12:00:00 -0400</pubDate>
+        <pubDate>Tue, 28 Apr 2015 12:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2015/04/28/Play-Typed-Action.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2015/04/28/Play-Typed-Action.html</guid>
         
@@ -838,7 +897,7 @@ without further to-do, a util that has been useful (for met at least):&lt;/p&gt;
 &lt;span class=&quot;lineno&quot;&gt;65&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 </description>
-        <pubDate>Mon, 27 Apr 2015 12:00:00 -0400</pubDate>
+        <pubDate>Mon, 27 Apr 2015 12:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2015/04/27/Jenkins-Env-Templating.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2015/04/27/Jenkins-Env-Templating.html</guid>
         
@@ -1122,7 +1181,7 @@ plugin that you’ll need to add that to your global plugins as the script/templ
 handle that for you.&lt;/p&gt;
 
 </description>
-        <pubDate>Tue, 15 Apr 2014 08:00:00 -0400</pubDate>
+        <pubDate>Tue, 15 Apr 2014 12:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2014/04/15/Starting-a-Scala-Project.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2014/04/15/Starting-a-Scala-Project.html</guid>
         
@@ -1251,7 +1310,7 @@ don’t fully understand. In those cases the compiler seems to be the specificat
 preferable (IMO) for many reasons. Oh Scala, you are an interesting little language.&lt;/p&gt;
 
 </description>
-        <pubDate>Sun, 17 Nov 2013 07:00:00 -0500</pubDate>
+        <pubDate>Sun, 17 Nov 2013 12:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2013/11/17/Scala-map()-vs-map%7B%7D.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2013/11/17/Scala-map()-vs-map%7B%7D.html</guid>
         
@@ -1374,43 +1433,9 @@ into the same trap as with HN. Choose carefully and always think about how you�
 from each article that you read.&lt;/p&gt;
 
 </description>
-        <pubDate>Sun, 17 Nov 2013 07:00:00 -0500</pubDate>
+        <pubDate>Sun, 17 Nov 2013 12:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2013/11/17/Read-Less-HN.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2013/11/17/Read-Less-HN.html</guid>
-        
-        
-        <category>log</category>
-        
-      </item>
-    
-      <item>
-        <title>Scala By Example</title>
-        <description>&lt;p&gt;I believe that the best way to learn a new language or technology, or anything for that
-matter, is to really get your hands dirty. This is especially true when it comes to learning
-a new programming language. You really absorb the details of the language by writing code
-and small/toy applications in that language. However, just getting started can be a little
-hard sometimes. In part because you can’t yet get your hands dirty until you’ve spent a fair
-amount of time reading and understanding the basic principals of the language.&lt;/p&gt;
-
-&lt;p&gt;Recently I taught an introductory Scala course to my team at work and I spent a fair amount
-of time thinking about how I could get everyone involved while still learning the beginner concepts.
-Scala makes this relatively easy by the use of Worksheets. Worksheets are an IDE feature that
-allows you to execute a file’s worth of code in a REPL like environment. That being the case, I
-created my lessons as a series of worksheets. I walked through each of these explaining various
-concepts and answering questions while everyone else was able to immediately start playing with
-Scala code.&lt;/p&gt;
-
-&lt;p&gt;I hope, and feel, that this was a useful tool. That being said, if you would like to do something
-similar with your team, or for yourself, then you can access the worksheets on GitHub. If you find
-this useful, please contribute back to the project and socialize it to other developers you know who
-might be interested in learning Scala or teaching it to their engineering team.&lt;/p&gt;
-
-&lt;p&gt;Github Repo: &lt;a href=&quot;https://github.com/JohnMurray/learn-scala-worksheets&quot;&gt;https://github.com/JohnMurray/learn-scala-worksheets&lt;/a&gt;&lt;/p&gt;
-
-</description>
-        <pubDate>Sat, 05 Oct 2013 08:00:00 -0400</pubDate>
-        <link>http://www.johnmurray.io/log/2013/10/05/Scala-by-Example.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/log/2013/10/05/Scala-by-Example.html</guid>
         
         
         <category>log</category>
