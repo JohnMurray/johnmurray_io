@@ -51,5 +51,5 @@ These are not bad things, because these are the things that keep me motivated, k
 
 # Because something is better than nothing
 
-Even if this attitude of "to be a good programmer you must of open source" continues/grows, I'm
+Even if this attitude of "to be a good programmer you must do open source" continues/grows, I'm
 still better off doing what keeps me motivated, happy, and continually learning. 
