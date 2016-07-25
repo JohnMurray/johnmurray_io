@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Inspecting JSON From The Command Line</title>
+  <meta name="description" content="Sometimes you need to inspect some heterogeneous JSON documents. I didn’t see any good toolsout there that were better than me writing some custom shell scri...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/log/2016/07/25/Inspecting-JSON-From-The-Command-Line.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2016. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+    <header class="post-header">
+        <h1 class="post-title">Inspecting JSON From The Command Line</h1>
+    </header>
+
+    <article class="post-content">
+        <p>Sometimes you need to inspect some heterogeneous JSON documents. I didn’t see any good tools
+out there that were better than me writing some custom shell scripts each time I wanted to inspect
+or extract specific values. So… I made a little util called <code>json-inspect</code> that will do at
+least two things that I needed. The first is to create a histogram from JSON values given a search
+expression that allows us to search nested JSON documents. An example</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect histo <span class="s1">&#39;[].*.user.demographic.regions.[].name&#39;</span>
+
+<span class="o">[]</span>.*.user.demographic.regions.<span class="o">[]</span>.name:
+Highland Heig   <span class="p">|</span> <span class="c">#########################                          | (1)</span>
+US              <span class="p">|</span> <span class="c">################################################## | (2)</span>
+Louisville      <span class="p">|</span> <span class="c">#########################                          | (1)</span>
+Kentucky        <span class="p">|</span> <span class="c">################################################## | (2)</span>
+UK              <span class="p">|</span> <span class="c">#########################                          | (1)</span>
+Wales           <span class="p">|</span> <span class="c">#########################                          | (1)</span></code></pre></div>
+
+<p>And if instead of creating charts based on values we instead wanted to extract those values, we can do that
+as well. An example</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect ext <span class="s2">&quot;[].*.user.demographic.regions.[].*&quot;</span>
+Louisville,Kentucky,US,Highland Heights,Kentucky,US,Wales,UK
+
+<span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect ext -d <span class="s1">&#39;|&#39;</span> <span class="s2">&quot;[].*.user.demographic.regions.[].*&quot;</span>
+Louisville<span class="p">|</span>Kentucky<span class="p">|</span>US<span class="p">|</span>Highland Heights<span class="p">|</span>Kentucky<span class="p">|</span>US<span class="p">|</span>Wales<span class="p">|</span>UK</code></pre></div>
+
+<p>This is up on my GitHub under the <a href="https://github.com/JohnMurray/json-inspect">json-inspect</a> project where you can find more information and usage information. 
+I may contribute more to it later on if I find need or more functionality. If you have some cool inspection tools
+you want to add, open a PR.</p>
+
+
+
+        <div class="footer-navigation">
+            
+                <span class="previous"><a href="/log/2016/06/18/Dont-do-Open-Source.html">
+                    &laquo;Don't Do Open Source
+                </a></span>
+            
+            
+        </div>
+
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Footer Advertisement -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-8460014050417630"
+             data-ad-slot="9924998708"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+    </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11511983-4']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); 
+        ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+
+</html>
