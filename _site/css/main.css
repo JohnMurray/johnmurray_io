@@ -271,7 +271,7 @@ pre {
  * Post-Nav
  */
 .footer-navigation {
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #e0e0e0;
   display: block;
   font-weight: bold;
   height: 60px;
@@ -286,7 +286,8 @@ pre {
 
 @media (min-width: 760px) {
   .footer-navigation {
-    height: 30px; }
+    height: 30px;
+    padding-bottom: 10px; }
     .footer-navigation .previous {
       display: block;
       float: left;
