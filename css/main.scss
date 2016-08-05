@@ -2,20 +2,22 @@
 # Only the main Sass file needs front matter (the dashes are enough)
 ---
 @charset "utf-8";
+@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500';
 
 
 
 // Our variables
-$base-font-family: "Open Sans", Helvetica, Arial, sans-serif;
+$base-font-family: "Roboto", "Open Sans", Helvetica, Arial, sans-serif;
 $base-font-size:   18px;
 $small-font-size:  $base-font-size * 0.875;
 $base-line-height: 1.5;
 
 $spacing-unit:     30px;
 
-$text-color:       #111;
-$background-color: #fdfdfd;
-$brand-color:      #2a7ae2;
+$text-color:       #566b78;
+$em-text-color:    #344b78;     // for emphasized text
+$background-color: #fff;
+$brand-color:      #e81c4f;
 
 $grey-color:       #828282;
 $grey-color-light: lighten($grey-color, 40%);

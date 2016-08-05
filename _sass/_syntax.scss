@@ -62,7 +62,7 @@
 .post .highlight .lineno { 
   color: #ccc; 
   display:inline-block; 
-  padding: 0 5px; 
+  padding: 0 5px 0 0; 
   border-right:1px solid #ccc; 
 }
 
@@ -75,8 +75,9 @@
 
 .post .highlight pre {
   /* border-color: #ccc; background-color: #f5f5f5; */
+  border: none;
+  border-left: 3px solid #d8dee9;
   border-color: #e0e0e0;
-  background-color: #fff;
 }
 
 .post .highlight pre code {
