@@ -74,7 +74,7 @@ a {
     color: #e81c4f; }
   a:hover {
     color: #566b78;
-    text-decoration: underline; }
+    text-decoration: none; }
 
 /**
  * Blockquotes
