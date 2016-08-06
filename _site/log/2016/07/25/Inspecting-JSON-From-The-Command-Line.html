@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Inspecting JSON From The Command Line</title>
-  <meta name="description" content="Sometimes you need to inspect some heterogeneous JSON documents. I didn’t see any good toolsout there that were better than me writing some custom shell scri...">
+  <meta name="description" content="Sometimes you need to inspect some heterogeneous JSON documents. When it comes to working with JSONthere are a lot of great libraries out there. However, the...">
 
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://www.johnmurray.io/log/2016/07/25/Inspecting-JSON-From-The-Command-Line.html">
@@ -41,11 +41,56 @@
     </header>
 
     <article class="post-content">
-        <p>Sometimes you need to inspect some heterogeneous JSON documents. I didn’t see any good tools
-out there that were better than me writing some custom shell scripts each time I wanted to inspect
-or extract specific values. So… I made a little util called <code>json-inspect</code> that will do at
-least two things that I needed. The first is to create a histogram from JSON values given a search
-expression that allows us to search nested JSON documents. An example</p>
+        <p>Sometimes you need to inspect some heterogeneous JSON documents. When it comes to working with JSON
+there are a lot of great libraries out there. However, there aren’t many tools out there that
+allow me to work with JSON in the shell without resorting to writing small custom bits of Python
+or Ruby each time. And even this doesn’t always get me as far as I’d like it to without writing
+larger blocks of Ruby/Python code to dig through large / complex JSON documents.</p>
+
+<p>Given the title of this post, you can see where this is heading. I have created a simple command
+line utility as a gathering place of functionality for inspecting JSON documents. I’ll show off
+two features of the tool today.</p>
+
+<p>If you want to follow-along with the examples I’m showing, feel free to install via</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">pip install json-inspect</code></pre></div>
+
+<p>Let’s first make a file <code>test.json</code> to contain some fake JSON data to play with</p>
+
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">[</span>
+ <span class="p">{</span>
+   <span class="nt">&quot;facebook&quot;</span><span class="p">:</span> <span class="p">{</span>
+     <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+       <span class="nt">&quot;demographic&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;regions&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;US&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Kentucky&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Louisville&quot;</span><span class="p">}</span> <span class="p">]</span>
+       <span class="p">}</span>
+     <span class="p">}</span>
+   <span class="p">},</span>
+   <span class="nt">&quot;google&quot;</span><span class="p">:</span> <span class="p">{</span>
+     <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+       <span class="nt">&quot;demographic&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;regions&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;US&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Kentucky&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Highland Heights&quot;</span><span class="p">}</span> <span class="p">]</span>
+       <span class="p">}</span>
+     <span class="p">}</span>
+   <span class="p">}</span>
+ <span class="p">},</span>
+ <span class="p">{</span>
+   <span class="nt">&quot;twitter&quot;</span><span class="p">:</span> <span class="p">{</span>
+     <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+       <span class="nt">&quot;demographic&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;regions&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;UK&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Wales&quot;</span><span class="p">}</span> <span class="p">]</span>
+       <span class="p">}</span>
+     <span class="p">}</span>
+   <span class="p">}</span>
+ <span class="p">}</span>
+<span class="p">]</span></code></pre></div>
+
+<h2 id="frequency">Frequency</h2>
+
+<p>If you are working with JSON data that you do not control (think data integrations)
+then you sometimes need to compare their specification of the data with the data
+you are actually receiving. For this we can create a histogram of values based on a
+search expression. </p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect histo <span class="s1">&#39;[].*.user.demographic.regions.[].name&#39;</span>
 
@@ -57,18 +102,44 @@ Kentucky        <span class="p">|</span> <span class="c">#######################
 UK              <span class="p">|</span> <span class="c">#########################                          | (1)</span>
 Wales           <span class="p">|</span> <span class="c">#########################                          | (1)</span></code></pre></div>
 
-<p>And if instead of creating charts based on values we instead wanted to extract those values, we can do that
-as well. An example</p>
+<p>Maybe I’m biased, but this is great! I was able to inspect this JSON document with
+minimal command-line-foo.</p>
+
+<h2 id="search-paths--expressions">Search Paths / Expressions</h2>
+
+<p>The heart of the previous example is the search expression. It currently consists of
+three parts (working on a recursive <code>**</code> operator) which are</p>
+
+<ul>
+  <li><code>[]</code> - Represents an array (containing objects)</li>
+  <li><code>*</code> - Represents all fields within an array</li>
+  <li><code>TOKEN</code> - This is a field name within an object</li>
+</ul>
+
+<p>The <code>[]</code> and <code>*</code> tokens will result in all values being processed by the next token
+in the path. The path itself is delimited by <code>.</code>, so this means that field-names
+with <code>.</code> in them are not supported.</p>
+
+<h2 id="values">Values</h2>
+
+<p>And if instead of creating charts based on values we instead wanted to extract
+those values, we can do that as well. An example</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect ext <span class="s2">&quot;[].*.user.demographic.regions.[].*&quot;</span>
-Louisville,Kentucky,US,Highland Heights,Kentucky,US,Wales,UK
+Louisville,Kentucky,US,Highland Heights,Kentucky,US,Wales,UK</code></pre></div>
 
-<span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect ext -d <span class="s1">&#39;|&#39;</span> <span class="s2">&quot;[].*.user.demographic.regions.[].*&quot;</span>
+<p>We can also control the delimiter to make piping values into other command-line tools
+easier.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect ext -d <span class="s1">&#39;|&#39;</span> <span class="s2">&quot;[].*.user.demographic.regions.[].*&quot;</span>
 Louisville<span class="p">|</span>Kentucky<span class="p">|</span>US<span class="p">|</span>Highland Heights<span class="p">|</span>Kentucky<span class="p">|</span>US<span class="p">|</span>Wales<span class="p">|</span>UK</code></pre></div>
 
-<p>This is up on my GitHub under the <a href="https://github.com/JohnMurray/json-inspect">json-inspect</a> project where you can find more information and usage information. 
-I may contribute more to it later on if I find need or more functionality. If you have some cool inspection tools
-you want to add, open a PR.</p>
+<h2 id="the-source">The Source</h2>
+
+<p>This is up on my GitHub under the <a href="https://github.com/JohnMurray/json-inspect">json-inspect</a> project where you can find more
+information and documentation. I plan to contribute further to this project as I have
+need, but if you have ideas for useful features and want to contribute, feel free to
+open PRs.</p>
 
 
 

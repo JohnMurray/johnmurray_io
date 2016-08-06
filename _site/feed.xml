@@ -5,17 +5,62 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 05 Aug 2016 20:55:27 +0000</pubDate>
-    <lastBuildDate>Fri, 05 Aug 2016 20:55:27 +0000</lastBuildDate>
+    <pubDate>Sat, 06 Aug 2016 04:47:37 +0000</pubDate>
+    <lastBuildDate>Sat, 06 Aug 2016 04:47:37 +0000</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
         <title>Inspecting JSON From The Command Line</title>
-        <description>&lt;p&gt;Sometimes you need to inspect some heterogeneous JSON documents. I didn’t see any good tools
-out there that were better than me writing some custom shell scripts each time I wanted to inspect
-or extract specific values. So… I made a little util called &lt;code&gt;json-inspect&lt;/code&gt; that will do at
-least two things that I needed. The first is to create a histogram from JSON values given a search
-expression that allows us to search nested JSON documents. An example&lt;/p&gt;
+        <description>&lt;p&gt;Sometimes you need to inspect some heterogeneous JSON documents. When it comes to working with JSON
+there are a lot of great libraries out there. However, there aren’t many tools out there that
+allow me to work with JSON in the shell without resorting to writing small custom bits of Python
+or Ruby each time. And even this doesn’t always get me as far as I’d like it to without writing
+larger blocks of Ruby/Python code to dig through large / complex JSON documents.&lt;/p&gt;
+
+&lt;p&gt;Given the title of this post, you can see where this is heading. I have created a simple command
+line utility as a gathering place of functionality for inspecting JSON documents. I’ll show off
+two features of the tool today.&lt;/p&gt;
+
+&lt;p&gt;If you want to follow-along with the examples I’m showing, feel free to install via&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;pip install json-inspect&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s first make a file &lt;code&gt;test.json&lt;/code&gt; to contain some fake JSON data to play with&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;nt&quot;&gt;&amp;quot;facebook&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;quot;user&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nt&quot;&gt;&amp;quot;demographic&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+         &lt;span class=&quot;nt&quot;&gt;&amp;quot;regions&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;US&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Kentucky&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Louisville&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+   &lt;span class=&quot;nt&quot;&gt;&amp;quot;google&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;quot;user&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nt&quot;&gt;&amp;quot;demographic&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+         &lt;span class=&quot;nt&quot;&gt;&amp;quot;regions&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;US&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Kentucky&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Highland Heights&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;nt&quot;&gt;&amp;quot;twitter&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;quot;user&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nt&quot;&gt;&amp;quot;demographic&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+         &lt;span class=&quot;nt&quot;&gt;&amp;quot;regions&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;UK&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Wales&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;frequency&quot;&gt;Frequency&lt;/h2&gt;
+
+&lt;p&gt;If you are working with JSON data that you do not control (think data integrations)
+then you sometimes need to compare their specification of the data with the data
+you are actually receiving. For this we can create a histogram of values based on a
+search expression. &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cat test.json &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; json-inspect histo &lt;span class=&quot;s1&quot;&gt;&amp;#39;[].*.user.demographic.regions.[].name&amp;#39;&lt;/span&gt;
 
@@ -27,18 +72,44 @@ Kentucky        &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; &lt;span class=&q
 UK              &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#########################                          | (1)&lt;/span&gt;
 Wales           &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#########################                          | (1)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;And if instead of creating charts based on values we instead wanted to extract those values, we can do that
-as well. An example&lt;/p&gt;
+&lt;p&gt;Maybe I’m biased, but this is great! I was able to inspect this JSON document with
+minimal command-line-foo.&lt;/p&gt;
+
+&lt;h2 id=&quot;search-paths--expressions&quot;&gt;Search Paths / Expressions&lt;/h2&gt;
+
+&lt;p&gt;The heart of the previous example is the search expression. It currently consists of
+three parts (working on a recursive &lt;code&gt;**&lt;/code&gt; operator) which are&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;[]&lt;/code&gt; - Represents an array (containing objects)&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;*&lt;/code&gt; - Represents all fields within an array&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;TOKEN&lt;/code&gt; - This is a field name within an object&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The &lt;code&gt;[]&lt;/code&gt; and &lt;code&gt;*&lt;/code&gt; tokens will result in all values being processed by the next token
+in the path. The path itself is delimited by &lt;code&gt;.&lt;/code&gt;, so this means that field-names
+with &lt;code&gt;.&lt;/code&gt; in them are not supported.&lt;/p&gt;
+
+&lt;h2 id=&quot;values&quot;&gt;Values&lt;/h2&gt;
+
+&lt;p&gt;And if instead of creating charts based on values we instead wanted to extract
+those values, we can do that as well. An example&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cat test.json &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; json-inspect ext &lt;span class=&quot;s2&quot;&gt;&amp;quot;[].*.user.demographic.regions.[].*&amp;quot;&lt;/span&gt;
-Louisville,Kentucky,US,Highland Heights,Kentucky,US,Wales,UK
+Louisville,Kentucky,US,Highland Heights,Kentucky,US,Wales,UK&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cat test.json &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; json-inspect ext -d &lt;span class=&quot;s1&quot;&gt;&amp;#39;|&amp;#39;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;[].*.user.demographic.regions.[].*&amp;quot;&lt;/span&gt;
+&lt;p&gt;We can also control the delimiter to make piping values into other command-line tools
+easier.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cat test.json &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; json-inspect ext -d &lt;span class=&quot;s1&quot;&gt;&amp;#39;|&amp;#39;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;[].*.user.demographic.regions.[].*&amp;quot;&lt;/span&gt;
 Louisville&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;Kentucky&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;US&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;Highland Heights&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;Kentucky&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;US&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;Wales&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;UK&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;This is up on my GitHub under the &lt;a href=&quot;https://github.com/JohnMurray/json-inspect&quot;&gt;json-inspect&lt;/a&gt; project where you can find more information and usage information. 
-I may contribute more to it later on if I find need or more functionality. If you have some cool inspection tools
-you want to add, open a PR.&lt;/p&gt;
+&lt;h2 id=&quot;the-source&quot;&gt;The Source&lt;/h2&gt;
+
+&lt;p&gt;This is up on my GitHub under the &lt;a href=&quot;https://github.com/JohnMurray/json-inspect&quot;&gt;json-inspect&lt;/a&gt; project where you can find more
+information and documentation. I plan to contribute further to this project as I have
+need, but if you have ideas for useful features and want to contribute, feel free to
+open PRs.&lt;/p&gt;
 
 </description>
         <pubDate>Mon, 25 Jul 2016 00:00:00 +0000</pubDate>
@@ -70,9 +141,9 @@ a trend.&lt;/p&gt;
 
 &lt;h2 id=&quot;my-github-is-full-of-unfinished-projects&quot;&gt;My GitHub is full of unfinished projects&lt;/h2&gt;
 
-&lt;p&gt;My GitHub account is not a place where “real” software lives. It’s a place where I express ideas,
-tinker with shiny new toys, and experiment. Some projects have README’s that detail the intent; some
-projects work while others don’t even compile or run.&lt;/p&gt;
+&lt;p&gt;My GitHub account is not a place where “real” software lives (mostly). It’s a place where I express
+ideas, tinker with shiny new toys, and experiment. Some projects have README’s that detail the
+intent; some projects work while others don’t even compile or run.&lt;/p&gt;
 
 &lt;p&gt;Whenever I have a new thing I want to try out or a new idea that I want to try and express, I’ll usually
 create a GitHub repository to host it. It may not lead to anything, but that is not the point.&lt;/p&gt;
@@ -91,14 +162,15 @@ open source is probably not for me, at least not right now. Each person needs to
 really enjoy and stick with it. For me that means learning through experimentation and small
 toy projects. And when an idea grabs my attention, I need to follow it.&lt;/p&gt;
 
-&lt;p&gt;This likely means I’ll stop working on “projects” mid-way though, when all the interesting bits seem
+&lt;p&gt;This likely means I’ll stop working on projects mid-way though, when all the interesting bits seem
 answered. It also means jumping from idea to idea, depending on my mood or what I find most interesting.
 These are not bad things, because these are the things that keep me motivated, keep me learning. &lt;/p&gt;
 
 &lt;h1 id=&quot;because-something-is-better-than-nothing&quot;&gt;Because something is better than nothing&lt;/h1&gt;
 
 &lt;p&gt;Even if this attitude of “to be a good programmer you must do open source” continues/grows, I’m
-still better off doing what keeps me motivated, happy, and continually learning. &lt;/p&gt;
+still better off doing what keeps me motivated, happy, and continually learning. Maybe that will
+result in open source, maybe it won’t.&lt;/p&gt;
 </description>
         <pubDate>Sat, 18 Jun 2016 12:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2016/06/18/Dont-do-Open-Source.html</link>
