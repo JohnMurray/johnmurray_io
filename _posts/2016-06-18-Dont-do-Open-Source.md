@@ -22,9 +22,9 @@ a trend.
 
 ## My GitHub is full of unfinished projects
 
-My GitHub account is not a place where "real" software lives. It's a place where I express ideas,
-tinker with shiny new toys, and experiment. Some projects have README's that detail the intent; some
-projects work while others don't even compile or run.
+My GitHub account is not a place where "real" software lives (mostly). It's a place where I express
+ideas, tinker with shiny new toys, and experiment. Some projects have README's that detail the
+intent; some projects work while others don't even compile or run.
 
 Whenever I have a new thing I want to try out or a new idea that I want to try and express, I'll usually
 create a GitHub repository to host it. It may not lead to anything, but that is not the point.
@@ -45,11 +45,12 @@ open source is probably not for me, at least not right now. Each person needs to
 really enjoy and stick with it. For me that means learning through experimentation and small
 toy projects. And when an idea grabs my attention, I need to follow it.
 
-This likely means I'll stop working on "projects" mid-way though, when all the interesting bits seem
+This likely means I'll stop working on projects mid-way though, when all the interesting bits seem
 answered. It also means jumping from idea to idea, depending on my mood or what I find most interesting.
 These are not bad things, because these are the things that keep me motivated, keep me learning. 
 
 # Because something is better than nothing
 
 Even if this attitude of "to be a good programmer you must do open source" continues/grows, I'm
-still better off doing what keeps me motivated, happy, and continually learning. 
+still better off doing what keeps me motivated, happy, and continually learning. Maybe that will
+result in open source, maybe it won't.
