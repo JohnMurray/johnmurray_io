@@ -7,9 +7,9 @@ use Rack::Deflater
 # static configuration (file path matches reuest path)
 use Rack::TryStatic, 
       :root => "_site",  # static files root dir
-      :urls => %w[/],     # match all requests 
+      :urls => %w[/],    # match all requests 
       :try => ['.html', 'index.html', '/index.html'], # try these postfixes sequentially
-      :gzip => true,
+      :gzip => true,     # enable compressed files
       :header_rules => [
         [:all, {'Cache-Control' => 'public, max-age=86400'}],
         [['css', 'js'], {'Cache-Control' => 'public, max-age=604800'}]
