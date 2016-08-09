@@ -43,7 +43,7 @@
     <article class="post-content">
         <p>There’s a lot we can learn from Microsoft, some of it from well designed
 software and <s>most</s> some of it from poorly designed software. 
-This particular post is about the latter. </p>
+This particular post is about the latter.</p>
 
 <p>I was working in .NET today (yes, it was a sad day) and I needed to do the
 following:</p>
@@ -156,13 +156,13 @@ serialized JSON of my data contract to look like:</p>
 
 <p>WHAT THE HECK! Who in the world would think a key-value data-structure would
 translate to an array where each key-value pair is it’s own object!? If that
-makes any sense to you then, please, explain it to me. </p>
+makes any sense to you then, please, explain it to me.</p>
 
 <p><br /></p>
 
 <p><strong><em>Anti-Pattern #3</em></strong> - Provide an alternative method that provides the correct
 functionality, give it a confusing name, and package it with a huge library so
-that if you only need that one class then you’re screwed. </p>
+that if you only need that one class then you’re screwed.</p>
 
 <p>Come to find out, there is a correct implementation of a JSON serializer that is
 called <em>JavaScriptSerializer</em> that lives in the System.Web DLL. Okay, if it’s
@@ -174,7 +174,7 @@ serialization you have to include the <em>entire</em> System.Web DLL. Seriously!
 systems in our infrastructure. This project will be utilized by a variety
 of project types. I can’t, in good conscience, force every project for carry
 around a dependency of System.Web. So, off to the interwebs I go to find
-another solution. </p>
+another solution.</p>
 
 <p><br />
 …</p>
@@ -183,7 +183,7 @@ another solution. </p>
 
 <p>Okay, I’m back and I have a solution!
 I’m going to rewrite the entire application in Ruby! Yep… That should do
-the trick. </p>
+the trick.</p>
 
 <p><br /></p>
 
@@ -192,7 +192,7 @@ boiler-plate code that clutters up the user’s code-base.</p>
 
 <p>Ah, if only it were that simple. What I really found on the webs
 was how to write a wrapper-class to the built-in Dictionary class that would
-serialize correctly. </p>
+serialize correctly.</p>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno"> 1</span> <span class="o">[</span><span class="no">Serializable</span><span class="o">]</span>
 <span class="lineno"> 2</span> <span class="kp">public</span> <span class="k">class</span> <span class="nc">JsonDictionary</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="p">:</span> <span class="no">ISerializable</span>
@@ -278,7 +278,7 @@ object, sending our request looks like the following:</p>
 
 <p>If we look back at the Ruby example above, you’ll notice that almost all of the
 code is focusing on sending the request. So, as far as sending web-requests is
-concerned, the .NET version is comparable in terms of length. </p>
+concerned, the .NET version is comparable in terms of length.</p>
 
 <p>However, one thing to think about—when is the request sent? Well, in this case,
 it wasn’t. Yep, you read correctly, the request in the above example was never
@@ -301,7 +301,7 @@ forget” then you would use the following to make the request:</p>
 <span class="lineno">4</span> <span class="sr">//</span> <span class="no">Send</span> <span class="n">request</span>
 <span class="lineno">5</span> <span class="n">request</span><span class="o">.</span><span class="n">GetResponse</span><span class="p">();</span></code></pre></div>
 
-<p>Sure… that’s real intuitive. </p>
+<p>Sure… that’s real intuitive.</p>
 
 <h4 id="step-4---verify-the-response-status-code">Step 4 - Verify the response status code</h4>
 

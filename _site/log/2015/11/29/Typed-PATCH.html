@@ -64,7 +64,7 @@ API, is defined as. All pieces except <code>address</code> are required
 and I also expect a few meta-data fields to exist such as <code>id</code>, 
 <code>createdOn</code> and <code>lastModified</code>. This type works great when defining objects
 in my system, but it starts to break down as a definition for a contract with a
-consumer of my web-service. </p>
+consumer of my web-service.</p>
 
 <p>While this works decently well for read operations, where the full object
 is returned, what does this look like for a create (<code>POST</code>) operation? To start I
@@ -89,7 +89,7 @@ In our case, it might look like:</p>
 <span class="lineno">4</span>                       <span class="n">address</span><span class="k">:</span>  <span class="kt">Option</span><span class="o">[</span><span class="kt">Address</span><span class="o">])</span></code></pre></div>
 
 <p>This gets us where we want to be at the price of having to create and maintain another
-type in our application. </p>
+type in our application.</p>
 
 <p>Now it’s time to think about how we would support operations such as PATCH which
 are based around the idea of partial edits. Since, by the nature of partial edits,

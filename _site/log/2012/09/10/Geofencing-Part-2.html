@@ -59,14 +59,14 @@ surprise for you.</p>
 
 <p>Before we get into the nitty-gritty details, we’ll go over the conceptual
 approach that we will be taking. My hope is that the theoretical foundation
-will aid in understanding the concrete details. </p>
+will aid in understanding the concrete details.</p>
 
 <h3 id="utilizing-mongo">Utilizing Mongo</h3>
 
 <p>As we’re planning our geofence server, we know we want to use existing
 technologies, where possible, to aid in development time. In this example,
 we’re going to use some of the geo-spatial indexing and search features
-that are available in Mongo. </p>
+that are available in Mongo.</p>
 
 <p>In particular, Mongo allows you index Lat-Lon points and search within
 a specified radius. To visualize this, I’ve put together a map full of
@@ -115,7 +115,7 @@ inside of the fence).</p>
 <p>So far, things have been pretty easy (although possibly not easy to follow
 along the first time through) conceptually. Now you might have to get some
 pin a paper out to draw this next piece to fully understand how we are
-going to do this. </p>
+going to do this.</p>
 
 <p>Our objective is to turn a random, regular polygon into a set of grid-blocks
 which estimate its shape. We’re going to be using an algorithm similar to

@@ -45,7 +45,7 @@
 <p>So, if you’ve taken a look at FnordMetrics then you know why it’s worth
 trying out. It’s easy to get setup, has a great API for defining your
 metrics collection, and is a powerful tool in your platform-analytics
-arsenal. </p>
+arsenal.</p>
 
 <p>If you’ve never heard of FnordMetrics before (since it’s relatively new at
 this point) then, let me explain a little bit. From the FnordMetric site, it
@@ -94,7 +94,7 @@ you can find a great Windows Ruby installer over <a href="http://rubyinstaller.o
 
 <p>Once you get the Linux server setup then you’ll need to install Ruby. I’d
 recommend (for ease) that you use <a href="http://beginrescueend.com">RVM</a>. To get started, mosey on
-over to their (entirely professional) site and follow the instructions. </p>
+over to their (entirely professional) site and follow the instructions.</p>
 
 <p>Once that is done, we need to install FnordMetric. This is my favorite part
 just because it is so easy. Open up a terminal and run:</p>
@@ -146,7 +146,7 @@ at the first actual line of code:</p>
 exactly is a namespace? Well, in the context of my work, it could be our web
 application or our real time services. Think of it as the whole dashboard. Note
 that it is possible to create multiple namespaces and host them all in one
-Fnord instance. </p>
+Fnord instance.</p>
 
 <p>The next piece of important code is the gauge:</p>
 
@@ -166,7 +166,7 @@ title is only used when looking at the keys in your graph.</p>
 
 <p>This registers the event that Fnord will listen to and what to do when that
 event is received. In this case, we’d like to increment the gauge :logins_per_hour
-when we receive a :login event. </p>
+when we receive a :login event.</p>
 
 <p>An event looks like this (in JSON):</p>
 
@@ -233,7 +233,7 @@ Redis keys. This is discussed in the next section if you are interested.</p>
  intervention. But, what if my Redis install runs on a non-standard port? Or,
  perhaps I want my metrics dashboard to run over port 80 so that I can set
  up a sub-domain like stats.mysite.com. Maybe you’re wondering how FnordMetric
- knows what items in Redis to read. Let’s take a closer look. </p>
+ knows what items in Redis to read. Let’s take a closer look.</p>
 
 <p>The first piece of the puzzle is the configuration section which, if left
  out, is populated with some smart defaults. Let’s define a custom
@@ -285,7 +285,7 @@ example, with the newly defined prefix, our redis ID might look like</p>
 <p>The one other item that might be a little confusing is the <code>inbound_stream</code>
 configuration option. This specifies on what port the API will run. The API
 is yet another way to push data to FnordMetric but, I’m not going to cover
-that here. You can learn more about that on their <a href="http://github.com/paulasmuth/fnordmetric">GitHub</a> page. </p>
+that here. You can learn more about that on their <a href="http://github.com/paulasmuth/fnordmetric">GitHub</a> page.</p>
 
 <p>Well, that’s about it. There’s not a lot of demystifying to do here. It’s a
 pretty straight forward project with a gorgeous API. Obviously there is a lot
