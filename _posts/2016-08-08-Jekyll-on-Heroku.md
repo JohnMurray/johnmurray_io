@@ -138,6 +138,18 @@ The `gzip` and `header_rules` options simply allow caching to work which we defi
 should help to significantly speed up your site, especially as visitors click from page to page as
 they will avoid re-loading common resources such as CSS or JS files.
 
+This last part is especially nifty.
+
+{% highlight ruby %}
+# otherwise 404 NotFound
+notFoundPage = File.open('_site/index.html').read
+run lambda { |_| [200, {'Content-Type' => 'text/html'}, [notFoundPage]]}
+{% endhighlight %}
+
+This will redirect any request that we can't understand (broken link or just bad URL) back to the
+homepage. You could, if you wanted to be really fancy here, provide a custom "Not Found" page. Let
+your imagination run wild.
+
 ## Procfile
 
 If we are deploying to Heroku, we need to create a `Procfile` that tells Heroku how to run our site.
