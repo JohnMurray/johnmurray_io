@@ -169,6 +169,16 @@ files in order</p>
 should help to significantly speed up your site, especially as visitors click from page to page as
 they will avoid re-loading common resources such as CSS or JS files.</p>
 
+<p>This last part is especially nifty.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># otherwise 404 NotFound</span>
+<span class="n">notFoundPage</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;_site/index.html&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span>
+<span class="n">run</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">_</span><span class="o">|</span> <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;text/html&#39;</span><span class="p">},</span> <span class="o">[</span><span class="n">notFoundPage</span><span class="o">]]</span><span class="p">}</span></code></pre></div>
+
+<p>This will redirect any request that we can’t understand (broken link or just bad URL) back to the
+homepage. You could, if you wanted to be really fancy here, provide a custom “Not Found” page. Let
+your imagination run wild.</p>
+
 <h2 id="procfile">Procfile</h2>
 
 <p>If we are deploying to Heroku, we need to create a <code>Procfile</code> that tells Heroku how to run our site.
