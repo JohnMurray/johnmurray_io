@@ -10,9 +10,10 @@ larger blocks of Ruby/Python code to dig through large / complex JSON documents.
 
 Given the title of this post, you can see where this is heading. I have created a simple command
 line utility as a gathering place of functionality for inspecting JSON documents. I'll show off
-two features of the tool today.
+some features of the tool.
 
-If you want to follow-along with the examples I'm showing, feel free to install via
+If you want to follow-along with the examples I'm showing, feel free to install the tool from
+[PyPi][json_inspect_pypi] via 
 
 {% highlight bash %}
 pip install json-inspect
@@ -103,6 +104,54 @@ $ cat test.json | json-inspect ext -d '|' "[].*.user.demographic.regions.[].*"
 Louisville|Kentucky|US|Highland Heights|Kentucky|US|Wales|UK
 {% endhighlight %}
 
+## Keys
+
+So far we've seen inspection tools around the values within JSON, but what if we want to
+see what keys are available within the JSON document? We can easily pull all keys of a JSON
+document out with
+
+{% highlight bash %}
+$ cat test.json | json-inspect keys
+facebook.user.demographic.regions.name
+google.user.demographic.regions.name
+twitter.user.demographic.regions.name
+{% endhighlight %}
+
+Additionally, we can provide some options which will filter out nulls, empty objects,
+empty primitives, and empty arrays as `-n`, `-o`, `-p`, and `-e` respectively. We could
+introduce some new fields to our `"facebook"` object to test.
+
+{% highlight json %}
+{
+ "facebook": {
+   "user": {
+     "demographic": {
+       "regions": [ {"name": "US"}, {"name": "Kentucky"}, {"name": "Louisville"} ]
+     },
+     "null": null,
+     "empty_object": {},
+     "empty_array": [],
+     "empty_primitives": {
+       "string": "",
+       "int": 0,
+       "float": 0.0
+     }
+   }
+ }
+}
+{% endhighlight %}
+
+Okay, so if you just ran the same command we used earlier, you would see all of these new
+keys. But we can easily filter some or all of them out with some options. To get back to
+our original set
+
+{% highlight bash %}
+$ cat test.json | json-inspect keys -nope
+facebook.user.demographic.regions.name
+google.user.demographic.regions.name
+twitter.user.demographic.regions.name
+{% endhighlight %}
+
 ## The Source
 
 This is up on my GitHub under the [json-inspect][1] project where you can find more
@@ -112,5 +161,6 @@ open PRs.
 
 
   [1]: https://github.com/JohnMurray/json-inspect
+  [json_inspect_pypi]: https://pypi.python.org/pypi/json-inspect
   
 
