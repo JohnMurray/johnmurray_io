@@ -49,9 +49,10 @@ larger blocks of Ruby/Python code to dig through large / complex JSON documents.
 
 <p>Given the title of this post, you can see where this is heading. I have created a simple command
 line utility as a gathering place of functionality for inspecting JSON documents. I’ll show off
-two features of the tool today.</p>
+some features of the tool.</p>
 
-<p>If you want to follow-along with the examples I’m showing, feel free to install via</p>
+<p>If you want to follow-along with the examples I’m showing, feel free to install the tool from
+<a href="https://pypi.python.org/pypi/json-inspect">PyPi</a> via</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">pip install json-inspect</code></pre></div>
 
@@ -133,6 +134,48 @@ easier.</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect ext -d <span class="s1">&#39;|&#39;</span> <span class="s2">&quot;[].*.user.demographic.regions.[].*&quot;</span>
 Louisville<span class="p">|</span>Kentucky<span class="p">|</span>US<span class="p">|</span>Highland Heights<span class="p">|</span>Kentucky<span class="p">|</span>US<span class="p">|</span>Wales<span class="p">|</span>UK</code></pre></div>
+
+<h2 id="keys">Keys</h2>
+
+<p>So far we’ve seen inspection tools around the values within JSON, but what if we want to
+see what keys are available within the JSON document? We can easily pull all keys of a JSON
+document out with</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect keys
+facebook.user.demographic.regions.name
+google.user.demographic.regions.name
+twitter.user.demographic.regions.name</code></pre></div>
+
+<p>Additionally, we can provide some options which will filter out nulls, empty objects,
+empty primitives, and empty arrays as <code>-n</code>, <code>-o</code>, <code>-p</code>, and <code>-e</code> respectively. We could
+introduce some new fields to our <code>"facebook"</code> object to test.</p>
+
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span>
+ <span class="nt">&quot;facebook&quot;</span><span class="p">:</span> <span class="p">{</span>
+   <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+     <span class="nt">&quot;demographic&quot;</span><span class="p">:</span> <span class="p">{</span>
+       <span class="nt">&quot;regions&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;US&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Kentucky&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Louisville&quot;</span><span class="p">}</span> <span class="p">]</span>
+     <span class="p">},</span>
+     <span class="nt">&quot;null&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+     <span class="nt">&quot;empty_object&quot;</span><span class="p">:</span> <span class="p">{},</span>
+     <span class="nt">&quot;empty_array&quot;</span><span class="p">:</span> <span class="p">[],</span>
+     <span class="nt">&quot;empty_primitives&quot;</span><span class="p">:</span> <span class="p">{</span>
+       <span class="nt">&quot;string&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+       <span class="nt">&quot;int&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+       <span class="nt">&quot;float&quot;</span><span class="p">:</span> <span class="mf">0.0</span>
+     <span class="p">}</span>
+   <span class="p">}</span>
+ <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+<p>Okay, so if you just ran the same command we used earlier, you would see all of these new
+keys. But we can easily filter some or all of them out with some options. To get back to
+our original set</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect keys -nope
+facebook.user.demographic.regions.name
+google.user.demographic.regions.name
+twitter.user.demographic.regions.name</code></pre></div>
 
 <h2 id="the-source">The Source</h2>
 

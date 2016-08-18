@@ -5,8 +5,8 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 09 Aug 2016 16:52:08 +0000</pubDate>
-    <lastBuildDate>Tue, 09 Aug 2016 16:52:08 +0000</lastBuildDate>
+    <pubDate>Thu, 18 Aug 2016 01:32:59 +0000</pubDate>
+    <lastBuildDate>Thu, 18 Aug 2016 01:32:59 +0000</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -210,9 +210,10 @@ larger blocks of Ruby/Python code to dig through large / complex JSON documents.
 
 &lt;p&gt;Given the title of this post, you can see where this is heading. I have created a simple command
 line utility as a gathering place of functionality for inspecting JSON documents. I’ll show off
-two features of the tool today.&lt;/p&gt;
+some features of the tool.&lt;/p&gt;
 
-&lt;p&gt;If you want to follow-along with the examples I’m showing, feel free to install via&lt;/p&gt;
+&lt;p&gt;If you want to follow-along with the examples I’m showing, feel free to install the tool from
+&lt;a href=&quot;https://pypi.python.org/pypi/json-inspect&quot;&gt;PyPi&lt;/a&gt; via&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;pip install json-inspect&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -294,6 +295,48 @@ easier.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cat test.json &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; json-inspect ext -d &lt;span class=&quot;s1&quot;&gt;&amp;#39;|&amp;#39;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;[].*.user.demographic.regions.[].*&amp;quot;&lt;/span&gt;
 Louisville&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;Kentucky&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;US&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;Highland Heights&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;Kentucky&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;US&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;Wales&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;UK&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;keys&quot;&gt;Keys&lt;/h2&gt;
+
+&lt;p&gt;So far we’ve seen inspection tools around the values within JSON, but what if we want to
+see what keys are available within the JSON document? We can easily pull all keys of a JSON
+document out with&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cat test.json &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; json-inspect keys
+facebook.user.demographic.regions.name
+google.user.demographic.regions.name
+twitter.user.demographic.regions.name&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Additionally, we can provide some options which will filter out nulls, empty objects,
+empty primitives, and empty arrays as &lt;code&gt;-n&lt;/code&gt;, &lt;code&gt;-o&lt;/code&gt;, &lt;code&gt;-p&lt;/code&gt;, and &lt;code&gt;-e&lt;/code&gt; respectively. We could
+introduce some new fields to our &lt;code&gt;&quot;facebook&quot;&lt;/code&gt; object to test.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;nt&quot;&gt;&amp;quot;facebook&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;nt&quot;&gt;&amp;quot;user&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;quot;demographic&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nt&quot;&gt;&amp;quot;regions&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;US&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Kentucky&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Louisville&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;quot;null&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;quot;empty_object&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{},&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;quot;empty_array&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[],&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;quot;empty_primitives&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nt&quot;&gt;&amp;quot;string&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+       &lt;span class=&quot;nt&quot;&gt;&amp;quot;int&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+       &lt;span class=&quot;nt&quot;&gt;&amp;quot;float&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.0&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Okay, so if you just ran the same command we used earlier, you would see all of these new
+keys. But we can easily filter some or all of them out with some options. To get back to
+our original set&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cat test.json &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; json-inspect keys -nope
+facebook.user.demographic.regions.name
+google.user.demographic.regions.name
+twitter.user.demographic.regions.name&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;the-source&quot;&gt;The Source&lt;/h2&gt;
 
