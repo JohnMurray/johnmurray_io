@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Your Team Should Write SBT Plugins</title>
+  <meta name="description" content="Every Scala development team should be writing their own SBT plugins. If you’re not thenyou’re doing it wrong.">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.johnmurray.io/log/2016/09/02/Every-Scala-Team-Writes-Plugins.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2016. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+    <header class="post-header">
+        <h1 class="post-title">Your Team Should Write SBT Plugins</h1>
+    </header>
+
+    <article class="post-content">
+        <p><strong>Every Scala development team should be writing their own SBT plugins. If you’re not then
+you’re doing it wrong</strong>.</p>
+
+<p>This is an <s>assertion</s> assumption I am making based on what I’ve seen so far in my limited
+experience working on/with various teams and their Scala applications.</p>
+
+<h2 id="standards">Standards</h2>
+
+<p>Organizations (not just large ones) typically have standards. Standards for various things including</p>
+
+<ul>
+  <li>code style</li>
+  <li>application packaging</li>
+  <li>release process</li>
+  <li>deployment</li>
+</ul>
+
+<p>The list goes on. The general idea however is that if you are building a new application, it should
+conform to the standards that (ideally) all the other applications in the organization follow.</p>
+
+<p>Now if we’re talking about Scala projects, we have some wonderful tools for defining all of these
+standards. Specifically I’m talking about SBT. It is the Scala developer’s Swiss army knife. I know
+that if I start a Scala project today I can use <code>sbt-release</code> for defining my release process
+(all the steps / actions I take to release my code) which includes essentials standards items such
+as a versioning scheme. I can also use <code>sbt-native-packager</code> to build <code>deb</code> or <code>rpm</code> packages
+for Linux or docker images for [<em>insert cloud platform here</em>]. I may also set up my applications
+with a few useful utilities depending on what I’m writing, such as</p>
+
+<ul>
+  <li><code>scalastyle</code> (and/or <code>sbt-checkstyle</code> if I have some Java code as well)</li>
+  <li><code>sbt-reloader</code> (for easy running of my app locally)</li>
+  <li><code>sbt-doge</code> (if I’m managing multiple release versions of a lib, or developing an SBT plugin as part
+of a suite of libraries)</li>
+  <li><code>sbt-dependency-graph-sugar</code> (for viewing pretty dep-graphs)</li>
+</ul>
+
+<p>The list goes on. And a lot of it depends on the style or particular flavor of Scala development
+at each organization.</p>
+
+<h2 id="maintaining-consistency">Maintaining Consistency</h2>
+
+<p>So you got your recipe of Scala programming goodness all bundled up in your <code>build.sbt</code>, that’s
+great! But wait, how do you make sure that other projects use the same data. Well you could just
+copy it around at first if we’re talking about a handful of applications. Beyond that maybe we
+make a general template that people clone from to start their projects. But wait, what if the
+organization decides it wants to add a new step to that sweet release process you wrote using
+<code>sbt-release</code>? Well, now you need to hop from project to project, updating each <code>build.sbt</code>. And
+you can’t just copy and paste anymore because you might override some application-specific settings
+that have built up over time.</p>
+
+<p>There is actually a very simple solution to this problem, organizational SBT plugins. These are plugins that
+are written for the express purpose of wrapping up all these organizational standards into simple SBT
+plugins. You have an awesome release process? Great! Wrap that up into an SBT <code>AutoPlugin</code> that uses
+the <code>sbt-release</code> plugin internally. All that is required for an application to conform to the
+standard release process is to add a simple addition to their project definition.</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">project</span><span class="o">.</span><span class="n">enablePlugins</span><span class="o">(</span><span class="nc">OrganizationReleasePlugin</span><span class="o">)</span></code></pre></div>
+
+<h2 id="using-archetypes">Using Archetypes</h2>
+
+<p>Once you start wrapping this functionality up into your own SBT plugin, you may notice that not <em>all</em>
+of the applications in your organization fit the same mold. For that we have archetypes. An archetype
+is a “top-level” <code>AutoPlugin</code> for a particular application type.  Archetypes are very much like meta-packages
+in OS package management systems; it is a collection of <code>AutoPlugin</code>s tailored for that specific use case.</p>
+
+<p>For example, a <code>ScalaWebService</code> archetype may contain specific plugins and settings for a PlayFramework
+application where as a <code>AkkaKernel</code> archetype will have a slightly different set of plugins and settings.
+Additionally if your organization supports both Java and Scala, you can make those separate archetypes
+as well to make the provided plugins more tailored toward specific application needs while still maintaining
+a set of standards for each supported archetype.</p>
+
+
+        <div class="footer-navigation">
+            
+                <span class="previous"><a href="/log/2016/08/08/Jekyll-on-Heroku.html">
+                    &laquo;Deploying Jekyll to Heroku
+                </a></span>
+            
+            
+        </div>
+
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Footer Advertisement -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-8460014050417630"
+             data-ad-slot="9924998708"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+    </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11511983-4']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); 
+        ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+
+</html>

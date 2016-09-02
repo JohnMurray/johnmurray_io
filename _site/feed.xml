@@ -5,9 +5,91 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 18 Aug 2016 01:32:59 +0000</pubDate>
-    <lastBuildDate>Thu, 18 Aug 2016 01:32:59 +0000</lastBuildDate>
+    <pubDate>Fri, 02 Sep 2016 20:19:57 +0000</pubDate>
+    <lastBuildDate>Fri, 02 Sep 2016 20:19:57 +0000</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Your Team Should Write SBT Plugins</title>
+        <description>&lt;p&gt;&lt;strong&gt;Every Scala development team should be writing their own SBT plugins. If you’re not then
+you’re doing it wrong&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is an &lt;s&gt;assertion&lt;/s&gt; assumption I am making based on what I’ve seen so far in my limited
+experience working on/with various teams and their Scala applications.&lt;/p&gt;
+
+&lt;h2 id=&quot;standards&quot;&gt;Standards&lt;/h2&gt;
+
+&lt;p&gt;Organizations (not just large ones) typically have standards. Standards for various things including&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;code style&lt;/li&gt;
+  &lt;li&gt;application packaging&lt;/li&gt;
+  &lt;li&gt;release process&lt;/li&gt;
+  &lt;li&gt;deployment&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The list goes on. The general idea however is that if you are building a new application, it should
+conform to the standards that (ideally) all the other applications in the organization follow.&lt;/p&gt;
+
+&lt;p&gt;Now if we’re talking about Scala projects, we have some wonderful tools for defining all of these
+standards. Specifically I’m talking about SBT. It is the Scala developer’s Swiss army knife. I know
+that if I start a Scala project today I can use &lt;code&gt;sbt-release&lt;/code&gt; for defining my release process
+(all the steps / actions I take to release my code) which includes essentials standards items such
+as a versioning scheme. I can also use &lt;code&gt;sbt-native-packager&lt;/code&gt; to build &lt;code&gt;deb&lt;/code&gt; or &lt;code&gt;rpm&lt;/code&gt; packages
+for Linux or docker images for [&lt;em&gt;insert cloud platform here&lt;/em&gt;]. I may also set up my applications
+with a few useful utilities depending on what I’m writing, such as&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;scalastyle&lt;/code&gt; (and/or &lt;code&gt;sbt-checkstyle&lt;/code&gt; if I have some Java code as well)&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;sbt-reloader&lt;/code&gt; (for easy running of my app locally)&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;sbt-doge&lt;/code&gt; (if I’m managing multiple release versions of a lib, or developing an SBT plugin as part
+of a suite of libraries)&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;sbt-dependency-graph-sugar&lt;/code&gt; (for viewing pretty dep-graphs)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The list goes on. And a lot of it depends on the style or particular flavor of Scala development
+at each organization.&lt;/p&gt;
+
+&lt;h2 id=&quot;maintaining-consistency&quot;&gt;Maintaining Consistency&lt;/h2&gt;
+
+&lt;p&gt;So you got your recipe of Scala programming goodness all bundled up in your &lt;code&gt;build.sbt&lt;/code&gt;, that’s
+great! But wait, how do you make sure that other projects use the same data. Well you could just
+copy it around at first if we’re talking about a handful of applications. Beyond that maybe we
+make a general template that people clone from to start their projects. But wait, what if the
+organization decides it wants to add a new step to that sweet release process you wrote using
+&lt;code&gt;sbt-release&lt;/code&gt;? Well, now you need to hop from project to project, updating each &lt;code&gt;build.sbt&lt;/code&gt;. And
+you can’t just copy and paste anymore because you might override some application-specific settings
+that have built up over time.&lt;/p&gt;
+
+&lt;p&gt;There is actually a very simple solution to this problem, organizational SBT plugins. These are plugins that
+are written for the express purpose of wrapping up all these organizational standards into simple SBT
+plugins. You have an awesome release process? Great! Wrap that up into an SBT &lt;code&gt;AutoPlugin&lt;/code&gt; that uses
+the &lt;code&gt;sbt-release&lt;/code&gt; plugin internally. All that is required for an application to conform to the
+standard release process is to add a simple addition to their project definition.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;n&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enablePlugins&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;OrganizationReleasePlugin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;using-archetypes&quot;&gt;Using Archetypes&lt;/h2&gt;
+
+&lt;p&gt;Once you start wrapping this functionality up into your own SBT plugin, you may notice that not &lt;em&gt;all&lt;/em&gt;
+of the applications in your organization fit the same mold. For that we have archetypes. An archetype
+is a “top-level” &lt;code&gt;AutoPlugin&lt;/code&gt; for a particular application type.  Archetypes are very much like meta-packages
+in OS package management systems; it is a collection of &lt;code&gt;AutoPlugin&lt;/code&gt;s tailored for that specific use case.&lt;/p&gt;
+
+&lt;p&gt;For example, a &lt;code&gt;ScalaWebService&lt;/code&gt; archetype may contain specific plugins and settings for a PlayFramework
+application where as a &lt;code&gt;AkkaKernel&lt;/code&gt; archetype will have a slightly different set of plugins and settings.
+Additionally if your organization supports both Java and Scala, you can make those separate archetypes
+as well to make the provided plugins more tailored toward specific application needs while still maintaining
+a set of standards for each supported archetype.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 02 Sep 2016 00:00:00 +0000</pubDate>
+        <link>http://www.johnmurray.io/log/2016/09/02/Every-Scala-Team-Writes-Plugins.html</link>
+        <guid isPermaLink="true">http://www.johnmurray.io/log/2016/09/02/Every-Scala-Team-Writes-Plugins.html</guid>
+        
+        
+        <category>log</category>
+        
+      </item>
     
       <item>
         <title>Deploying Jekyll to Heroku</title>
@@ -1247,290 +1329,6 @@ without further to-do, a util that has been useful (for met at least):&lt;/p&gt;
         <pubDate>Mon, 27 Apr 2015 12:00:00 +0000</pubDate>
         <link>http://www.johnmurray.io/log/2015/04/27/Jenkins-Env-Templating.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2015/04/27/Jenkins-Env-Templating.html</guid>
-        
-        
-        <category>log</category>
-        
-      </item>
-    
-      <item>
-        <title>Starting a Scala Project</title>
-        <description>&lt;p&gt;When starting a new Scala project there are a few things that you want
-do get setup correctly before starting your development work. These are
-some of the things that I do for each new project.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Spoiler&lt;/strong&gt; - I have created a GitHub repo &lt;a href=&quot;https://github.com/JohnMurray/basic-scala-template&quot;&gt;basic-scala-template&lt;/a&gt; that 
-contains everything that is mentioned here.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt; - Based on feedback, I have listed updates to the template
-at the bottom of this post.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;a-note-on-activator&quot;&gt;A Note on Activator&lt;/h2&gt;
-
-&lt;p&gt;The wonderful people at Typesafe have a project called &lt;a href=&quot;http://www.typesafe.com/activator&quot;&gt;Activator&lt;/a&gt; which
-is a nice little tool that, among other things, allows you to get started quickly
-by selecting a base template. While this is useful and there are some good
-templates, I still prefer to manage my own template. This allows me to make some
-additions that are missing from the Activator templates and setup my projects
-in a way that work best for me.&lt;/p&gt;
-
-&lt;h2 id=&quot;sbt&quot;&gt;SBT&lt;/h2&gt;
-
-&lt;p&gt;I setup all my projects as a standard SBT project (because why wouldn’t you)
-so hopefully you can find this useful. The first thing I do is download the
-version of SBT that I want and add the launcher and the shell script local
-to my git repo. This way I always have sbt available on whatever machine
-that I am working on and I am able to make per-project changes to the
-launcher. If you do this as well you will have to get used to typing &lt;code&gt;./sbt&lt;/code&gt; 
-vs &lt;code&gt;sbt&lt;/code&gt;, but that is an easy change to make.&lt;/p&gt;
-
-&lt;p&gt;As of right now, my project structure looks like the following:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; .
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; ├── bin
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; │   └── sbt-launch.jar
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; └── sbt&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;I will note that for the actual &lt;code&gt;sbt&lt;/code&gt; script I usually just use one of
-my own rather than the super-complex ones that ship with the SBT download. My
-current sbt launch script looks like:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#!/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bash&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;JAVA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;JAVA_OPTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;-Xmx512m -XX:MaxPermSize=256M&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DIR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;$( cd &amp;quot;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dirname&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;${BASH_SOURCE[0]}&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot; &amp;amp;&amp;amp; pwd )&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;7&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;$JAVA&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;$JAVA_OPTS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jar&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;${DIR}/bin/sbt-launch.jar&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;basic-sbt-additions&quot;&gt;Basic SBT Additions&lt;/h2&gt;
-
-&lt;p&gt;Now that I have SBT setup for a project, I can start doing some basic
-configurations that I figure I will need on all my projects. First I’m going
-to add is the &lt;a href=&quot;https://github.com/spray/sbt-revolver&quot;&gt;sbt-revolver&lt;/a&gt;. This is a very useful plugin that can run
-your project in a forked JVM and reload it on a change. We can add this to
-the project by adding the following to our &lt;code&gt;project/plugin.sbt&lt;/code&gt;:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;addSbtPlugin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;io.spray&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;sbt-revolver&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;0.7.2&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;While I’m at it, I’m going to add one more plugin, &lt;a href=&quot;https://github.com/mpeltonen/sbt-idea&quot;&gt;sbt-idea&lt;/a&gt;, that can 
-generate IDE-specific files for IntelliJ IDE with a simple command &lt;code&gt;gen-idea&lt;/code&gt;:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;addSbtPlugin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;com.github.mpeltonen&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;sbt-idea&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;1.6.0&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;template-build-file&quot;&gt;Template Build File&lt;/h2&gt;
-
-&lt;p&gt;When using SBT I opt for the full &lt;code&gt;Build.scala&lt;/code&gt; vs the DSL-like &lt;code&gt;build.sbt&lt;/code&gt; file.
-I find it easier and more straight-forward to work with. I like to break my
-build file into several logical sections: resolvers, dependencies, build settings,
-and the application build. My typical build-file looks like:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sbt._&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Keys._&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;spray.revolver.RevolverPlugin._&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Resolvers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dependencies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;appDependencies&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Seq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BuildSettings&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildOrganization&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;johnmurray.io&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;appName&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;CHANGE_ME&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildVersion&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;0.0.1-SNAPSHOT&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildScalaVersion&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;2.10.4&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildScalaOptions&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Seq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;-unchecked&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;-deprecation&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;-encoding&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;utf8&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Resolvers._&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Dependencies._&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildSettings&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Defaults&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;defaultSettings&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Seq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;organization&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildOrganization&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;version&lt;/span&gt;             &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;scalaVersion&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildScalaVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;28&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;libraryDependencies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;appDependencies&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;29&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;scalacOptions&lt;/span&gt;       &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildScalaOptions&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;30&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Revolver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;settings&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;31&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;32&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ApplicationBuild&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Build&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;34&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;35&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;BuildSettings._&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;36&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;37&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;lazy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Project&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;38&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;appName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;39&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;.&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;40&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;settings&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildSettings&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;41&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Even though this build file is pretty bare (&lt;em&gt;at the moment&lt;/em&gt;) there are some key
-things that I like to include as part of every build configuration.&lt;/p&gt;
-
-&lt;dl&gt;
-  &lt;dt&gt;Scala&lt;/dt&gt;
-  &lt;dd&gt;
-    Aside from specifying the version that I will be using for this project, I
-    also specify some basic compiler options to output more verbose warnings and
-    do some extra checks for me.
-  &lt;/dd&gt;
-
-  &lt;dt&gt;Versioning&lt;/dt&gt;
-  &lt;dd&gt;
-    I like to start each project as a snapshot version (0.0.1). I can then extend
-    the build-file later with some publishing configurations to push snapshot versions
-    to a repo (like Sonatype) on each successful build/commit/test-run/etc.
-  &lt;/dd&gt;
-
-  &lt;dt&gt;Revolver&lt;/dt&gt;
-  &lt;dd&gt;
-    Even though we added the &lt;code&gt;sbt-revolver&lt;/code&gt; plugin to our 
-    &lt;code&gt;plugins.sbt&lt;/code&gt; file earlier we still need to add the settings to 
-    our build to fully install it.
-  &lt;/dd&gt;
-&lt;/dl&gt;
-
-&lt;h2 id=&quot;style-checking&quot;&gt;Style Checking&lt;/h2&gt;
-
-&lt;p&gt;For me, this is a new addition but I generally like consistency in my projects (open
-source and closed) when it comes to style. I’ve been playing around with various
-style checkers, but I’ve settled on &lt;a href=&quot;http://www.scalastyle.org/&quot;&gt;Scalastyle&lt;/a&gt; for now. I don’t have much beyond
-the standard, but I’m sure it’ll evolve over time. I added the following to my
-&lt;code&gt;plugins.sbt&lt;/code&gt; file&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;addSbtPlugin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;org.scalastyle&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;scalastyle-sbt-plugin&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;0.4.0&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;  
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resolvers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;sonatype-releases&amp;quot;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;at&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;https://oss.sonatype.org/content/repositories/releases/&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;I’ve also updated our &lt;code&gt;buildSettings&lt;/code&gt; in &lt;code&gt;project/Build.scala&lt;/code&gt; by appending the
-Scalastyle settings&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildSettings&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Defaults&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;defaultSettings&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Seq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;organization&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildOrganization&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;version&lt;/span&gt;             &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;scalaVersion&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildScalaVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;libraryDependencies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;appDependencies&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;scalacOptions&lt;/span&gt;       &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buildScalaOptions&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;7&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Revolver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;settings&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ScalastylePlugin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Settings&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;As far as the build configuration goes, my configuration isn’t far off the default you
-get by running &lt;code&gt;sbt scalastyle-generate-config&lt;/code&gt; so I won’t list it here.&lt;/p&gt;
-
-&lt;h2 id=&quot;testing&quot;&gt;Testing&lt;/h2&gt;
-
-&lt;p&gt;For testing I typically start with Specs2 and add from there. For this we add to the build
-file simply:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dependencies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;appDependencies&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Seq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;       &lt;span class=&quot;s&quot;&gt;&amp;quot;org.specs2&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;specs2&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;2.3.10&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;test&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;I can easily add others in the same fashion. For example, if I were doing an Akka
-project I would add the &lt;code&gt;akka-testkit&lt;/code&gt; for the &lt;code&gt;spray-teskit&lt;/code&gt; for Spray projects.&lt;/p&gt;
-
-&lt;p&gt;If the project I am building is open source, I have to think about CI what build
-system I’m going to use. I personally prefer to use &lt;a href=&quot;http://travis-ci.org&quot;&gt;Travis-CI&lt;/a&gt; just because
-it’s so darn simple. Since this is usually the case I add the &lt;code&gt;.travis.yml&lt;/code&gt; file:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;scala&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;scala&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt;   &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;2.10.3&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;   &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;sbt compile test:compile&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;   &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;sbt scalastyle&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;   &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;sbt test&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;jdk&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;   &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;oraclejdk7&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;   &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;openjdk7&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;   &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;oraclejdk8:w&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;miscellaneous&quot;&gt;Miscellaneous&lt;/h2&gt;
-
-&lt;p&gt;As a final note, I like to add some basic files that I put in most projects:&lt;/p&gt;
-
-&lt;dl&gt;
-  &lt;dt&gt;&lt;code&gt;.gitignore&lt;/code&gt;&lt;/dt&gt;
-  &lt;dd&gt;
-    The baiscs for scala projects as well as IntelliJ project-files and general
-    files (like &lt;code&gt;.swp&lt;/code&gt; files and what not)
-  &lt;/dd&gt;
-
-  &lt;dt&gt;&lt;code&gt;readme.md&lt;/code&gt;&lt;/dt&gt;
-  &lt;dd&gt;
-    I like to include a readme with all of my projects (open source or not) just
-    as a &lt;em&gt;welcome&lt;/em&gt; and a guide for navigating and working with the project.
-  &lt;/dd&gt;
-&lt;/dl&gt;
-
-&lt;h2 id=&quot;done&quot;&gt;Done!&lt;/h2&gt;
-
-&lt;p&gt;Now that I’m done putting together all the pieces to get started, my final directory
-structure is laid out in the following manner:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; .
-&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; ├── .gitignore
-&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; ├── .travis.yml
-&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; ├── bin
-&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; │   └── sbt-launch.jar
-&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; ├── project
-&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; │   ├── Build.scala
-&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; │   └── plugins.sbt
-&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt; ├── readme.md
-&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; ├── sbt
-&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; └── scalastyle-config.xml&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;As I mentioned in the spoiler up top, I have put this into a git repository for my
-own (and possibly your) convenience &lt;a href=&quot;https://github.com/JohnMurray/basic-scala-template&quot;&gt;here&lt;/a&gt;. You can start any new project using 
-this template simply via:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; git clone https://github.com/JohnMurray/basic-scala-template.git YOUR_PROJECT_NAME&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Or, you can clone the repository and add the &lt;code&gt;scala-new&lt;/code&gt; script to your path which is
-located in the root of the project. With this you can simply do&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; scala-new my-new-project
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;my-new-project
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# start working!&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;This script will take care of updating the repo, creating a directory, and copying
-over all the necessary files. Easy peasy.&lt;/p&gt;
-
-&lt;p&gt;If you find this useful (and I hope you do) then please fork &lt;a href=&quot;https://github.com/JohnMurray/basic-scala-template&quot;&gt;my repo&lt;/a&gt; and customize
-it to suite your needs. Feel free to send pull requests if you think I am missing
-something awesome that you feel every Scala project should include.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Enjoy!&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;update-1&quot;&gt;Update #1&lt;/h2&gt;
-
-&lt;p&gt;Thanks to a comment by &lt;a href=&quot;http://www.reddit.com/user/predef&quot;&gt;predef&lt;/a&gt; on reddit, I have removed the sbt-launcher jar from
-my project along with my custom sbt script in favor of using the &lt;a href=&quot;https://github.com/paulp/sbt-extras&quot;&gt;sbt-extra&lt;/a&gt; script
-and creating a &lt;code&gt;project/build.properties&lt;/code&gt; file. You now must simply use the sbt script
-&lt;code&gt;./sbt&lt;/code&gt; and the correct version of SBT will be downloaded for you.&lt;/p&gt;
-
-&lt;p&gt;The second suggestion was to remove the &lt;code&gt;sbt-idea&lt;/code&gt; plugin from the project and move it
-into my global plugins (that’s a thing?!) which is a fantastic idea. So I have now created
-the file &lt;code&gt;~/.sbt/0.13/plugins/intellij.sbt&lt;/code&gt; that contains the &lt;code&gt;addPlugin...&lt;/code&gt; that we used
-earlier in the &lt;code&gt;plugins.sbt&lt;/code&gt; file for the &lt;code&gt;sbt-idea&lt;/code&gt; plugin. Now the project can be more
-agnostic to what editor is used. Do note that if you still want to use the IntelliJ SBT
-plugin that you’ll need to add that to your global plugins as the script/template will not
-handle that for you.&lt;/p&gt;
-
-</description>
-        <pubDate>Tue, 15 Apr 2014 12:00:00 +0000</pubDate>
-        <link>http://www.johnmurray.io/log/2014/04/15/Starting-a-Scala-Project.html</link>
-        <guid isPermaLink="true">http://www.johnmurray.io/log/2014/04/15/Starting-a-Scala-Project.html</guid>
         
         
         <category>log</category>
