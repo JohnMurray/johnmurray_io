@@ -37,7 +37,8 @@ a specified radius. To visualize this, I've put together a map full of
 points (on the left) and a nearby-search query with a specified radius
 (on the right) for you below.
 
-![Mongo geo-spatial index and query visualization][2]
+<img src="{% base64 blog-files/geofence/part-2/mongo-spatial-index-and-query.png %}"
+    alt="Mongo geo-spatial index and query visualization"/>
 
 Although Mongo does not currently provide support for full-featured 
 geofences, this particular feature will save us a lot of time as we
@@ -57,7 +58,8 @@ center-points lie within the polygon). We can then take the estimated
 polygon (the set of grid-blocks) and get their center-points. It is these
 center-points which we can then store in Mongo.
 
-![polygon estimation with grids, grid-blocks, and center-points][3]
+<img src="{% base64 blog-files/geofence/part-2/polygon-estimation-conceptual.png %}"
+    alt="polygon estimation with grids, grid-blocks, and center-points"/>
 
 You might thinking that this is all fine and dandy, but how are we going to
 use this to determine if someone or something is inside or outside of the
@@ -68,7 +70,8 @@ the point was derived, then we can do a nearby-search in Mongo with a
 radius of one-half the length of the diagonal of the grid-block (plus a
 little extra to account for some rare edge-cases). To illustrate:
 
-![polygon query with points and nearby-search][4]
+<img src="{% base64 blog-files/geofence/part-2/polygon-query.png %}"
+    alt="polygon query with points and nearby-search"/>
 
 Voilà! Now if you search the points (your geofence) with a specific point
 and the pre-determined radius, you'll either get back 0 points (meaning
@@ -103,9 +106,12 @@ we'll call it __E__
 If you didn't quite follow that (or can't visualize that well), then no
 worries. Here is a visual:
 
-![detailed estimation visualization 1][6]
-![detailed estimation visualization 2][7]
-![detailed estimation visualization 3][8]
+<img src="{% base64 blog-files/geofence/part-2/polygon-estimation-detailed-1.png %}"
+    alt="detailed estimation visualization 1"/>
+<img src="{% base64 blog-files/geofence/part-2/polygon-estimation-detailed-2.png %}"
+    alt="detailed estimation visualization 2"/>
+<img src="{% base64 blog-files/geofence/part-2/polygon-estimation-detailed-3.png %}"
+    alt="detailed estimation visualization 3"/>
 
 
 # Coding Time
@@ -466,17 +472,7 @@ the [third post][10] in the series to find out!  ;-)
 
 
 
-
-
-
-
   [1]: {% post_url 2012-07-11-Geofencing-Part-1 %}
-  [2]: /blog-files/geofence/part-2/mongo-spatial-index-and-query.png
-  [3]: /blog-files/geofence/part-2/polygon-estimation-conceptual.png
-  [4]: /blog-files/geofence/part-2/polygon-query.png
   [5]: http://alienryderflex.com/polygon_area/
-  [6]: /blog-files/geofence/part-2/polygon-estimation-detailed-1.png
-  [7]: /blog-files/geofence/part-2/polygon-estimation-detailed-2.png
-  [8]: /blog-files/geofence/part-2/polygon-estimation-detailed-3.png
   [9]: http://www.mongodb.org/display/DOCS/Geospatial+Indexing/
   [10]: {% post_url 2012-09-11-Geofencing-Part-3 %}

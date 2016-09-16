@@ -9,6 +9,8 @@ url: "http://www.johnmurray.io"
 markdown: kramdown
 exclude: [vendor, config.ru, Gemfile, Gemfile.lock, Procfile, Makefile]
 include: [blog_files]
+sass:
+  style: compressed
 defaults:
   -
     scope:

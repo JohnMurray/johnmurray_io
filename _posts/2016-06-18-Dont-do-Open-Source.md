@@ -36,9 +36,8 @@ source. My primary motivation being to build a "portfolio" of work that demonstr
 this inevitably led me to burn out time after time. When I burn out I get depressed, watch a bunch of 
 TV, and spend way to much time playing video games.
 
-<img src="/blog-files/dont-do-open-source-1.png" width="300px" alt="burn out" 
+<img src="{% base64 blog-files/dont-do-open-source-1.png %}" width="300px" alt="burn out" 
      style="margin:0 auto;display: block;" align="center" />
-
 
 I realized that my experiments are not open source projects (in the traditional sense) and that
 open source is probably not for me, at least not right now. Each person needs to find what they

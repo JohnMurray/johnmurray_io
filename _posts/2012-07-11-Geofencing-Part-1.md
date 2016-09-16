@@ -42,7 +42,8 @@ This is useful for making sure your car isn't stolen, tracking your children,
 setting reminders for yourself, etc. If the idea of a conceptual fence is
 still a little fuzzy, I'll draw you a pretty picture:
 
-![pretty geofence picture][4]
+<!-- ![pretty geofence picture][4] -->
+<img src="{% base64 blog-files/geofence/fence_on_map.png %}" alt="pretty geofence picture"/>
 
 Some simple properties that a geofence might include:
 
@@ -132,7 +133,6 @@ on over to [Part 2][2] for a whirlwind introduction on building your own
   [1]: #
   [2]: {% post_url 2012-09-10-Geofencing-Part-2 %}
   [3]: {% post_url 2012-09-11-Geofencing-Part-3 %}
-  [4]: /blog-files/geofence/fence_on_map.png
   [5]: http://blog.notdot.net/2009/11/Damn-Cool-Algorithms-Spatial-indexing-with-Quadtrees-and-Hilbert-Curves
   [6]: http://en.wikipedia.org/wiki/Hilbert_curve
   [7]: http://launchany.com/geofencing-with-ruby-on-rails-and-mysql/

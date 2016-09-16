@@ -65,16 +65,16 @@ That's it! Painless I know. :-)
 {% highlight ruby linenos %}
 ## fnord.rb
 require 'fnordmetric'
-      
-FnordMetric.namespace :my_first_fnord do    
-      
+
+FnordMetric.namespace :my_first_fnord do
+
   # numeric gauge, shown on a per-hour total
   gauge :logins_per_hour,
     :tick  => 1.hour.to_i,
     :title => 'Logins per Hour'
-      
+
    event(:login) { incr(:logins_per_hour) }
-      
+
    widget 'Web Logins', {
      :title            => 'Web App Logins Per Hour',
      :type             => :timeline,
@@ -83,7 +83,7 @@ FnordMetric.namespace :my_first_fnord do
      :autoupdate       => 2 #update graph every 2 seconds
    }
 end
-      
+
 FnordMetric.standalone
 {% endhighlight %}
 
@@ -97,7 +97,7 @@ ruby fnord.rb run
 If everything is setup properly then you should be able to browse to
 [http://localhost:4242/] [6] and see a dashboard similar to the following:
 
-![FnordMetric Dashboard][8]
+<img src="{% base64 blog-files/fnord-1.png %}" alt="FnordMetric Dashboard"/>
 
 Yay, now that you have fnord running, you just need to pump in some data. But
 fist, we need to stop and understand what all of this means. Let's take a look
@@ -169,7 +169,7 @@ Now that we understand how things work on the Fnord side of things, it's time
 to crack open that C# project and get to work. The first thing that we need to
 do is add a library reference (via NuGet) to [Sider] [7].
 
-![Install Sider in Visual Studio via NuGet][9]
+<img src="{% base64 blog-files/fnord-2.png %}" alt="Install Sider in Visual Studio via NuGet"/>
 
 [Sider] [7] is a Redis library for C# that stays as close to the implementation
 as possible. It doesn't deal with mapping complex data types to the underlying
@@ -282,5 +282,3 @@ too much for you however, I've included a couple of extras below.
   [5]: http://www.screenr.com/KiJs
   [6]: http://localhost:4242/
   [7]: http://github.com/chakrit/sider
-  [8]: /blog-files/fnord-1.png
-  [9]: /blog-files/fnord-2.png
