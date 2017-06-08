@@ -406,7 +406,22 @@ Here we are creating a future which may or may not fail depending on a randomly 
 it to complete we access the value with `get` and then use pattern matching (the `match` keyword and a popular feature
 of Scala) to either print the returned string or the error trace, depending on the value returned.
 
-## Part 4 - Composing Futures
+## Part 4 - Async Access
+
+To recap what we've created so far
+
+  * A `future` method that take a block of code, executes on a thread-pool, and returns a `Future`
+  * `Future` class for reading values and a `Promise` for writing values
+  * `Try[T]` to represent success and failure values from our asynchronously executed code-block
+
+This is a good start to creating a realistic implementation of futures, however there are still some very big holes. Namely,
+accessing the final value leaves a lot to be desired. Currently to get the value we have to block on the current
+thread and wait for the future to be completed.
+
+<!-- talk about callbacks: onComplete, onSuccess, onFailure, etc -->
+<!-- pass around thread-pools as well -->
+
+## Part 5 - Composing Futures
 
 
 <!--
