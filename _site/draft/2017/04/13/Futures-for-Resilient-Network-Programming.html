@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Futures for Resilient Network Programming</title>
+  <meta name="description" content="In the JVM ecosystem, with the introduction of libraries such as [NIO][nio] and [Netty][netty],there is a push for developers andlibrary writers to use async...">
+
+  <!-- <link rel="stylesheet" href="/css/main.css"> -->
+  
+  <style>
+    @import "https://fonts.googleapis.com/css?family=Roboto:300,400,500";body,h1,h2,h3,h4,h5,h6,p,blockquote,pre,hr,dl,dd,ol,ul,figure{margin:0;padding:0}body{-webkit-text-size-adjust:100%;background-color:#fff;color:#566b78;font-family:"Roboto","Open Sans",Helvetica,Arial,sans-serif;font-size:18px;font-weight:300;line-height:1.5;padding-top:2em}h1,h2,strong{color:#344b78}h1,h2,h3,h4,h5,h6,p,blockquote,pre,ul,ol,dl,figure{margin-bottom:15px}img{max-width:100%;vertical-align:middle}figure>img{display:block}figcaption{font-size:15.75px}ul,ol{margin-left:30px}li>ul,li>ol{margin-bottom:0}h1,h2,h3,h4,h5,h6{font-weight:300}a{color:#e81c4f;text-decoration:none}a:visited{color:#e81c4f}a:hover{color:#566b78;text-decoration:none}blockquote{color:#828282;border-left:4px solid #e8e8e8;padding-left:15px;font-size:18px;letter-spacing:-1px;font-style:italic}blockquote>:last-child{margin-bottom:0}pre,code{font-size:12px;border-radius:3px;border:1px solid #d8dee9;background-color:#f5f7f9}code{padding:4px 5px 1px 5px}pre{padding:8px 12px;overflow-x:auto}pre>code{border:0;padding-right:0;padding-left:0}.wrapper{max-width:-webkit-calc(800px - (30px * 2));max-width:calc(800px - (30px * 2));margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px}@media screen and (max-width: 800px){.wrapper{max-width:-webkit-calc(800px - (30px));max-width:calc(800px - (30px));padding-right:15px;padding-left:15px}}.wrapper:after{content:"";display:table;clear:both}.icon>svg{display:inline-block;width:16px;height:16px;vertical-align:middle}.icon>svg path{fill:#828282}.masthead{color:#fff;background-color:#2a2a2a;min-width:270px}.masthead h1{color:#fff;font-weight:bold;font-family:"Lucida Console", Monaco, monospace}.masthead a{text-decoration:none}.masthead a:hover{text-decoration:none}.masthead a:active{text-decoration:none}.masthead-inner .sub{color:#666}.masthead-inner .sub a{color:#666}.masthead-inner .sub a:hover{color:#999}@media (min-width: 760px){.masthead-inner{padding:40px}.page-content{margin-left:40px;margin-right:40px}}@media (min-width: 990px){.masthead{position:fixed;top:0;left:0;bottom:0;width:25%;margin-bottom:0}.masthead-inner{position:absolute;top:0;right:0;left:0}.masthead h1{font-size:54px}.page-content{margin-left:35%;margin-right:10%;width:55%}}.page-content{padding:30px 0}.page-heading{font-size:20px}.post-list{margin-left:0;list-style:none}.post-list .post-title{margin-top:30px;margin-bottom:0;display:inline-block}.post-meta{color:#828282;display:inline-block;float:right;font-size:15.75px;margin-top:32px}.post-link{display:block;font-size:24px}.post-header{margin-bottom:30px}.post-title{font-size:42px;letter-spacing:-1px;line-height:1}@media screen and (max-width: 800px){.post-title{font-size:36px}}.post-content{margin-bottom:30px}.post-content h2{font-size:32px}@media screen and (max-width: 800px){.post-content h2{font-size:28px}}.post-content h3{font-size:26px}@media screen and (max-width: 800px){.post-content h3{font-size:22px}}.post-content h4{font-size:20px}@media screen and (max-width: 800px){.post-content h4{font-size:18px}}.footer-navigation{border-bottom:1px solid #e0e0e0;display:block;font-weight:bold;height:60px;margin:50px 0 40px 0;text-align:center}.footer-navigation .previous{display:block;margin:0 auto}.footer-navigation .next{display:block;margin:0 auto}@media (min-width: 760px){.footer-navigation{height:30px;padding-bottom:10px}.footer-navigation .previous{display:block;float:left;margin:0;text-align:left}.footer-navigation .next{display:block;float:right;margin:0;text-align:right}}.highlight{background:#ffffff}.highlight .c{color:#999988;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#999988;font-style:italic}.highlight .cp{color:#999999;font-weight:bold}.highlight .c1{color:#999988;font-style:italic}.highlight .cs{color:#999999;font-weight:bold;font-style:italic}.highlight .gd{color:#000000;background-color:#fdd}.highlight .gd .x{color:#000000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000000;background-color:#dfd}.highlight .gi .x{color:#000000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaa}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#445588;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:teal}.highlight .nb{color:#0086B3}.highlight .nc{color:#445588;font-weight:bold}.highlight .no{color:#0086b3}.highlight .ni{color:purple}.highlight .ne{color:#990000;font-weight:bold}.highlight .nf{color:#990000;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:navy}.highlight .nv{color:teal}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#0086b3}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#0086b3}.highlight .bp{color:#999}.highlight .vc{color:teal}.highlight .vg{color:teal}.highlight .vi{color:teal}.highlight .il{color:#099}.post .highlight .lineno{color:#ccc;display:inline-block;padding:0 5px 0 0;border-right:1px solid #ccc}.post .highlight pre code{display:block;white-space:pre;overflow-x:auto;word-wrap:normal}.post .highlight pre{border:none;border-left:3px solid #d8dee9;border-color:#e0e0e0}.post .highlight pre code{background-color:transparent;font-size:12px}
+
+  </style>
+  <link rel="canonical" href="http://www.johnmurray.io/draft/2017/04/13/Futures-for-Resilient-Network-Programming.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+    <p class="sub">&copy; 2016. All Rights Reserved</p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+    <header class="post-header">
+        <h1 class="post-title">Futures for Resilient Network Programming</h1>
+    </header>
+
+    <article class="post-content">
+        <!-- Summary - Introduction to the article -->
+<p>In the JVM ecosystem, with the introduction of libraries such as <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/package-summary.html">NIO</a> and <a href="https://netty.io/">Netty</a>,
+there is a push for developers and
+library writers to use asynchronous I/O. In the Scala ecosystem, this usually involves the use of
+<code>Future</code>s to represent return values that are not yet computed. Although the <code>Future</code> allows us to
+specify transformations and compositions over future data values it is not always clear how to build
+fault tolerant code which may include retries, backoffs, and other standard techniques for resilient
+code. This post explores how <code>Future</code>s in Scala can be used to write resilient network code.</p>
+
+<h2 id="what-are-futures">What are Futures</h2>
+
+<p>While <a href="http://docs.scala-lang.org/overviews/core/futures.html">there</a> <a href="http://doc.akka.io/docs/akka/current/scala/futures.html">are</a> <a href="http://danielwestheide.com/blog/2013/01/16/the-neophytes-guide-to-scala-part-9-promises-and-futures-in-practice.html">many</a> <a href="http://code.hootsuite.com/introduction-to-futures-in-scala/">resources</a> <a href="http://alvinalexander.com/scala/concurrency-with-scala-futures-tutorials-examples">available</a> to better learn
+what <code>Futures</code> are (and I do recommend reading some of these if you are not familiar before continuing),
+the quick and dirty definition of a future is</p>
+
+<blockquote>
+  <p>The Future monad is a container that holds the result of a concurrent computation, and information about
+whether it succeeded or failed.  — <a href="http://code.hootsuite.com/co-ops/kevin-lim/">Kevin Lim</a></p>
+</blockquote>
+
+<p>The last point here is important when dealing with network code as every operation could potentially fail.
+Networks are unreliable, tricky beasts that stop working when you least expect. Representing failure and,
+more importantly, providing a model for handling failures is a necessary part of network programming.</p>
+
+<p>If you are unfamiliar with <code>Future</code>s in Scala, but are determined to read on, consider this a quick-ref
+guide for the rest of the article. Otherwise, feel free to skip on to the next section <strong>The Search Index</strong>.</p>
+
+<h4 id="future-quick-ref">Future Quick-Ref</h4>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="c1">// Methods for Future[T], where T is some generic type</span>
+
+<span class="cm">/* map(f: T =&gt; TransformedType): Future[TransformedType]</span>
+<span class="cm"> *   Applies a lambda to the inner type of the future. Only applies to succeeded futures */</span>
+<span class="k">val</span> <span class="n">onePi</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">Int</span><span class="o">](</span><span class="mi">1</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="n">intValue</span> <span class="k">=&gt;</span> <span class="n">intValue</span> <span class="o">*</span> <span class="mf">3.14d</span><span class="o">)</span>
+
+<span class="cm">/* flatMap(f: T =&gt; Future[TransformedType]): Future[TransformedType]</span>
+<span class="cm"> *   Applies a lambda to the inner type of future and returns a future. Useful for</span>
+<span class="cm"> *   composing multiple futures together. */</span>
+<span class="k">def</span> <span class="n">longComputation</span><span class="o">()</span><span class="k">:</span> <span class="kt">Int</span>
+<span class="k">def</span> <span class="n">longComputation2</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Double</span>
+
+<span class="k">val</span> <span class="n">chainedComputations</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span> <span class="n">longComputation</span><span class="o">().</span><span class="n">flatMap</span> <span class="o">{</span> <span class="n">computedInt</span> <span class="k">=&gt;</span>
+  <span class="n">longComputation2</span><span class="o">(</span><span class="n">computedInt</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="cm">/* recover(f: Throwable =&gt; T): Future[T]</span>
+<span class="cm"> *    Applies a function that takes an error (from a failed future) and returns a T.</span>
+<span class="cm"> *    Useful for specifying default values when encountering an error */</span>
+<span class="k">val</span> <span class="n">defaultInt</span> <span class="k">=</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">Int</span><span class="o">]({</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nc">RuntimeException</span><span class="o">(</span><span class="s">&quot;whoops&quot;</span><span class="o">)</span>
+  <span class="o">}).</span><span class="n">recover</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="n">t</span><span class="k">:</span> <span class="kt">Throwable</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+  <span class="o">}</span>
+
+<span class="cm">/* recoverWith(f: Throwable =&gt; Future[T]): Future[T]</span>
+<span class="cm"> *    recovers version of flatMap. Takes the error, for a failed future, and returns</span>
+<span class="cm"> *    a future of the same type. Useful for simplistic retry. */</span>
+<span class="k">def</span> <span class="n">longComputation</span><span class="o">()</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span>
+
+<span class="k">val</span> <span class="n">computedValue</span> <span class="k">=</span> <span class="n">longComputation</span><span class="o">().</span><span class="n">recoverWith</span><span class="o">({</span> <span class="k">case</span> <span class="n">t</span><span class="k">:</span> <span class="kt">Throwable</span> <span class="o">=&gt;</span>
+    <span class="c1">// ignore error, retry</span>
+    <span class="n">longComputation</span><span class="o">()</span>
+  <span class="o">})</span></code></pre></div>
+
+<p>One additional note is that when calling methods such as <code>map</code>, the lambda provided is only
+called if the <code>Future</code> is successful. Additionally, the opposite is true for methods like
+<code>recover</code>.</p>
+
+<h2 id="the-search-index">The Search Index</h2>
+
+<p>To better understand how to apply the ideas presented in this post, we’ll use the following scenario.
+There is a search index that we need to update and occasionally read from. While inserts are very expensive,
+lookups are very cheap. The index is updated and queried over an HTTP interface. The following defines our
+interface to an HTTP library:</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno"> 1</span> <span class="k">trait</span> <span class="nc">HttpClient</span> <span class="o">{</span>
+<span class="lineno"> 2</span>   <span class="k">def</span> <span class="n">url</span><span class="o">(</span><span class="n">u</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">HttpRequest</span>
+<span class="lineno"> 3</span> <span class="o">}</span>
+<span class="lineno"> 4</span> <span class="k">trait</span> <span class="nc">HttpRequest</span> <span class="o">{</span>
+<span class="lineno"> 5</span>   <span class="k">def</span> <span class="n">withBody</span><span class="o">(</span><span class="n">b</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">HttpRequest</span>
+<span class="lineno"> 6</span>   <span class="k">def</span> <span class="n">withHeader</span><span class="o">(</span><span class="n">h</span><span class="k">:</span> <span class="o">(</span><span class="kt">String</span><span class="o">,</span> <span class="kt">String</span><span class="o">))</span><span class="k">:</span> <span class="kt">HttpRequest</span>
+<span class="lineno"> 7</span>   <span class="k">def</span> <span class="n">withQueryString</span><span class="o">(</span><span class="n">q</span><span class="k">:</span> <span class="o">(</span><span class="kt">String</span><span class="o">,</span> <span class="kt">String</span><span class="o">))</span><span class="k">:</span> <span class="kt">HttpRequest</span>
+<span class="lineno"> 8</span> 
+<span class="lineno"> 9</span>   <span class="k">def</span> <span class="n">get</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">HttpResponse</span><span class="o">]</span>
+<span class="lineno">10</span>   <span class="k">def</span> <span class="n">put</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">HttpResponse</span><span class="o">]</span>
+<span class="lineno">11</span>   <span class="k">def</span> <span class="n">post</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">HttpResponse</span><span class="o">]</span>
+<span class="lineno">12</span>   <span class="k">def</span> <span class="n">delete</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">HttpResponse</span><span class="o">]</span>
+<span class="lineno">13</span> <span class="o">}</span>
+<span class="lineno">14</span> <span class="k">trait</span> <span class="nc">HttpResponse</span> <span class="o">{</span>
+<span class="lineno">15</span>   <span class="k">def</span> <span class="n">statusCode</span><span class="k">:</span> <span class="kt">Int</span>
+<span class="lineno">16</span>   <span class="k">def</span> <span class="n">body</span><span class="k">:</span> <span class="kt">String</span>
+<span class="lineno">17</span> <span class="o">}</span></code></pre></div>
+
+<p>As you can see, our network (HTTP) library returns a <code>Future[T]</code> for all operations that involve
+the network. The code we’ll be building in this post is a library to interact with this search
+index, built on top of our HTTP client. We start with this basic building block.</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno"> 1</span> <span class="k">class</span> <span class="nc">SearchIndexClient</span><span class="o">(</span><span class="n">baseUrl</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">http</span><span class="k">:</span> <span class="kt">HttpClient</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 2</span>   <span class="cm">/** Query the search index*/</span>
+<span class="lineno"> 3</span>   <span class="k">def</span> <span class="n">search</span><span class="o">(</span><span class="n">query</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+<span class="lineno"> 4</span>     <span class="n">http</span><span class="o">.</span><span class="n">url</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;$baseUrl/search&quot;</span><span class="o">).</span><span class="n">withQueryString</span><span class="o">(</span><span class="s">&quot;q&quot;</span> <span class="o">-&gt;</span> <span class="n">query</span><span class="o">).</span><span class="n">get</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">resp</span> <span class="k">=&gt;</span>
+<span class="lineno"> 5</span>       <span class="c1">// multiple results separated by ;;</span>
+<span class="lineno"> 6</span>       <span class="n">resp</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;;;&quot;</span><span class="o">)</span>
+<span class="lineno"> 7</span>     <span class="o">}</span>
+<span class="lineno"> 8</span>   <span class="o">}</span>
+<span class="lineno"> 9</span> 
+<span class="lineno">10</span>   <span class="k">def</span> <span class="n">lookup</span><span class="o">(</span><span class="n">documentId</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+<span class="lineno">11</span>     <span class="n">http</span><span class="o">.</span><span class="n">url</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;$baseUrl/document/$documentId&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">resp</span> <span class="k">=&gt;</span>
+<span class="lineno">12</span>       <span class="k">if</span> <span class="o">(</span><span class="n">resp</span><span class="o">.</span><span class="n">statusCode</span> <span class="o">!=</span> <span class="mi">200</span><span class="o">)</span> <span class="nc">None</span>
+<span class="lineno">13</span>       <span class="k">else</span> <span class="nc">Some</span><span class="o">(</span><span class="n">resp</span><span class="o">.</span><span class="n">body</span><span class="o">)</span>
+<span class="lineno">14</span>     <span class="o">}</span>
+<span class="lineno">15</span>   <span class="o">}</span>
+<span class="lineno">16</span> 
+<span class="lineno">17</span>   <span class="cm">/** Insert a document and return the ID */</span>
+<span class="lineno">18</span>   <span class="k">def</span> <span class="n">insert</span><span class="o">(</span><span class="n">document</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+<span class="lineno">19</span>     <span class="n">http</span><span class="o">.</span><span class="n">url</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;$baseUrl/document&quot;</span><span class="o">).</span><span class="n">withBody</span><span class="o">(</span><span class="n">document</span><span class="o">).</span><span class="n">post</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">resp</span> <span class="k">=&gt;</span>
+<span class="lineno">20</span>       <span class="k">if</span> <span class="o">(</span><span class="n">rep</span><span class="o">.</span><span class="n">statusCode</span> <span class="o">!=</span> <span class="mi">201</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">21</span>         <span class="k">throw</span> <span class="nc">IndexInsertException</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;Could not insert into index: ${resp.body}&quot;</span><span class="o">)</span>
+<span class="lineno">22</span>       <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+<span class="lineno">23</span>         <span class="n">resp</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">toInt</span>
+<span class="lineno">24</span>       <span class="o">}</span>
+<span class="lineno">25</span>     <span class="o">}</span>
+<span class="lineno">26</span>   <span class="o">}</span>
+<span class="lineno">27</span> <span class="o">}</span>
+<span class="lineno">28</span> 
+<span class="lineno">29</span> <span class="c1">// parent for search-index related exceptions</span>
+<span class="lineno">30</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">SearchIndexException</span><span class="o">(</span><span class="k">val</span> <span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="k">val</span> <span class="n">cause</span><span class="k">:</span> <span class="kt">Throwable</span> <span class="o">=</span> <span class="kc">null</span><span class="o">)</span>
+<span class="lineno">31</span>     <span class="k">extends</span> <span class="nc">Exception</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">cause</span><span class="o">)</span>
+<span class="lineno">32</span> 
+<span class="lineno">33</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">IndexInsertException</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">cause</span><span class="k">:</span> <span class="kt">Throwable</span> <span class="o">=</span> <span class="kc">null</span><span class="o">)</span>
+<span class="lineno">34</span>     <span class="k">extends</span> <span class="nc">SearchIndexException</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">cause</span><span class="o">)</span></code></pre></div>
+
+<h2 id="basic-retries">Basic Retries</h2>
+
+<p>While the network is unreliable, the issues seen may also be transient (short lived)
+issues. This could be anything from an unreachable host to a DNS resolution error. The
+main point is you don’t want to stop trying at the first sight of an error; you need
+to retry your operation and possibly more than once.</p>
+
+<p>As you may have already guessed, we can get basic retry functionality by using <code>recoverWith</code>.
+Let’s rewrite the <code>search</code> method of our API client to use <code>recoverWith</code> to handle some possible
+network I/O errors.</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno"> 1</span> <span class="k">class</span> <span class="nc">SearchIndexClient</span><span class="o">(</span><span class="n">baseUrl</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">http</span><span class="k">:</span> <span class="kt">HttpClient</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 2</span>   <span class="k">def</span> <span class="n">search</span><span class="o">(</span><span class="n">query</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+<span class="lineno"> 3</span>     <span class="k">def</span> <span class="n">get</span> <span class="k">=</span> <span class="n">http</span><span class="o">.</span><span class="n">url</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;$baseUrl/search&quot;</span><span class="o">).</span><span class="n">withQueryString</span><span class="o">(</span><span class="s">&quot;q&quot;</span> <span class="o">-&gt;</span> <span class="n">query</span><span class="o">).</span><span class="n">get</span>
+<span class="lineno"> 4</span> 
+<span class="lineno"> 5</span>     <span class="n">get</span><span class="o">.</span><span class="n">recoverWith</span><span class="o">({</span>
+<span class="lineno"> 6</span>       <span class="k">case</span> <span class="n">e</span> <span class="k">@</span> <span class="o">(</span><span class="k">_</span> <span class="k">:</span> <span class="kt">InterruptedIOException</span> <span class="kt">|</span> <span class="k">_</span> <span class="kt">:</span> <span class="kt">IOException</span><span class="o">)</span> <span class="k">=&gt;</span>
+<span class="lineno"> 7</span>         <span class="c1">// log exception &#39;e&#39;, begin retry</span>
+<span class="lineno"> 8</span>         <span class="n">get</span>
+<span class="lineno"> 9</span>       <span class="k">case</span> <span class="n">notHandled</span> <span class="k">=&gt;</span>
+<span class="lineno">10</span>         <span class="c1">// re-throw any other exception that we encounter</span>
+<span class="lineno">11</span>         <span class="k">throw</span> <span class="n">notHandled</span>
+<span class="lineno">12</span>     <span class="o">}).</span><span class="n">map</span> <span class="o">{</span> <span class="n">resp</span> <span class="k">=&gt;</span>
+<span class="lineno">13</span>       <span class="c1">// multiple results separated by ;;</span>
+<span class="lineno">14</span>       <span class="n">resp</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;;;&quot;</span><span class="o">)</span>
+<span class="lineno">15</span>     <span class="o">}</span>
+<span class="lineno">16</span>   <span class="o">}</span>
+<span class="lineno">17</span> 
+<span class="lineno">18</span>   <span class="c1">// rest of code</span>
+<span class="lineno">19</span> <span class="o">}</span></code></pre></div>
+
+<p>The <code>search</code> method now handles general and aync-related (via <code>InterruptedIOException</code>) exceptions and
+will retry one time. However, what if we want to have more than one retry? Do we continue to nest
+<code>recoverWith</code> invocations? Luckily for us <code>recoverWith</code> returns a new <code>Future[T]</code> object. Meaning we
+can rewrite our code like the following.</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno"> 1</span> <span class="k">class</span> <span class="nc">SearchIndexClient</span><span class="o">(</span><span class="n">baseUrl</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">http</span><span class="k">:</span> <span class="kt">HttpClient</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 2</span>   <span class="k">val</span> <span class="n">numRetries</span> <span class="k">=</span> <span class="mi">3</span>
+<span class="lineno"> 3</span> 
+<span class="lineno"> 4</span>   <span class="k">def</span> <span class="n">search</span><span class="o">(</span><span class="n">query</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+<span class="lineno"> 5</span>     <span class="k">def</span> <span class="n">get</span> <span class="k">=</span> <span class="n">http</span><span class="o">.</span><span class="n">url</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;$baseUrl/search&quot;</span><span class="o">).</span><span class="n">withQueryString</span><span class="o">(</span><span class="s">&quot;q&quot;</span> <span class="o">-&gt;</span> <span class="n">query</span><span class="o">).</span><span class="n">get</span>
+<span class="lineno"> 6</span> 
+<span class="lineno"> 7</span>     <span class="k">var</span> <span class="n">httpResult</span> <span class="k">=</span> <span class="n">get</span>
+<span class="lineno"> 8</span>     <span class="k">for</span> <span class="o">(</span><span class="k">_</span> <span class="k">&lt;-</span> <span class="mi">1</span> <span class="n">until</span> <span class="n">numRetries</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 9</span>       <span class="n">httpResult</span> <span class="k">=</span> <span class="n">httpResult</span><span class="o">.</span><span class="n">recoverWith</span><span class="o">({</span>
+<span class="lineno">10</span>         <span class="k">case</span> <span class="n">e</span> <span class="k">@</span> <span class="o">(</span><span class="k">_</span> <span class="k">:</span> <span class="kt">InterruptedIOException</span> <span class="kt">|</span> <span class="k">_</span> <span class="kt">:</span> <span class="kt">IOException</span><span class="o">)</span> <span class="k">=&gt;</span>
+<span class="lineno">11</span>           <span class="n">get</span>
+<span class="lineno">12</span>         <span class="k">case</span> <span class="n">notHandled</span> <span class="k">=&gt;</span> <span class="k">throw</span> <span class="n">notHandled</span>
+<span class="lineno">13</span>       <span class="o">})</span>
+<span class="lineno">14</span>     <span class="o">}</span>
+<span class="lineno">15</span> 
+<span class="lineno">16</span>     <span class="n">httpRes</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">resp</span> <span class="k">=&gt;</span>
+<span class="lineno">17</span>       <span class="c1">// multiple results separated by ;;</span>
+<span class="lineno">18</span>       <span class="n">resp</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;;;&quot;</span><span class="o">)</span>
+<span class="lineno">19</span>     <span class="o">}</span>
+<span class="lineno">20</span>   <span class="o">}</span>
+<span class="lineno">21</span> 
+<span class="lineno">22</span>   <span class="c1">// rest of code</span>
+<span class="lineno">23</span> <span class="o">}</span></code></pre></div>
+
+<!-- using recoverWith -->
+
+<h2 id="retries-with-backoff">Retries with Backoff</h2>
+
+<!-- Making a future wait -->
+<!-- Thread.sleep is bad -->
+<!-- great place for visuals of a thread-pool and what it looks like to sleep (threads become blocked, reduced capacity) -->
+<!-- use akka, but ideally stdlib. Links for handy akka funcitons: https://gist.github.com/viktorklang/9414163 -->
+
+<h2 id="verifying-before-retrying">Verifying Before Retrying</h2>
+
+<!-- use our long-running example of inserting into a search index as an example (looksups are cheap, inserts are expensive) -->
+
+<h2 id="waiting-on-remote-processes">Waiting on Remote Processes</h2>
+<p><!-- waiter util for waiting on remote processes -->
+ <!-- this feels fairly different from the rest as a cohesive pattern -->
+ <!-- can also be mixed into the rest of this -->
+ <!-- THOUGHT: conceptually this has retries + verifiers (smart retries) built in. Should re-use code if possible --></p>
+
+<h2 id="putting-it-all-together">Putting it all Together</h2>
+
+<!-- general form / solution -->
+<!-- tie into AN products (Geo Manager) -->
+
+<h1 id="original-opening">Original Opening</h1>
+<!-- original pass at article opening, may be able to re-use some of it -->
+<p>If you work with [<code>Future</code>s][fut] in [Scala][scala], you may have found yourself needing to “wait” or
+“pause” what you are doing. But when you are working with a series of Futures (async all the things!)
+what do you do?</p>
+
+<p>Let’s say that I have a series of tasks to run. These tasks are doing some I/O operations and all return
+<code>Future</code>s. The next task cannot be run until the previous task completes. So first pass you get something
+like</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">for</span> <span class="o">{</span>
+      <span class="n">t1</span> <span class="k">&lt;-</span> <span class="n">taskOne</span><span class="o">()</span>
+      <span class="n">t2</span> <span class="k">&lt;-</span> <span class="n">taskTwo</span><span class="o">(</span><span class="n">t1</span><span class="o">)</span>
+      <span class="n">t3</span> <span class="k">&lt;-</span> <span class="n">taskThree</span><span class="o">(</span><span class="n">t2</span><span class="o">)</span>
+      <span class="n">t4</span> <span class="k">&lt;-</span> <span class="n">taskFour</span><span class="o">(</span><span class="n">t3</span><span class="o">)</span>
+      <span class="n">t5</span> <span class="k">&lt;-</span> <span class="n">taskFive</span><span class="o">(</span><span class="n">t4</span><span class="o">)</span>
+    <span class="o">}</span> <span class="k">yield</span> <span class="o">{</span>
+      <span class="n">t5</span>
+    <span class="o">}</span></code></pre></div>
+
+<p>What happens if <code>taskTwo</code> fails? Well, you’ll likely read online that your error will “fall through” and the code
+above will result in a failed future. While that is correct, it’s not entirely useful. More likely you’re
+interested in how to recover from that situation. In that case you may just want to retry. Let’s turn <code>taskTwo(t1)</code>
+into a safer method.</p>
+
+
+
+        <div class="footer-navigation">
+            
+                <span class="previous"><a href="/log/2016/09/02/Every-Scala-Team-Writes-Plugins.html">
+                    &laquo;Your Team Should Write SBT Plugins
+                </a></span>
+            
+            
+                <span class="next"><a href="/draft/2017/04/13/Failure-Handling-with-Futures.html">
+                    Failure Handling with Futures&raquo;
+                </a></span>
+            
+        </div>
+
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- Footer Advertisement -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-8460014050417630"
+             data-ad-slot="9924998708"
+             data-ad-format="auto"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+    </article>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      function downloadGoogleAnalytics() {
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-11511983-4']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+          var ga = document.createElement('script'); 
+          ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(ga, s);
+        })();
+      }
+			if (window.addEventListener) window.addEventListener("load", downloadGoogleAnalytics, false);
+			else if (window.attachEvent) window.attachEvent("onload", downloadGoogleAnalytics);
+			else                         window.onload = downloadGoogleAnalytics;
+    </script>
+  </body>
+
+</html>

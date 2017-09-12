@@ -2,16 +2,8 @@
 title: The Futures Abstraction
 ---
 
-<!--
-  Futures are really an abstraction over a threadpool + executor + scheduler. The premise
-  of this article is really to explore what using the "Future pattern" looks like when we
-  take a way the actual Scala Future implementation. Then by building our own example, lead
-  our way back to Futures as an abstraction.
-
-  Goal: An article that is both very informative to programmers who are not familiar with the
-  Future concept as well as more seasoned developers who may not have dug into just how Futures
-  work.
--->
+<img src="{% base64 blog-files/futures-abstraction/the-future-is-now.png %}"
+    alt="Mongo geo-spatial index and query visualization"/>
 
 When it comes to concurrency, there is no shortage of options. There are the classic
 [processes][wiki_proc] and [threads][wiki_thrd], the older but newly-new
@@ -20,17 +12,25 @@ and the quite popular Future/Promise. Of course there are more, but one thing th
 is the goal to create a "better" abstraction for concurrent computation. This is great, if we understand
 what we're abstracting.
 
-When it comes to futures I often find posts on how to get started and use them, but not many explaining
-the underlying mechanics or the model we're representing. This article will walk you through futures by
-implementing them from the ground up.
+<!--
+-->
 
-Before we get started, what _is_ the future abstraction? From [Wikipedia][wiki_futr] we get
+When it comes to futures there is a great number of articles online about how to get started using a
+particular implementation / framework for futures. However there is a much smaller number of articles
+that take the time to properly explain what a future is, how they work, and what exactly the abstraction
+provides you. This article will walk through those details by implementing futures from the ground up.
+
+Before we jump right into code, what is the definition of _future_? From [Wikipedia][wiki_futr] we get
 
 > ... future, promise, delay, and deferred refer to constructs used for synchronizing program execution
 > in some concurrent programming languages. They describe an object that acts as a proxy for a result that
 > is initially unknown, usually because the computation of its value is yet incomplete.
 
-Essentially a future represents the result of some computation which will _eventually_ yield a result.
+A future represents the result of some computation which will _eventually_ yield a result. The "eventually"
+bit typically implies that there is some computation that is executing asynchronously (in another thread,
+for example) but can also imply a deferred value. You can think of a deferred value as a lazy value that is not
+computed until needed. For this article, we will assume that a future is the result of an async computation.
+
 Great, now that we understand what a future is, let's build our abstraction from the ground-up.
 
 ## The Tools
@@ -61,9 +61,12 @@ This is fairly simple, but some things are worth pointing out.
   * __2)__ The `Thread` object does not start executing the `run` function until we call `start()`
 
 Now even though this is simple, this is a lot of code to type for each block of code we want to run
-concurrently. Let's rewrite this as a function that we can pass a block of code into.
+concurrently. Let's rewrite this as a function that we can pass a block of code into. For this article,
+all code will live in the `simple.future` namespace.
 
 {% highlight scala linenos %}
+package simple.future
+
 def future(block: => Unit): Unit = {
   val concurrentComputation = new Thread(new Runnable {
     def run(): Unit = {
@@ -83,7 +86,7 @@ future { print("I'm running concurrently! whoop!") }
 The Scala bits that may throw you here are
 
   * __1)__ `block: => Unit` is a pass-by-name value that returns a `Unit` (not executed until called)
-  * __2)__ `block` on line 4 evaluates the user-provided code within the `run` method which is called
+  * __2)__ `block` on line 6 evaluates the user-provided code within the `run` method which is called
            once the `Thread` is running
   * __3)__ `{ ... }` is a block of code that is passed to `future` as the first parameter to the function
 
@@ -105,6 +108,8 @@ important / less critical work.
 Let's rewrite our `future` function to work with a Java thread pool
 
 {% highlight scala linenos %}
+package simple.future
+
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
@@ -133,7 +138,7 @@ We now have a `future` function that works with thread pools! To explain some th
            for user-provided code `{ ... }`.
   * __2)__ `future` now throws a `RuntimeException` if it is given a `ThreadPoolExecutor` that is not usable
   * __3)__ `tp.execute(...)` adds work to the thread pool's queue and runs it asynchronously
-  * __4)__ `tp` on line 17 is a thread pool with exactly 4 threads which uses a `LinkedBlockingQueue` as the
+  * __4)__ `tp` on line 19 is a thread pool with exactly 4 threads which uses a `LinkedBlockingQueue` as the
            backing queue when there is more work than available threads.
 
 ## Part 2 - Returning the Result
@@ -144,6 +149,8 @@ need to use some sort of "proxy" object that will eventually contain the value. 
 object could look like.
 
 {% highlight scala linenos %}
+package simple.future
+
 class Future[T] {
   private var result: Option[T] = None
 
@@ -174,6 +181,8 @@ Now that we have our "proxy" object, we can update our `future` function to retu
 `Future[T]` class.
 
 {% highlight scala linenos %}
+package simple.future
+
 def future[T](tp: ThreadPoolExecutor)(block: => T): Future[T] = {
   val fut = new Future[T]
   
@@ -245,6 +254,8 @@ meant to _write_ the value. By creating two separate objects, we can hand them t
 Let's see what this would look like.
 
 {% highlight scala linenos %}
+package simple.future
+
 class Future[T](private val promise: Promise[T]) {
   def isReady: Boolean = promise.isReady
   def get: T = promise.get
@@ -253,7 +264,7 @@ class Future[T](private val promise: Promise[T]) {
 class Promise[T] {
   private var result: Option[T] = None
 
-  def future: Future[T] = new Future[T](this)
+  lazy val futurePair: Future[T] = new Future[T](this)
 
   // writer functions
   def write(value: T): Unit = this.synchronized {
@@ -276,7 +287,8 @@ With this new version we can see that `Future` is now just a read-only interface
 and that each future contains a private reference to it's `Promise` pair. The new `Promise` class is mostly
 the same as our original `Future` implementation with two exceptions.
 
-  * __1)__ A new `future` method which returns a `Future` object that is paired with the current `Promise` object
+  * __1)__ A new `future` value which creates a `Future` object that is paired with the current `Promise` object
+           when needed (thus the `lazy` part)
   * __2)__ All read and write methods are now contained in `this.synchronized` blocks which synchronizes
            access to the `Promise` object. This is good practice for any object that will be accessed from
            multiple threads.
@@ -285,6 +297,8 @@ However, even with this separation of concerns, `Promise` can be written to more
 synchronized our methods (ensuring no concurrent updates), we can add a simple check to solve our problem.
 
 {% highlight scala linenos %}
+package simple.future
+
 class Promise[T] {
   private var result: Option[T] = None
   private var isWritten: Boolean = false;
@@ -331,6 +345,8 @@ execute the code block. Well, what if an exception occurs, what value do you ret
 wrap our `T` value in `Future[T]` in a success/fail object.
 
 {% highlight scala %}
+package simple.future
+
 trait Try[T]
 case class Success[T](value: T) extends Try[T]
 case class Failure[T](throwable: Throwable) extends Try[T]
@@ -340,6 +356,8 @@ With these new types, we can now represent the result of a future, previously ju
 this, we need to update our read and write functions
 
 {% highlight scala linenos %}
+package simple.future
+
 class Future[T](private val promise: Promise[T]) {
   def get: Try[T] = promise.get
   // ...
@@ -359,6 +377,8 @@ class Promise[T] {
 As well as our `function` function
 
 {% highlight scala linenos %}
+package simple.future
+
 def future[T](tp: ThreadPoolExecutor)(block: => T): Future[T] = {
   val promise = new Promise[T]
 
@@ -373,7 +393,7 @@ def future[T](tp: ThreadPoolExecutor)(block: => T): Future[T] = {
       }
     }
   })
-  return promise.future
+  return promise.futurePair
 }
 {% endhighlight %}
 
@@ -396,9 +416,11 @@ while (!f.isReady && i < MaxWait) {
   i += 5
 }
 
-f.get match {
-  case Success(value) => println(value)
-  case Failure(t) => t.printStackTrace()
+f.get match { res: Try[String] =>
+  res match {
+    case Success(value) => println(value)
+    case Failure(t)     => t.printStackTrace()
+  }
 }
 {% endhighlight %}
 
@@ -418,23 +440,274 @@ This is a good start to creating a realistic implementation of futures, however 
 accessing the final value leaves a lot to be desired. Currently to get the value we have to block on the current
 thread and wait for the future to be completed.
 
-<!-- talk about callbacks: onComplete, onSuccess, onFailure, etc -->
-<!-- pass around thread-pools as well -->
+The easy way to not block is to provide callback functions. Callbacks are user-provided blocks of code that are registered
+with the `Future` object and called once the `Future` is ready. We'll define three functions: `onComplete`,
+`onSuccess` and `onFailure`. Let's start first with `onComplete`
+
+{% highlight scala linenos %}
+package simple.future
+
+class Future[T](private var promise: Promise[T]) {
+  // ...
+
+  def onComplete(tp: ThreadPoolExecutor)(f: Try[T] => Unit): Unit = {
+    promise.registerOnComplete(tp, f)
+  }
+}
+
+class  Promise[T] {
+  // ...
+
+  var onCompleteHandlers: List[(ThreadPoolExecutor, Try[T] => Unit)] = Nil
+
+  def registerOnComplete(tp: ThreadPoolExecutor, f: Try[T] => Unit): Unit = {
+    onCompleteHandlers ::= (tp, f)
+  }
+
+  def callOnCompletes(value: T): Unit = {
+    for (handler <- onCompleteHandlers) {
+      val tp: ThreadPoolExecutor = handler._1
+      val f:  Try[T] => Unit     = handler._2
+
+      simple.future.future(tp) {
+        f(value)
+      }
+    }
+  }
+
+  def write(value: Try[T]): Unit = this.synchronized {
+    if (this.isWritten) {
+      throw new RuntimeException(
+        "Cannot write value. Already written")
+    }
+    this.result = Some(value)
+    this.isWritten = true
+    this.callOnCompletes(value)
+  }
+}
+{% endhighlight %}
+
+We now have a new method on `Future` of `onComplete` which registers a callback handler with `Promise`. The reason
+that `Promise` handles the firing of the callback is because it maintains the relationship that `Future` is read-only
+and that `Promise` is the write interface. With this, we can fire the callbacks as soon as `Promise.write` is called.
+
+Some final notes about the above code
+
+  * __1)__ `onCompleteHandlers` is a list of 2-tuples containing the thread pool and the block of code to execute on the
+           result. It is also initialized to an empty list (`Nil`)
+  * __2)__ The code `onCompleteHandlers ::= (tp, f)` appends a 2-tuple to the list `onCompleteHandlers`
+  * __3)__ Values in 2-Tuples are accessed by `x._1` and `x._2` as on line 22
+
+And we can now use our new function like
+
+{% highlight scala %}
+val f: Future[String] = future(tp) {
+  if (scala.util.Random.nextBoolean()) {
+    "I'm running concurrently! whoop!"
+  } else {
+    throw new RuntimeException("We were unlucky... bummer")
+  }
+}
+
+f.onComplete(tp) { res: Try[String] =>
+  res match {
+    case Success(value) => println(value)
+    case Failure(t)     => t.printStackTrace()
+  }
+}
+{% endhighlight %}
+
+With this, we could easily imagine how to write other functions such as `onSuccess`, `onFailure`, etc.
 
 ## Part 5 - Composing Futures
 
+Callbacks are an excellent way to access data retrieved/generated from an asynchronous operation. However what if
+we wanted to combine the value from two async operations, or we wanted to transform the result of an async operation,
+but still maintain a future to that transformed value in the current thread. For this, we need to have callbacks
+that return yet another `Future` as a proxy object to a result of the callback.
+
+The first function we'll look at is `map` with the following signature
+
+{% highlight scala %}
+class Future[T](...) {
+  def map[U](tp: ThreadPoolExecutor)(f: T => U): Future[U]
+}
+{% endhighlight %}
+
+`map` takes a thread pool and a function and returns another future. The user-provided function, `f`, takes as a
+parameter a successful value from the current future and returns a value of type `U`. However `map` returns a value
+of type `Future[U]`. This allows us to call `map` on a `Future` that may or may not be completed. This means that we
+can't return the result of our transformation (`f`) directly, but must use another `Future`. This is best explained with
+some examples.
+
+{% highlight scala %}
+// base future we'll be map'ing
+val f: Future[Int] = future(tp) {
+  Thread.sleep(2000)  // sleep 2 seconds
+  2
+}
+
+// multiply f by 10
+val f10: Future[Int] = f.map(tp) { two => two * 10 }
+
+// turn into a string
+val fs: Future[String] = f.map(tp) { two => two.toString }
+{% endhighlight %}
+
+Because `f` takes at least 2 seconds to run, you can see why we can't immediately apply our transformations to the value.
+Instead we use `map` to defer the transformations for when the future has completed, but we can still hold onto a proxy
+object representing the result of those calculations.
+
+But what happens if the future being mapped fails? In that case the error propegates to all failed values.
+
+{% highlight scala %}
+val f: Future[Int] = future(tp) {
+  Thread.sleep(2000)
+  throw new RuntimeException("whoops!")
+}
+
+val f10: Future[Int] = f.map(tp) { value => value * 10 }
+
+f10.onComplete(tp) { res: Try[Int] =>
+  res match {
+    case Success(value) => // do nothing
+    case Failure(t)     => t.printStackTrace()
+  }
+}
+{% endhighlight %}
+
+The above code would print out a stacktrace for f10. The stacktrace would say "whoops!" and would be the same exception from
+`f` passed along to `f10`. This makes sense as we cannot transform an exception as if it were a successful value.
+
+Enough examples, let's take a stab at implementing `map`. 
+
+{% highlight scala linenos %}
+package simple.future
+
+class Future[T](...) {
+  def map[U](tp: ThreadPoolExecutor)(f: T => U): Future[U] = {
+    promise.map(tp)(f)
+  }
+}
+
+class Promise[T] {
+  def map[U](tp: ThreadPoolExecutor)(f: T => U): Future[U] = {
+    val mapPromise = new Promise[U]
+
+    val block: Try[T] => Unit = {
+      case Success(v) => futureWithPromise(tp, mapPromise) {
+        f(v)
+      }
+      case Failure(t) => mapPromise.write(Failure(t))
+    }
+    registerOnComplete(tp, block)
+
+    return mapPromise.futurePair
+  }
+}
+{% endhighlight %}
+
+You can see that we are defining this on `Promise`. This is because `Promise` is our writable interface and we want to take
+advantage of the `registerOnComplete` function we saw earlier. `map` works by creating a new promise/future pair and returning
+the futre immediately. However the callback that is registered allows us to call our user-provided function `f` in the callback
+and write the result to the new promise/future pair we created. For failures we can see the write happening
+
+{% highlight scala %}
+  case Failure(t) => mapPromise.write(Failure(t))
+{% endhighlight %}
+
+This allows us to propegate failure and by-pass the user-provided code which expects a value. This allows us to call `map`
+without having to worry about additional error handling. 
+
+But wait, what is this `futureWithPromise` function and what does it do? Remember `future` from earlier that takes a block of
+user code and a thread pool and returns a future? Well this is pretty much the same thing except that it takes a pre-created
+promise object. With this, we can re-define our `future` method as well (to avoid duplication) and we get
+
+
+{% highlight scala linenos %}
+package simple.future
+
+def futureWithPromise[T](tp: ThreadPoolExecutor, promise: Promise[T])
+                        (block: => T): Future[T] = {
+  if (tp.isShutdown || tp.isTerminating || tp.isTerminated) {
+    throw new RuntimeException(
+      "Cannot execute on threadpool that is not active/running.")
+  }
+  tp.execute(new Runnable {
+    def run(): Unit = {
+      try {
+        promise.write(Success(block))
+      } catch {
+        case t: Throwable => promise.write(Failure(t))
+      }
+    }
+  })
+
+  return promise.futurePair
+}
+
+def future[T](tp: ThreadPoolExecutor)(block: => T): Future[T] = {
+  val promise = new Promise[T]
+
+  return futureWithPromise(tp, promise)(block)
+}
+{% endhighlight %}
+
+We can see that `futuerWithPromise` is basically our previous implementation of `future` and `future` is now just a convencience
+method for when you don't have your own `Promise` already created.
+
+### So much more!
+
+When it comes to composing futures, there is often a myriad of functions available to transform futures in different ways.
+For example, these two functions are very common (although the naming may differ)
+
+{% highlight scala %}
+class Future[T](...) {
+  def flatMap[T](tp: ThreadPoolExecutor)(f: T => Future[U]): Future[U]
+
+  def recover(tp: ThreadPoolExecutor)(f: Throwable => T): Future[T]
+}
+{% endhighlight %}
+
+`flatMap` is very much like our map, but this allows the user-provided code to return a `Future[U]` instead of just a `U`. Think of
+making a web-request which returns a future, and then using the result of the first web-request to make a second web-request. For this case you
+would use a `flapMap`. 
+
+`recover` is a way to not only handle a failed future, but also provide/calculate some sort of default value. When combining `recover`
+with other compositing functions like `map` and `flatMap` we can define a future with all of our transformations and error handling
+in a declarative way.
+
+Since you've seen the basic format for implementing these type of functions (with the `map` example), I'll leave it as an exercise
+to the reader to define `flatMap` and `recover`.
+
+
+## Conclusion
+
+Phew! That was quite a bit of work, and this is still a very bare-bones, basic implementation of futures. However this
+should give us some solid ground to stand on for understanding futures and hopefully understanding why this is a useful
+(in my humble opinion) and popular abstraction. If you're interested in what a real-world future implementation looks like,
+check out some of the links below (note that this post most closely mimic's the Scala implementation):
+
+
+  * [Scala Library](http://docs.scala-lang.org/overviews/core/futures.html)
+  * [Rust](https://tokio.rs/docs/getting-started/futures/)
+  * [C++ stdlib](http://en.cppreference.com/w/cpp/thread/future)
+  * [Java 8](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html)
+  * [C#](https://msdn.microsoft.com/en-us/library/ff963556.aspx)
+  * [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 
 <!--
-  I think this is as "high-level" as I want to go in terms of providing an overview for the rest
-  of the post. I think I'll just introduce and implement a new concept in each sub-section
-  and eventually we'll build up having _most_ of the functionality of a future.
 
-  I think rather than explain a Future concept (assuming familiarity with Futures already),
-  it would be better to introduce the idea in my re-implementaiton and then say "oh, this looks
-  like X in Futures"
+TODO: link these things
+
+Link to some various future implementations to read / learn more
+  - Scala impl  (stdlib versions)
+  - rust impl?  (if there is a good one to link to)
+  - C++ impl    (stdlib ones)
+  - Java impl   (java 8 completable futures)
+  - Ruby impl   (celluloid?)
 
 -->
-
 
 
 

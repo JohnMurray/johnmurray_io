@@ -6,8 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Your Team Should Write SBT Plugins</title>
-  <meta name="description" content="Every Scala development team should be writing their own SBT plugins. If you’re not thenyou’re doing it wrong.">
+  <title>Failure Handling with Futures</title>
+  <meta name="description" content="">
 
   <!-- <link rel="stylesheet" href="/css/main.css"> -->
   
@@ -15,7 +15,7 @@
     @import "https://fonts.googleapis.com/css?family=Roboto:300,400,500";body,h1,h2,h3,h4,h5,h6,p,blockquote,pre,hr,dl,dd,ol,ul,figure{margin:0;padding:0}body{-webkit-text-size-adjust:100%;background-color:#fff;color:#566b78;font-family:"Roboto","Open Sans",Helvetica,Arial,sans-serif;font-size:18px;font-weight:300;line-height:1.5;padding-top:2em}h1,h2,strong{color:#344b78}h1,h2,h3,h4,h5,h6,p,blockquote,pre,ul,ol,dl,figure{margin-bottom:15px}img{max-width:100%;vertical-align:middle}figure>img{display:block}figcaption{font-size:15.75px}ul,ol{margin-left:30px}li>ul,li>ol{margin-bottom:0}h1,h2,h3,h4,h5,h6{font-weight:300}a{color:#e81c4f;text-decoration:none}a:visited{color:#e81c4f}a:hover{color:#566b78;text-decoration:none}blockquote{color:#828282;border-left:4px solid #e8e8e8;padding-left:15px;font-size:18px;letter-spacing:-1px;font-style:italic}blockquote>:last-child{margin-bottom:0}pre,code{font-size:12px;border-radius:3px;border:1px solid #d8dee9;background-color:#f5f7f9}code{padding:4px 5px 1px 5px}pre{padding:8px 12px;overflow-x:auto}pre>code{border:0;padding-right:0;padding-left:0}.wrapper{max-width:-webkit-calc(800px - (30px * 2));max-width:calc(800px - (30px * 2));margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px}@media screen and (max-width: 800px){.wrapper{max-width:-webkit-calc(800px - (30px));max-width:calc(800px - (30px));padding-right:15px;padding-left:15px}}.wrapper:after{content:"";display:table;clear:both}.icon>svg{display:inline-block;width:16px;height:16px;vertical-align:middle}.icon>svg path{fill:#828282}.masthead{color:#fff;background-color:#2a2a2a;min-width:270px}.masthead h1{color:#fff;font-weight:bold;font-family:"Lucida Console", Monaco, monospace}.masthead a{text-decoration:none}.masthead a:hover{text-decoration:none}.masthead a:active{text-decoration:none}.masthead-inner .sub{color:#666}.masthead-inner .sub a{color:#666}.masthead-inner .sub a:hover{color:#999}@media (min-width: 760px){.masthead-inner{padding:40px}.page-content{margin-left:40px;margin-right:40px}}@media (min-width: 990px){.masthead{position:fixed;top:0;left:0;bottom:0;width:25%;margin-bottom:0}.masthead-inner{position:absolute;top:0;right:0;left:0}.masthead h1{font-size:54px}.page-content{margin-left:35%;margin-right:10%;width:55%}}.page-content{padding:30px 0}.page-heading{font-size:20px}.post-list{margin-left:0;list-style:none}.post-list .post-title{margin-top:30px;margin-bottom:0;display:inline-block}.post-meta{color:#828282;display:inline-block;float:right;font-size:15.75px;margin-top:32px}.post-link{display:block;font-size:24px}.post-header{margin-bottom:30px}.post-title{font-size:42px;letter-spacing:-1px;line-height:1}@media screen and (max-width: 800px){.post-title{font-size:36px}}.post-content{margin-bottom:30px}.post-content h2{font-size:32px}@media screen and (max-width: 800px){.post-content h2{font-size:28px}}.post-content h3{font-size:26px}@media screen and (max-width: 800px){.post-content h3{font-size:22px}}.post-content h4{font-size:20px}@media screen and (max-width: 800px){.post-content h4{font-size:18px}}.footer-navigation{border-bottom:1px solid #e0e0e0;display:block;font-weight:bold;height:60px;margin:50px 0 40px 0;text-align:center}.footer-navigation .previous{display:block;margin:0 auto}.footer-navigation .next{display:block;margin:0 auto}@media (min-width: 760px){.footer-navigation{height:30px;padding-bottom:10px}.footer-navigation .previous{display:block;float:left;margin:0;text-align:left}.footer-navigation .next{display:block;float:right;margin:0;text-align:right}}.highlight{background:#ffffff}.highlight .c{color:#999988;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#999988;font-style:italic}.highlight .cp{color:#999999;font-weight:bold}.highlight .c1{color:#999988;font-style:italic}.highlight .cs{color:#999999;font-weight:bold;font-style:italic}.highlight .gd{color:#000000;background-color:#fdd}.highlight .gd .x{color:#000000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000000;background-color:#dfd}.highlight .gi .x{color:#000000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaa}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#445588;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:teal}.highlight .nb{color:#0086B3}.highlight .nc{color:#445588;font-weight:bold}.highlight .no{color:#0086b3}.highlight .ni{color:purple}.highlight .ne{color:#990000;font-weight:bold}.highlight .nf{color:#990000;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:navy}.highlight .nv{color:teal}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#0086b3}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#0086b3}.highlight .bp{color:#999}.highlight .vc{color:teal}.highlight .vg{color:teal}.highlight .vi{color:teal}.highlight .il{color:#099}.post .highlight .lineno{color:#ccc;display:inline-block;padding:0 5px 0 0;border-right:1px solid #ccc}.post .highlight pre code{display:block;white-space:pre;overflow-x:auto;word-wrap:normal}.post .highlight pre{border:none;border-left:3px solid #d8dee9;border-color:#e0e0e0}.post .highlight pre code{background-color:transparent;font-size:12px}
 
   </style>
-  <link rel="canonical" href="http://www.johnmurray.io/log/2016/09/02/Every-Scala-Team-Writes-Plugins.html">
+  <link rel="canonical" href="http://www.johnmurray.io/draft/2017/04/13/Failure-Handling-with-Futures.html">
   <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
 </head>
 
@@ -42,91 +42,26 @@
         <div class="post">
 
     <header class="post-header">
-        <h1 class="post-title">Your Team Should Write SBT Plugins</h1>
+        <h1 class="post-title">Failure Handling with Futures</h1>
     </header>
 
     <article class="post-content">
-        <p><strong>Every Scala development team should be writing their own SBT plugins. If you’re not then
-you’re doing it wrong</strong>.</p>
-
-<p>This is an <s>assertion</s> assumption I am making based on what I’ve seen so far in my limited
-experience working on/with various teams and their Scala applications.</p>
-
-<h2 id="standards">Standards</h2>
-
-<p>Organizations (not just large ones) typically have standards. Standards for various things including</p>
-
-<ul>
-  <li>code style</li>
-  <li>application packaging</li>
-  <li>release process</li>
-  <li>deployment</li>
-</ul>
-
-<p>The list goes on. The general idea however is that if you are building a new application, it should
-conform to the standards that (ideally) all the other applications in the organization follow.</p>
-
-<p>Now if we’re talking about Scala projects, we have some wonderful tools for defining all of these
-standards. Specifically I’m talking about SBT. It is the Scala developer’s Swiss army knife. I know
-that if I start a Scala project today I can use <code>sbt-release</code> for defining my release process
-(all the steps / actions I take to release my code) which includes essentials standards items such
-as a versioning scheme. I can also use <code>sbt-native-packager</code> to build <code>deb</code> or <code>rpm</code> packages
-for Linux or docker images for [<em>insert cloud platform here</em>]. I may also set up my applications
-with a few useful utilities depending on what I’m writing, such as</p>
-
-<ul>
-  <li><code>scalastyle</code> (and/or <code>sbt-checkstyle</code> if I have some Java code as well)</li>
-  <li><code>sbt-reloader</code> (for easy running of my app locally)</li>
-  <li><code>sbt-doge</code> (if I’m managing multiple release versions of a lib, or developing an SBT plugin as part
-of a suite of libraries)</li>
-  <li><code>sbt-dependency-graph-sugar</code> (for viewing pretty dep-graphs)</li>
-</ul>
-
-<p>The list goes on. And a lot of it depends on the style or particular flavor of Scala development
-at each organization.</p>
-
-<h2 id="maintaining-consistency">Maintaining Consistency</h2>
-
-<p>So you got your recipe of Scala programming goodness all bundled up in your <code>build.sbt</code>, that’s
-great! But wait, how do you make sure that other projects use the same data. Well you could just
-copy it around at first if we’re talking about a handful of applications. Beyond that maybe we
-make a general template that people clone from to start their projects. But wait, what if the
-organization decides it wants to add a new step to that sweet release process you wrote using
-<code>sbt-release</code>? Well, now you need to hop from project to project, updating each <code>build.sbt</code>. And
-you can’t just copy and paste anymore because you might override some application-specific settings
-that have built up over time.</p>
-
-<p>There is actually a very simple solution to this problem, organizational SBT plugins. These are plugins that
-are written for the express purpose of wrapping up all these organizational standards into simple SBT
-plugins. You have an awesome release process? Great! Wrap that up into an SBT <code>AutoPlugin</code> that uses
-the <code>sbt-release</code> plugin internally. All that is required for an application to conform to the
-standard release process is to add a simple addition to their project definition.</p>
-
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">project</span><span class="o">.</span><span class="n">enablePlugins</span><span class="o">(</span><span class="nc">OrganizationReleasePlugin</span><span class="o">)</span></code></pre></div>
-
-<h2 id="using-archetypes">Using Archetypes</h2>
-
-<p>Once you start wrapping this functionality up into your own SBT plugin, you may notice that not <em>all</em>
-of the applications in your organization fit the same mold. For that we have archetypes. An archetype
-is a “top-level” <code>AutoPlugin</code> for a particular application type.  Archetypes are very much like meta-packages
-in OS package management systems; it is a collection of <code>AutoPlugin</code>s tailored for that specific use case.</p>
-
-<p>For example, a <code>ScalaWebService</code> archetype may contain specific plugins and settings for a PlayFramework
-application where as a <code>AkkaKernel</code> archetype will have a slightly different set of plugins and settings.
-Additionally if your organization supports both Java and Scala, you can make those separate archetypes
-as well to make the provided plugins more tailored toward specific application needs while still maintaining
-a set of standards for each supported archetype.</p>
+        <!--
+  This is really a discussion on railway oriented programming with Futures
+    - success path programming
+    - failure path programming
+-->
 
 
         <div class="footer-navigation">
             
-                <span class="previous"><a href="/log/2016/08/08/Jekyll-on-Heroku.html">
-                    &laquo;Deploying Jekyll to Heroku
+                <span class="previous"><a href="/draft/2017/04/13/Futures-for-Resilient-Network-Programming.html">
+                    &laquo;Futures for Resilient Network Programming
                 </a></span>
             
             
-                <span class="next"><a href="/draft/2017/04/13/Futures-for-Resilient-Network-Programming.html">
-                    Futures for Resilient Network Programming&raquo;
+                <span class="next"><a href="/draft/2017/06/20/Futures-Abstraction.html">
+                    The Futures Abstraction&raquo;
                 </a></span>
             
         </div>
