@@ -58,37 +58,37 @@ some features of the tool.</p>
 <p>If you want to follow-along with the examples I’m showing, feel free to install the tool from
 <a href="https://pypi.python.org/pypi/json-inspect">PyPi</a> via</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">pip install json-inspect</code></pre></div>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">pip install json-inspect</code></pre></figure>
 
-<p>Let’s first make a file <code>test.json</code> to contain some fake JSON data to play with</p>
+<p>Let’s first make a file <code class="highlighter-rouge">test.json</code> to contain some fake JSON data to play with</p>
 
-<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">[</span>
- <span class="p">{</span>
-   <span class="nt">&quot;facebook&quot;</span><span class="p">:</span> <span class="p">{</span>
-     <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
-       <span class="nt">&quot;demographic&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;regions&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;US&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Kentucky&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Louisville&quot;</span><span class="p">}</span> <span class="p">]</span>
-       <span class="p">}</span>
-     <span class="p">}</span>
-   <span class="p">},</span>
-   <span class="nt">&quot;google&quot;</span><span class="p">:</span> <span class="p">{</span>
-     <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
-       <span class="nt">&quot;demographic&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;regions&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;US&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Kentucky&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Highland Heights&quot;</span><span class="p">}</span> <span class="p">]</span>
-       <span class="p">}</span>
-     <span class="p">}</span>
-   <span class="p">}</span>
- <span class="p">},</span>
- <span class="p">{</span>
-   <span class="nt">&quot;twitter&quot;</span><span class="p">:</span> <span class="p">{</span>
-     <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
-       <span class="nt">&quot;demographic&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;regions&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;UK&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Wales&quot;</span><span class="p">}</span> <span class="p">]</span>
-       <span class="p">}</span>
-     <span class="p">}</span>
-   <span class="p">}</span>
- <span class="p">}</span>
-<span class="p">]</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">[</span><span class="w">
+ </span><span class="p">{</span><span class="w">
+   </span><span class="s2">"facebook"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"demographic"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"regions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"US"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Kentucky"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Louisville"</span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w">
+       </span><span class="p">}</span><span class="w">
+     </span><span class="p">}</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="s2">"google"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"demographic"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"regions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"US"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Kentucky"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Highland Heights"</span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w">
+       </span><span class="p">}</span><span class="w">
+     </span><span class="p">}</span><span class="w">
+   </span><span class="p">}</span><span class="w">
+ </span><span class="p">},</span><span class="w">
+ </span><span class="p">{</span><span class="w">
+   </span><span class="s2">"twitter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"demographic"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+         </span><span class="s2">"regions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UK"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Wales"</span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w">
+       </span><span class="p">}</span><span class="w">
+     </span><span class="p">}</span><span class="w">
+   </span><span class="p">}</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span></code></pre></figure>
 
 <h2 id="frequency">Frequency</h2>
 
@@ -97,15 +97,15 @@ then you sometimes need to compare their specification of the data with the data
 you are actually receiving. For this we can create a histogram of values based on a
 search expression.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect histo <span class="s1">&#39;[].*.user.demographic.regions.[].name&#39;</span>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cat </span>test.json | json-inspect histo <span class="s1">'[].*.user.demographic.regions.[].name'</span>
 
-<span class="o">[]</span>.*.user.demographic.regions.<span class="o">[]</span>.name:
-Highland Heig   <span class="p">|</span> <span class="c">#########################                          | (1)</span>
-US              <span class="p">|</span> <span class="c">################################################## | (2)</span>
-Louisville      <span class="p">|</span> <span class="c">#########################                          | (1)</span>
-Kentucky        <span class="p">|</span> <span class="c">################################################## | (2)</span>
-UK              <span class="p">|</span> <span class="c">#########################                          | (1)</span>
-Wales           <span class="p">|</span> <span class="c">#########################                          | (1)</span></code></pre></div>
+<span class="o">[]</span>.<span class="k">*</span>.user.demographic.regions.[].name:
+Highland Heig   | <span class="c">#########################                          | (1)</span>
+US              | <span class="c">################################################## | (2)</span>
+Louisville      | <span class="c">#########################                          | (1)</span>
+Kentucky        | <span class="c">################################################## | (2)</span>
+UK              | <span class="c">#########################                          | (1)</span>
+Wales           | <span class="c">#########################                          | (1)</span></code></pre></figure>
 
 <p>Maybe I’m biased, but this is great! I was able to inspect this JSON document with
 minimal command-line-foo.</p>
@@ -113,31 +113,31 @@ minimal command-line-foo.</p>
 <h2 id="search-paths--expressions">Search Paths / Expressions</h2>
 
 <p>The heart of the previous example is the search expression. It currently consists of
-three parts (working on a recursive <code>**</code> operator) which are</p>
+three parts (working on a recursive <code class="highlighter-rouge">**</code> operator) which are</p>
 
 <ul>
-  <li><code>[]</code> - Represents an array (containing objects)</li>
-  <li><code>*</code> - Represents all fields within an array</li>
-  <li><code>TOKEN</code> - This is a field name within an object</li>
+  <li><code class="highlighter-rouge">[]</code> - Represents an array (containing objects)</li>
+  <li><code class="highlighter-rouge">*</code> - Represents all fields within an array</li>
+  <li><code class="highlighter-rouge">TOKEN</code> - This is a field name within an object</li>
 </ul>
 
-<p>The <code>[]</code> and <code>*</code> tokens will result in all values being processed by the next token
-in the path. The path itself is delimited by <code>.</code>, so this means that field-names
-with <code>.</code> in them are not supported.</p>
+<p>The <code class="highlighter-rouge">[]</code> and <code class="highlighter-rouge">*</code> tokens will result in all values being processed by the next token
+in the path. The path itself is delimited by <code class="highlighter-rouge">.</code>, so this means that field-names
+with <code class="highlighter-rouge">.</code> in them are not supported.</p>
 
 <h2 id="values">Values</h2>
 
 <p>And if instead of creating charts based on values we instead wanted to extract
 those values, we can do that as well. An example</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect ext <span class="s2">&quot;[].*.user.demographic.regions.[].*&quot;</span>
-Louisville,Kentucky,US,Highland Heights,Kentucky,US,Wales,UK</code></pre></div>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cat </span>test.json | json-inspect ext <span class="s2">"[].*.user.demographic.regions.[].*"</span>
+Louisville,Kentucky,US,Highland Heights,Kentucky,US,Wales,UK</code></pre></figure>
 
 <p>We can also control the delimiter to make piping values into other command-line tools
 easier.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect ext -d <span class="s1">&#39;|&#39;</span> <span class="s2">&quot;[].*.user.demographic.regions.[].*&quot;</span>
-Louisville<span class="p">|</span>Kentucky<span class="p">|</span>US<span class="p">|</span>Highland Heights<span class="p">|</span>Kentucky<span class="p">|</span>US<span class="p">|</span>Wales<span class="p">|</span>UK</code></pre></div>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cat </span>test.json | json-inspect ext <span class="nt">-d</span> <span class="s1">'|'</span> <span class="s2">"[].*.user.demographic.regions.[].*"</span>
+Louisville|Kentucky|US|Highland Heights|Kentucky|US|Wales|UK</code></pre></figure>
 
 <h2 id="keys">Keys</h2>
 
@@ -145,41 +145,41 @@ Louisville<span class="p">|</span>Kentucky<span class="p">|</span>US<span class=
 see what keys are available within the JSON document? We can easily pull all keys of a JSON
 document out with</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect keys
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cat </span>test.json | json-inspect keys
 facebook.user.demographic.regions.name
 google.user.demographic.regions.name
-twitter.user.demographic.regions.name</code></pre></div>
+twitter.user.demographic.regions.name</code></pre></figure>
 
 <p>Additionally, we can provide some options which will filter out nulls, empty objects,
-empty primitives, and empty arrays as <code>-n</code>, <code>-o</code>, <code>-p</code>, and <code>-e</code> respectively. We could
-introduce some new fields to our <code>"facebook"</code> object to test.</p>
+empty primitives, and empty arrays as <code class="highlighter-rouge">-n</code>, <code class="highlighter-rouge">-o</code>, <code class="highlighter-rouge">-p</code>, and <code class="highlighter-rouge">-e</code> respectively. We could
+introduce some new fields to our <code class="highlighter-rouge">"facebook"</code> object to test.</p>
 
-<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span>
- <span class="nt">&quot;facebook&quot;</span><span class="p">:</span> <span class="p">{</span>
-   <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
-     <span class="nt">&quot;demographic&quot;</span><span class="p">:</span> <span class="p">{</span>
-       <span class="nt">&quot;regions&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;US&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Kentucky&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Louisville&quot;</span><span class="p">}</span> <span class="p">]</span>
-     <span class="p">},</span>
-     <span class="nt">&quot;null&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
-     <span class="nt">&quot;empty_object&quot;</span><span class="p">:</span> <span class="p">{},</span>
-     <span class="nt">&quot;empty_array&quot;</span><span class="p">:</span> <span class="p">[],</span>
-     <span class="nt">&quot;empty_primitives&quot;</span><span class="p">:</span> <span class="p">{</span>
-       <span class="nt">&quot;string&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-       <span class="nt">&quot;int&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-       <span class="nt">&quot;float&quot;</span><span class="p">:</span> <span class="mf">0.0</span>
-     <span class="p">}</span>
-   <span class="p">}</span>
- <span class="p">}</span>
-<span class="p">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+ </span><span class="s2">"facebook"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+   </span><span class="s2">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"demographic"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"regions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"US"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Kentucky"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Louisville"</span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"null"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"empty_object"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+     </span><span class="s2">"empty_array"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+     </span><span class="s2">"empty_primitives"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"string"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+       </span><span class="s2">"int"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+       </span><span class="s2">"float"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="w">
+     </span><span class="p">}</span><span class="w">
+   </span><span class="p">}</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
 
 <p>Okay, so if you just ran the same command we used earlier, you would see all of these new
 keys. But we can easily filter some or all of them out with some options. To get back to
 our original set</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat test.json <span class="p">|</span> json-inspect keys -nope
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cat </span>test.json | json-inspect keys <span class="nt">-nope</span>
 facebook.user.demographic.regions.name
 google.user.demographic.regions.name
-twitter.user.demographic.regions.name</code></pre></div>
+twitter.user.demographic.regions.name</code></pre></figure>
 
 <h2 id="the-source">The Source</h2>
 

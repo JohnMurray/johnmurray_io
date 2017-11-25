@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Getting Started with Akka</title>
-  <meta name="description" content="For those not familiar, [Akka][1] is a [Scala][3] library for implementing the[Actor Model][2]. Technically you can use Java as well, but things are a little...">
+  <meta name="description" content="For those not familiar, Akka is a Scala library for implementing theActor Model. Technically you can use Java as well, but things are a littlemore concise an...">
 
   <!-- <link rel="stylesheet" href="/css/main.css"> -->
   
@@ -50,129 +50,212 @@
 more concise and idiomatic in Scala.</p>
 
 <p>Let’s get started shall we. The first thing you should have installed is <a href="http://www.scala-sbt.org/0.12.4/docs/Getting-Started/Setup.html">sbt</a>.
-Then you’ll want to create a new folder for your project <code>hello-akka</code>. Within that
-folder, let’s create a <code>build.sbt</code> file with the following contents:</p>
+Then you’ll want to create a new folder for your project <code class="highlighter-rouge">hello-akka</code>. Within that
+folder, let’s create a <code class="highlighter-rouge">build.sbt</code> file with the following contents:</p>
 
 <!-- build.sbt gist -->
 
-<div class="highlight"><pre><code class="language-text" data-lang="text"><span class="lineno"> 1</span> name := &quot;Hello Akka&quot;
-<span class="lineno"> 2</span>  
-<span class="lineno"> 3</span> version := &quot;0.0.1&quot;
-<span class="lineno"> 4</span>  
-<span class="lineno"> 5</span> scalaVersion := &quot;2.10.2&quot;
-<span class="lineno"> 6</span>  
-<span class="lineno"> 7</span> resolvers += &quot;Typesafe Repository&quot; at &quot;http://repo.typesafe.com/typesafe/releases/&quot;
-<span class="lineno"> 8</span>  
-<span class="lineno"> 9</span> libraryDependencies += &quot;com.typesafe.akka&quot; %% &quot;akka-actor&quot; % &quot;2.2.0&quot;
-<span class="lineno">10</span>  
-<span class="lineno">11</span> libraryDependencies += &quot;com.typesafe.akka&quot; %% &quot;akka-kernel&quot; % &quot;2.2.0&quot;</code></pre></div>
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="code"><pre>name := "Hello Akka"
+ 
+version := "0.0.1"
+ 
+scalaVersion := "2.10.2"
+ 
+resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+ 
+libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.2.0"
+ 
+libraryDependencies += "com.typesafe.akka" %% "akka-kernel" % "2.2.0"</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>You can see that we just have some basic setup with names and versions. You’ll also
-notice that we’re delcaring <code>akka-actor</code> and <code>akka-kernel</code> as our dependencies. The
-main library is <code>akka-actor</code> which we will (obviously) define our actor in. The second
-is a little less obvious, <code>akka-kernel</code>, and will be used to define our akka-instance
+notice that we’re delcaring <code class="highlighter-rouge">akka-actor</code> and <code class="highlighter-rouge">akka-kernel</code> as our dependencies. The
+main library is <code class="highlighter-rouge">akka-actor</code> which we will (obviously) define our actor in. The second
+is a little less obvious, <code class="highlighter-rouge">akka-kernel</code>, and will be used to define our akka-instance
 as a standalone setup (not as a library within another project).</p>
 
 <p>The next thing we want to do is create a couple of actors to perform an asynchronous
 hello-world:</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno"> 1</span> <span class="k">import</span> <span class="nn">akka.actor.</span><span class="o">{</span><span class="nc">Actor</span><span class="o">,</span> <span class="nc">Props</span><span class="o">}</span>
-<span class="lineno"> 2</span>  
-<span class="lineno"> 3</span> <span class="k">object</span> <span class="nc">HelloWorldActor</span> <span class="o">{</span>
-<span class="lineno"> 4</span>   <span class="k">case</span> <span class="k">object</span> <span class="nc">Tick</span>
-<span class="lineno"> 5</span> <span class="o">}</span>
-<span class="lineno"> 6</span>  
-<span class="lineno"> 7</span> <span class="k">class</span> <span class="nc">HelloWorldActor</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
-<span class="lineno"> 8</span>   <span class="k">val</span> <span class="n">greeter</span> <span class="k">=</span> <span class="n">context</span><span class="o">.</span><span class="n">actorOf</span><span class="o">(</span><span class="nc">Props</span><span class="o">[</span><span class="kt">Greeter</span><span class="o">],</span> <span class="s">&quot;greeter&quot;</span><span class="o">)</span>
-<span class="lineno"> 9</span>  
-<span class="lineno">10</span>   <span class="k">def</span> <span class="n">receive</span><span class="k">:</span> <span class="kt">Actor.Receive</span> <span class="o">=</span> <span class="o">{</span>
-<span class="lineno">11</span>     <span class="k">case</span> <span class="nc">HelloWorldActor</span><span class="o">.</span><span class="nc">Tick</span> <span class="k">=&gt;</span> <span class="n">greeter</span> <span class="o">!</span> <span class="nc">Greeter</span><span class="o">.</span><span class="nc">Greet</span>
-<span class="lineno">12</span>   <span class="o">}</span>
-<span class="lineno">13</span> <span class="o">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="k">import</span> <span class="nn">akka.actor.</span><span class="o">{</span><span class="nc">Actor</span><span class="o">,</span> <span class="nc">Props</span><span class="o">}</span>
+ 
+<span class="k">object</span> <span class="nc">HelloWorldActor</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="k">object</span> <span class="nc">Tick</span>
+<span class="o">}</span>
+ 
+<span class="k">class</span> <span class="nc">HelloWorldActor</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="n">greeter</span> <span class="k">=</span> <span class="n">context</span><span class="o">.</span><span class="n">actorOf</span><span class="o">(</span><span class="nc">Props</span><span class="o">[</span><span class="kt">Greeter</span><span class="o">],</span> <span class="s">"greeter"</span><span class="o">)</span>
+ 
+  <span class="k">def</span> <span class="n">receive</span><span class="k">:</span> <span class="kt">Actor.Receive</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nc">HelloWorldActor</span><span class="o">.</span><span class="nc">Tick</span> <span class="k">=&gt;</span> <span class="n">greeter</span> <span class="o">!</span> <span class="nc">Greeter</span><span class="o">.</span><span class="nc">Greet</span>
+  <span class="o">}</span>
+<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno"> 1</span> <span class="k">import</span> <span class="nn">akka.actor.Actor</span>
-<span class="lineno"> 2</span>  
-<span class="lineno"> 3</span> <span class="k">object</span> <span class="nc">Greeter</span> <span class="o">{</span>
-<span class="lineno"> 4</span>   <span class="k">case</span> <span class="k">object</span> <span class="nc">Greet</span>
-<span class="lineno"> 5</span> <span class="o">}</span>
-<span class="lineno"> 6</span> <span class="k">class</span> <span class="nc">Greeter</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
-<span class="lineno"> 7</span>   <span class="k">def</span> <span class="n">receive</span> <span class="k">=</span> <span class="o">{</span>
-<span class="lineno"> 8</span>     <span class="k">case</span> <span class="nc">Greeter</span><span class="o">.</span><span class="nc">Greet</span> <span class="k">=&gt;</span> <span class="o">{</span>
-<span class="lineno"> 9</span>       <span class="n">println</span><span class="o">(</span><span class="s">&quot;Hello, World&quot;</span><span class="o">)</span>
-<span class="lineno">10</span>     <span class="o">}</span>
-<span class="lineno">11</span>   <span class="o">}</span>
-<span class="lineno">12</span> <span class="o">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="code"><pre><span class="k">import</span> <span class="nn">akka.actor.Actor</span>
+ 
+<span class="k">object</span> <span class="nc">Greeter</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="k">object</span> <span class="nc">Greet</span>
+<span class="o">}</span>
+<span class="k">class</span> <span class="nc">Greeter</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">receive</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nc">Greeter</span><span class="o">.</span><span class="nc">Greet</span> <span class="k">=&gt;</span> <span class="o">{</span>
+      <span class="n">println</span><span class="o">(</span><span class="s">"Hello, World"</span><span class="o">)</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<p>Take note that these files were created within the directory <code>src/main/scala</code> within
-the <code>hello-akka</code> directory. From the above, you’ll notice that the HelloWorldActor
-receives a <code>Tick</code> event and then sends a message to the <code>Greeter</code> actor which then
-prints <code>"Hello, World"</code>. You may be wondering what is sending the <code>Tick</code> event to the
+<p>Take note that these files were created within the directory <code class="highlighter-rouge">src/main/scala</code> within
+the <code class="highlighter-rouge">hello-akka</code> directory. From the above, you’ll notice that the HelloWorldActor
+receives a <code class="highlighter-rouge">Tick</code> event and then sends a message to the <code class="highlighter-rouge">Greeter</code> actor which then
+prints <code class="highlighter-rouge">"Hello, World"</code>. You may be wondering what is sending the <code class="highlighter-rouge">Tick</code> event to the
 HelloWorldActor to start with. For this we have to define our kernel:</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno"> 1</span> <span class="k">import</span> <span class="nn">akka.actor.</span><span class="o">{</span><span class="nc">ActorSystem</span><span class="o">,</span> <span class="nc">Props</span><span class="o">}</span>
-<span class="lineno"> 2</span> <span class="k">import</span> <span class="nn">akka.kernel.Bootable</span>
-<span class="lineno"> 3</span> <span class="k">import</span> <span class="nn">scala.concurrent.duration._</span>
-<span class="lineno"> 4</span>  
-<span class="lineno"> 5</span> <span class="k">class</span> <span class="nc">HelloWorldKernel</span> <span class="k">extends</span> <span class="nc">Bootable</span> <span class="o">{</span>
-<span class="lineno"> 6</span>   <span class="k">val</span> <span class="n">system</span> <span class="k">=</span> <span class="nc">ActorSystem</span><span class="o">(</span><span class="s">&quot;helloworldkernel&quot;</span><span class="o">)</span>
-<span class="lineno"> 7</span>   <span class="k">import</span> <span class="nn">system.dispatcher</span>
-<span class="lineno"> 8</span>  
-<span class="lineno"> 9</span>   <span class="k">def</span> <span class="n">startup</span><span class="o">()</span> <span class="o">{</span>
-<span class="lineno">10</span>     <span class="k">val</span> <span class="n">helloWorldActor</span> <span class="k">=</span> <span class="n">system</span><span class="o">.</span><span class="n">actorOf</span><span class="o">(</span><span class="nc">Props</span><span class="o">[</span><span class="kt">HelloWorldActor</span><span class="o">])</span>
-<span class="lineno">11</span>     <span class="n">system</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="o">(</span><span class="mi">0</span> <span class="n">milliseconds</span><span class="o">,</span>
-<span class="lineno">12</span>       <span class="mi">500</span> <span class="n">milliseconds</span><span class="o">,</span>
-<span class="lineno">13</span>       <span class="n">helloWorldActor</span><span class="o">,</span>
-<span class="lineno">14</span>       <span class="nc">HelloWorldActor</span><span class="o">.</span><span class="nc">Tick</span><span class="o">)</span>
-<span class="lineno">15</span>   <span class="o">}</span>
-<span class="lineno">16</span>  
-<span class="lineno">17</span>   <span class="k">def</span> <span class="n">shutdown</span><span class="o">()</span> <span class="o">{</span>
-<span class="lineno">18</span>     <span class="n">system</span><span class="o">.</span><span class="n">shutdown</span><span class="o">()</span>
-<span class="lineno">19</span>   <span class="o">}</span>
-<span class="lineno">20</span> <span class="o">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre></td><td class="code"><pre><span class="k">import</span> <span class="nn">akka.actor.</span><span class="o">{</span><span class="nc">ActorSystem</span><span class="o">,</span> <span class="nc">Props</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">akka.kernel.Bootable</span>
+<span class="k">import</span> <span class="nn">scala.concurrent.duration._</span>
+ 
+<span class="k">class</span> <span class="nc">HelloWorldKernel</span> <span class="k">extends</span> <span class="nc">Bootable</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="n">system</span> <span class="k">=</span> <span class="nc">ActorSystem</span><span class="o">(</span><span class="s">"helloworldkernel"</span><span class="o">)</span>
+  <span class="k">import</span> <span class="nn">system.dispatcher</span>
+ 
+  <span class="k">def</span> <span class="n">startup</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">helloWorldActor</span> <span class="k">=</span> <span class="n">system</span><span class="o">.</span><span class="n">actorOf</span><span class="o">(</span><span class="nc">Props</span><span class="o">[</span><span class="kt">HelloWorldActor</span><span class="o">])</span>
+    <span class="n">system</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="o">(</span><span class="mi">0</span> <span class="n">milliseconds</span><span class="o">,</span>
+      <span class="mi">500</span> <span class="n">milliseconds</span><span class="o">,</span>
+      <span class="n">helloWorldActor</span><span class="o">,</span>
+      <span class="nc">HelloWorldActor</span><span class="o">.</span><span class="nc">Tick</span><span class="o">)</span>
+  <span class="o">}</span>
+ 
+  <span class="k">def</span> <span class="n">shutdown</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">system</span><span class="o">.</span><span class="n">shutdown</span><span class="o">()</span>
+  <span class="o">}</span>
+<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>This is the entry-point for our application. You can see that we are creating an instance
-of the <code>HelloWorldActor</code> and scheduling a message be sent (<code>Tick</code>) every 500 milliseconds.</p>
+of the <code class="highlighter-rouge">HelloWorldActor</code> and scheduling a message be sent (<code class="highlighter-rouge">Tick</code>) every 500 milliseconds.</p>
 
 <h2 id="done">Done!</h2>
 
 <p>That’s all there is to creating a standalone Akka, pretty simple. There are various ways you
 can run your application, but I feel the easiest is with scripts that ship with Akka. To add
-that to your project, run the following script from within the <code>hello-akka</code> directory:</p>
+that to your project, run the following script from within the <code class="highlighter-rouge">hello-akka</code> directory:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno">1</span> wget http://downloads.typesafe.com/akka/akka-2.2.1.tgz
-<span class="lineno">2</span> tar xzf akka-2.2.1.tgz
-<span class="lineno">3</span> mv akka-2.2.1 akka
-<span class="lineno">4</span> rm akka-2.2.1.tgz
-<span class="lineno">5</span> dos2unix akka/bin/akka</code></pre></div>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>wget http://downloads.typesafe.com/akka/akka-2.2.1.tgz
+<span class="nb">tar </span>xzf akka-2.2.1.tgz
+mv akka-2.2.1 akka
+rm akka-2.2.1.tgz
+dos2unix akka/bin/akka</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>I typically create a Makefile for running my project just because I find that easier. You could
 do something like the following:</p>
 
-<div class="highlight"><pre><code class="language-make" data-lang="make"><span class="lineno"> 1</span> <span class="nf">all</span><span class="o">:</span> <span class="n">build</span> <span class="n">deploy</span>
-<span class="lineno"> 2</span> <span class="nf">run</span><span class="o">:</span> <span class="n">build</span> <span class="n">deploy</span> <span class="n">start</span>
-<span class="lineno"> 3</span>  
-<span class="lineno"> 4</span> <span class="nf">build</span><span class="o">:</span>
-<span class="lineno"> 5</span>   sbt package:clean
-<span class="lineno"> 6</span>   sbt package
-<span class="lineno"> 7</span>  
-<span class="lineno"> 8</span> <span class="nf">start</span><span class="o">:</span>
-<span class="lineno"> 9</span>   ./akka/bin/akka HelloWorldKernel
-<span class="lineno">10</span>  
-<span class="lineno">11</span> <span class="nf">deploy</span><span class="o">:</span>
-<span class="lineno">12</span>   mv target/scala-2.10/hello-akka_2.10-0.0.1.jar akka/deploy/</code></pre></div>
+<figure class="highlight"><pre><code class="language-make" data-lang="make"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="code"><pre><span class="nl">all</span><span class="o">:</span> <span class="nf">build deploy</span>
+<span class="nl">run</span><span class="o">:</span> <span class="nf">build deploy start</span>
+ 
+<span class="nl">build</span><span class="o">:</span>
+  <span class="nl">sbt package</span><span class="o">:</span><span class="nf">clean</span>
+  <span class="err">sbt</span> <span class="err">package</span>
+ 
+<span class="nl">start</span><span class="o">:</span>
+  <span class="err">./akka/bin/akka</span> <span class="err">HelloWorldKernel</span>
+ 
+<span class="nl">deploy</span><span class="o">:</span>
+  <span class="err">mv</span> <span class="err">target/scala-2.10/hello-akka_2.10-0.0.1.jar</span> <span class="err">akka/deploy/</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<p>And then just run <code>make run</code> to start your project. You should see something like the following:</p>
+<p>And then just run <code class="highlighter-rouge">make run</code> to start your project. You should see something like the following:</p>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text"><span class="lineno"> 1</span> Starting Akka...
-<span class="lineno"> 2</span> Running Akka 2.2.0
-<span class="lineno"> 3</span> Deploying file:/Users/jmurray/IdeaProjects/HelloAkka/akka/deploy/hello-akka_2.10-0.0.1.jar
-<span class="lineno"> 4</span> Starting up HelloWorldKernel
-<span class="lineno"> 5</span> Successfully started Akka
-<span class="lineno"> 6</span> Hello, World
-<span class="lineno"> 7</span> Hello, World
-<span class="lineno"> 8</span> Hello, World
-<span class="lineno"> 9</span> Hello, World
-<span class="lineno">10</span> ...</code></pre></div>
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="code"><pre>Starting Akka...
+Running Akka 2.2.0
+Deploying file:/Users/jmurray/IdeaProjects/HelloAkka/akka/deploy/hello-akka_2.10-0.0.1.jar
+Starting up HelloWorldKernel
+Successfully started Akka
+Hello, World
+Hello, World
+Hello, World
+Hello, World
+...</pre></td></tr></tbody></table></code></pre></figure>
 
 
 

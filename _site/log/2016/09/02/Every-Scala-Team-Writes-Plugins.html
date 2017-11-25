@@ -67,18 +67,18 @@ conform to the standards that (ideally) all the other applications in the organi
 
 <p>Now if we’re talking about Scala projects, we have some wonderful tools for defining all of these
 standards. Specifically I’m talking about SBT. It is the Scala developer’s Swiss army knife. I know
-that if I start a Scala project today I can use <code>sbt-release</code> for defining my release process
+that if I start a Scala project today I can use <code class="highlighter-rouge">sbt-release</code> for defining my release process
 (all the steps / actions I take to release my code) which includes essentials standards items such
-as a versioning scheme. I can also use <code>sbt-native-packager</code> to build <code>deb</code> or <code>rpm</code> packages
+as a versioning scheme. I can also use <code class="highlighter-rouge">sbt-native-packager</code> to build <code class="highlighter-rouge">deb</code> or <code class="highlighter-rouge">rpm</code> packages
 for Linux or docker images for [<em>insert cloud platform here</em>]. I may also set up my applications
 with a few useful utilities depending on what I’m writing, such as</p>
 
 <ul>
-  <li><code>scalastyle</code> (and/or <code>sbt-checkstyle</code> if I have some Java code as well)</li>
-  <li><code>sbt-reloader</code> (for easy running of my app locally)</li>
-  <li><code>sbt-doge</code> (if I’m managing multiple release versions of a lib, or developing an SBT plugin as part
+  <li><code class="highlighter-rouge">scalastyle</code> (and/or <code class="highlighter-rouge">sbt-checkstyle</code> if I have some Java code as well)</li>
+  <li><code class="highlighter-rouge">sbt-reloader</code> (for easy running of my app locally)</li>
+  <li><code class="highlighter-rouge">sbt-doge</code> (if I’m managing multiple release versions of a lib, or developing an SBT plugin as part
 of a suite of libraries)</li>
-  <li><code>sbt-dependency-graph-sugar</code> (for viewing pretty dep-graphs)</li>
+  <li><code class="highlighter-rouge">sbt-dependency-graph-sugar</code> (for viewing pretty dep-graphs)</li>
 </ul>
 
 <p>The list goes on. And a lot of it depends on the style or particular flavor of Scala development
@@ -86,32 +86,32 @@ at each organization.</p>
 
 <h2 id="maintaining-consistency">Maintaining Consistency</h2>
 
-<p>So you got your recipe of Scala programming goodness all bundled up in your <code>build.sbt</code>, that’s
+<p>So you got your recipe of Scala programming goodness all bundled up in your <code class="highlighter-rouge">build.sbt</code>, that’s
 great! But wait, how do you make sure that other projects use the same data. Well you could just
 copy it around at first if we’re talking about a handful of applications. Beyond that maybe we
 make a general template that people clone from to start their projects. But wait, what if the
 organization decides it wants to add a new step to that sweet release process you wrote using
-<code>sbt-release</code>? Well, now you need to hop from project to project, updating each <code>build.sbt</code>. And
+<code class="highlighter-rouge">sbt-release</code>? Well, now you need to hop from project to project, updating each <code class="highlighter-rouge">build.sbt</code>. And
 you can’t just copy and paste anymore because you might override some application-specific settings
 that have built up over time.</p>
 
 <p>There is actually a very simple solution to this problem, organizational SBT plugins. These are plugins that
 are written for the express purpose of wrapping up all these organizational standards into simple SBT
-plugins. You have an awesome release process? Great! Wrap that up into an SBT <code>AutoPlugin</code> that uses
-the <code>sbt-release</code> plugin internally. All that is required for an application to conform to the
+plugins. You have an awesome release process? Great! Wrap that up into an SBT <code class="highlighter-rouge">AutoPlugin</code> that uses
+the <code class="highlighter-rouge">sbt-release</code> plugin internally. All that is required for an application to conform to the
 standard release process is to add a simple addition to their project definition.</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">project</span><span class="o">.</span><span class="n">enablePlugins</span><span class="o">(</span><span class="nc">OrganizationReleasePlugin</span><span class="o">)</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">project</span><span class="o">.</span><span class="n">enablePlugins</span><span class="o">(</span><span class="nc">OrganizationReleasePlugin</span><span class="o">)</span></code></pre></figure>
 
 <h2 id="using-archetypes">Using Archetypes</h2>
 
 <p>Once you start wrapping this functionality up into your own SBT plugin, you may notice that not <em>all</em>
 of the applications in your organization fit the same mold. For that we have archetypes. An archetype
-is a “top-level” <code>AutoPlugin</code> for a particular application type.  Archetypes are very much like meta-packages
-in OS package management systems; it is a collection of <code>AutoPlugin</code>s tailored for that specific use case.</p>
+is a “top-level” <code class="highlighter-rouge">AutoPlugin</code> for a particular application type.  Archetypes are very much like meta-packages
+in OS package management systems; it is a collection of <code class="highlighter-rouge">AutoPlugin</code>s tailored for that specific use case.</p>
 
-<p>For example, a <code>ScalaWebService</code> archetype may contain specific plugins and settings for a PlayFramework
-application where as a <code>AkkaKernel</code> archetype will have a slightly different set of plugins and settings.
+<p>For example, a <code class="highlighter-rouge">ScalaWebService</code> archetype may contain specific plugins and settings for a PlayFramework
+application where as a <code class="highlighter-rouge">AkkaKernel</code> archetype will have a slightly different set of plugins and settings.
 Additionally if your organization supports both Java and Scala, you can make those separate archetypes
 as well to make the provided plugins more tailored toward specific application needs while still maintaining
 a set of standards for each supported archetype.</p>

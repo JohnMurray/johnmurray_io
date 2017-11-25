@@ -55,42 +55,53 @@ is to use types.</p>
 <p>If I were designing a simple service to manage contacts, I might define my type
 to look like:</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span>
-<span class="lineno">2</span>                 <span class="n">name</span><span class="k">:</span>         <span class="kt">String</span><span class="o">,</span>
-<span class="lineno">3</span>                 <span class="n">birthday</span><span class="k">:</span>     <span class="kt">Date</span><span class="o">,</span>
-<span class="lineno">4</span>                 <span class="n">email</span><span class="k">:</span>        <span class="kt">Email</span><span class="o">,</span>
-<span class="lineno">5</span>                 <span class="n">address</span><span class="k">:</span>      <span class="kt">Option</span><span class="o">[</span><span class="kt">Address</span><span class="o">],</span>
-<span class="lineno">6</span>                 <span class="n">createdOn</span><span class="k">:</span>    <span class="kt">Date</span><span class="o">,</span>
-<span class="lineno">7</span>                 <span class="n">lastModified</span><span class="k">:</span> <span class="kt">Date</span><span class="o">)</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre><span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span>
+                <span class="n">name</span><span class="k">:</span>         <span class="kt">String</span><span class="o">,</span>
+                <span class="n">birthday</span><span class="k">:</span>     <span class="kt">Date</span><span class="o">,</span>
+                <span class="n">email</span><span class="k">:</span>        <span class="kt">Email</span><span class="o">,</span>
+                <span class="n">address</span><span class="k">:</span>      <span class="kt">Option</span><span class="o">[</span><span class="kt">Address</span><span class="o">],</span>
+                <span class="n">createdOn</span><span class="k">:</span>    <span class="kt">Date</span><span class="o">,</span>
+                <span class="n">lastModified</span><span class="k">:</span> <span class="kt">Date</span><span class="o">)</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>This type accurately represents what I believe a contact, in the context of my
-API, is defined as. All pieces except <code>address</code> are required 
-and I also expect a few meta-data fields to exist such as <code>id</code>, 
-<code>createdOn</code> and <code>lastModified</code>. This type works great when defining objects
+API, is defined as. All pieces except <code class="highlighter-rouge">address</code> are required 
+and I also expect a few meta-data fields to exist such as <code class="highlighter-rouge">id</code>, 
+<code class="highlighter-rouge">createdOn</code> and <code class="highlighter-rouge">lastModified</code>. This type works great when defining objects
 in my system, but it starts to break down as a definition for a contract with a
 consumer of my web-service.</p>
 
 <p>While this works decently well for read operations, where the full object
-is returned, what does this look like for a create (<code>POST</code>) operation? To start I
-no longer need any of what I’ll call <em>“system provided”</em> fields such as <code>id</code>, 
-<code>createdOn</code> and <code>lastModified</code>. Some of you might be saying one of two things right
+is returned, what does this look like for a create (<code class="highlighter-rouge">POST</code>) operation? To start I
+no longer need any of what I’ll call <em>“system provided”</em> fields such as <code class="highlighter-rouge">id</code>, 
+<code class="highlighter-rouge">createdOn</code> and <code class="highlighter-rouge">lastModified</code>. Some of you might be saying one of two things right
 about now:</p>
 
 <ol>
-  <li>Default the fields to <code>null</code></li>
-  <li>Make fields that aren’t required an <code>Option</code></li>
+  <li>Default the fields to <code class="highlighter-rouge">null</code></li>
+  <li>Make fields that aren’t required an <code class="highlighter-rouge">Option</code></li>
 </ol>
 
 <p>I’m going to stop you right now. The purpose of this type is <em>supposed</em> to be a way
 to expose a contract to the user. Making fields that will <em>always</em> exist on reads
-an <code>Option</code> is really just a lie and not very useful for defining a complete contract.
+an <code class="highlighter-rouge">Option</code> is really just a lie and not very useful for defining a complete contract.
 To truly use types as our contract here, we need to define a create-specific type.
 In our case, it might look like:</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">UserCreate</span><span class="o">(</span><span class="n">name</span><span class="k">:</span>     <span class="kt">String</span><span class="o">,</span>
-<span class="lineno">2</span>                       <span class="n">birthday</span><span class="k">:</span> <span class="kt">Date</span><span class="o">,</span>
-<span class="lineno">3</span>                       <span class="n">email</span><span class="k">:</span>    <span class="kt">Email</span><span class="o">,</span>
-<span class="lineno">4</span>                       <span class="n">address</span><span class="k">:</span>  <span class="kt">Option</span><span class="o">[</span><span class="kt">Address</span><span class="o">])</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="k">case</span> <span class="k">class</span> <span class="nc">UserCreate</span><span class="o">(</span><span class="n">name</span><span class="k">:</span>     <span class="kt">String</span><span class="o">,</span>
+                      <span class="n">birthday</span><span class="k">:</span> <span class="kt">Date</span><span class="o">,</span>
+                      <span class="n">email</span><span class="k">:</span>    <span class="kt">Email</span><span class="o">,</span>
+                      <span class="n">address</span><span class="k">:</span>  <span class="kt">Option</span><span class="o">[</span><span class="kt">Address</span><span class="o">])</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>This gets us where we want to be at the price of having to create and maintain another
 type in our application.</p>
@@ -99,17 +110,22 @@ type in our application.</p>
 are based around the idea of partial edits. Since, by the nature of partial edits,
 everything is optional you can see that we can’t use the same model that we used
 for create. Also, since we will need to know the difference between null and absent,
-we’ll need to use a <code>TriState</code> value to represent any types that are currently 
+we’ll need to use a <code class="highlighter-rouge">TriState</code> value to represent any types that are currently 
 nullable (or non-required by our default model).</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">UserCreate</span><span class="o">(</span><span class="n">id</span><span class="k">:</span>       <span class="kt">Long</span><span class="o">,</span>
-<span class="lineno">2</span>                       <span class="n">name</span><span class="k">:</span>     <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">],</span>
-<span class="lineno">3</span>                       <span class="n">birthday</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Date</span><span class="o">],</span>
-<span class="lineno">4</span>                       <span class="n">email</span><span class="k">:</span>    <span class="kt">Option</span><span class="o">[</span><span class="kt">Email</span><span class="o">],</span>
-<span class="lineno">5</span>                       <span class="n">address</span><span class="k">:</span>  <span class="kt">TriState</span><span class="o">[</span><span class="kt">Address</span><span class="o">])</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="k">case</span> <span class="k">class</span> <span class="nc">UserCreate</span><span class="o">(</span><span class="n">id</span><span class="k">:</span>       <span class="kt">Long</span><span class="o">,</span>
+                      <span class="n">name</span><span class="k">:</span>     <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">],</span>
+                      <span class="n">birthday</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Date</span><span class="o">],</span>
+                      <span class="n">email</span><span class="k">:</span>    <span class="kt">Option</span><span class="o">[</span><span class="kt">Email</span><span class="o">],</span>
+                      <span class="n">address</span><span class="k">:</span>  <span class="kt">TriState</span><span class="o">[</span><span class="kt">Address</span><span class="o">])</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<p>In the above model, we assume <code>Option</code> to be a matter of presence (not nullability) and
-<code>TriState</code> to represent both presence and nullability.</p>
+<p>In the above model, we assume <code class="highlighter-rouge">Option</code> to be a matter of presence (not nullability) and
+<code class="highlighter-rouge">TriState</code> to represent both presence and nullability.</p>
 
 <p>Ta-da! We now have models that represent create, read, and partial edit. With this, we can
 now work on optimizing our workflow. I think the proper step is to define an

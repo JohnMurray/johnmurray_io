@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Web Service Data Models - Null</title>
-  <meta name="description" content="  This relates to my other post “[Typed Actions In Play][1]”. You may want toskim it to understand my aim in all this madness.">
+  <meta name="description" content="  This relates to my other post “Typed Actions In Play”. You may want toskim it to understand my aim in all this madness.">
 
   <!-- <link rel="stylesheet" href="/css/main.css"> -->
   
@@ -59,81 +59,100 @@ fairly easy task, yes? Well, sadly it is not.</p>
 <h3 id="living-with-null">Living with Null</h3>
 
 <p>Null values in JSON are a very interesting thing to represent in Scala. While Scala
-does have the concept of <code>null</code>, it seems primarily as a way to survive interop with
-Java, where using <code>null</code> is very common. However the conventional wisdom in the Scala
-community is to replace <code>null</code> with <code>Option[T]</code> for some type <code>T</code> that is <code>null</code>‘able.
-<code>T</code> can then be represented as <code>Some[T]</code> or <code>None</code>. This makes a lot of sense, but it
+does have the concept of <code class="highlighter-rouge">null</code>, it seems primarily as a way to survive interop with
+Java, where using <code class="highlighter-rouge">null</code> is very common. However the conventional wisdom in the Scala
+community is to replace <code class="highlighter-rouge">null</code> with <code class="highlighter-rouge">Option[T]</code> for some type <code class="highlighter-rouge">T</code> that is <code class="highlighter-rouge">null</code>‘able.
+<code class="highlighter-rouge">T</code> can then be represented as <code class="highlighter-rouge">Some[T]</code> or <code class="highlighter-rouge">None</code>. This makes a lot of sense, but it
 fails to meet the requirements for JSON in the context of web services, and we’ll see
 why.</p>
 
 <p>Let’s assume that we’re going to build a service to manage users. The JSON to represent
 a user may look like this</p>
 
-<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="lineno">1</span> <span class="p">{</span>
-<span class="lineno">2</span>   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;John Murray&quot;</span><span class="p">,</span>
-<span class="lineno">3</span>   <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;my-email@gmail.com&quot;</span><span class="p">,</span>
-<span class="lineno">4</span>   <span class="nt">&quot;userName&quot;</span><span class="p">:</span> <span class="s2">&quot;johnmurray_io&quot;</span>
-<span class="lineno">5</span> <span class="p">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="p">{</span><span class="w">
+  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John Murray"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-email@gmail.com"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"userName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"johnmurray_io"</span><span class="w">
+</span><span class="p">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<p>Let’s assert that the <code>userName</code> can be, in the JSON, either a string value or a <code>null</code>
-value. Let’s further assert that if the user does not provide this in the <code>POST</code> JSON
-that it defaults to a <code>null</code> value.</p>
+<p>Let’s assert that the <code class="highlighter-rouge">userName</code> can be, in the JSON, either a string value or a <code class="highlighter-rouge">null</code>
+value. Let’s further assert that if the user does not provide this in the <code class="highlighter-rouge">POST</code> JSON
+that it defaults to a <code class="highlighter-rouge">null</code> value.</p>
 
-<p>For editing the object, let’s assume that we accept partial edits over <code>PUT</code> and/or
-<code>PATCH</code> (depending on which philosophy you subscribe to). This means that I do not
+<p>For editing the object, let’s assume that we accept partial edits over <code class="highlighter-rouge">PUT</code> and/or
+<code class="highlighter-rouge">PATCH</code> (depending on which philosophy you subscribe to). This means that I do not
 have to supply the full JSON object, only the fields that I wish to edit. This is a
 very common practice in web services.</p>
 
 <p>If I were only looking at the requirements for object creation, then I might define my
 model like so</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">email</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">userName</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+</pre></td><td class="code"><pre><span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">email</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">userName</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>and the previous data would translate into</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="nc">User</span><span class="o">(</span><span class="s">&quot;John Murray&quot;</span><span class="o">,</span> <span class="s">&quot;my-email@gmail.com&quot;</span><span class="o">,</span> <span class="nc">Some</span><span class="o">(</span><span class="s">&quot;johnmurray_io&quot;</span><span class="o">))</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+</pre></td><td class="code"><pre><span class="nc">User</span><span class="o">(</span><span class="s">"John Murray"</span><span class="o">,</span> <span class="s">"my-email@gmail.com"</span><span class="o">,</span> <span class="nc">Some</span><span class="o">(</span><span class="s">"johnmurray_io"</span><span class="o">))</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>However, this model does not meet all of our requirements, only those for object creation.
 Specifically what happens when I send in the following, partial update</p>
 
-<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="lineno">1</span> <span class="p">{</span>
-<span class="lineno">2</span>   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;John M. Murray&quot;</span><span class="p">,</span>
-<span class="lineno">3</span>   <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;my-other-email@gmail.com&quot;</span>
-<span class="lineno">4</span> <span class="p">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="p">{</span><span class="w">
+  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John M. Murray"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-other-email@gmail.com"</span><span class="w">
+</span><span class="p">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>This translates into our model as being</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="nc">User</span><span class="o">(</span><span class="s">&quot;John M. Murray&quot;</span><span class="o">,</span> <span class="s">&quot;my-other-email@gmail.com&quot;</span><span class="o">,</span> <span class="nc">None</span><span class="o">)</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+</pre></td><td class="code"><pre><span class="nc">User</span><span class="o">(</span><span class="s">"John M. Murray"</span><span class="o">,</span> <span class="s">"my-other-email@gmail.com"</span><span class="o">,</span> <span class="nc">None</span><span class="o">)</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<p>You can easily see where the breakdown is. Because we do not have a value for the <code>userName</code>
-it has no other choice than to be <code>None</code>. We are conflating the absence of a value with
-the value being <code>null</code>. In the case that the value is absent on an edit operation, the user
-does not <em>intend</em> to edit the field. This means that we cannot reliably set the <code>userName</code>
-field to an empty value, <em>ever</em>. To solve this we can introduce the <code>TriState[T]</code> type.</p>
+<p>You can easily see where the breakdown is. Because we do not have a value for the <code class="highlighter-rouge">userName</code>
+it has no other choice than to be <code class="highlighter-rouge">None</code>. We are conflating the absence of a value with
+the value being <code class="highlighter-rouge">null</code>. In the case that the value is absent on an edit operation, the user
+does not <em>intend</em> to edit the field. This means that we cannot reliably set the <code class="highlighter-rouge">userName</code>
+field to an empty value, <em>ever</em>. To solve this we can introduce the <code class="highlighter-rouge">TriState[T]</code> type.</p>
 
 <h3 id="introducing-the-tristatet">Introducing the TriState[T]</h3>
 
 <p>As we have seen, we are in need of a type that can represent more than the two states
-provided by <code>Option[T]</code>. To handle this, we’re going to introduce a new type called
-<code>TriState[T]</code> whose name we’re borrowing from the world of electrical engineering. See
+provided by <code class="highlighter-rouge">Option[T]</code>. To handle this, we’re going to introduce a new type called
+<code class="highlighter-rouge">TriState[T]</code> whose name we’re borrowing from the world of electrical engineering. See
 this article on <a href="http://en.wikipedia.org/wiki/Three-state_logic">three-state-logic</a> for more details.</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="k">trait</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
-<span class="lineno">2</span> <span class="nc">object</span> <span class="nc">TriState</span> <span class="o">{</span>
-<span class="lineno">3</span>   <span class="k">case</span> <span class="k">class</span> <span class="nc">Present</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">value</span><span class="k">:</span> <span class="kt">T</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
-<span class="lineno">4</span>   <span class="k">case</span> <span class="k">class</span> <span class="nc">Absent</span> <span class="k">extends</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span>
-<span class="lineno">5</span>   <span class="k">case</span> <span class="k">class</span> <span class="nc">Null</span> <span class="k">extends</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span>
-<span class="lineno">6</span> <span class="o">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="k">trait</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
+<span class="nc">object</span> <span class="nc">TriState</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">Present</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">value</span><span class="k">:</span> <span class="kt">T</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">Absent</span> <span class="k">extends</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span>
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">Null</span> <span class="k">extends</span> <span class="nc">TriState</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span>
+<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<p>If we now replace the type of <code>userName</code> of <code>Option[T]</code> with <code>TriState[T]</code>, we can properly
+<p>If we now replace the type of <code class="highlighter-rouge">userName</code> of <code class="highlighter-rouge">Option[T]</code> with <code class="highlighter-rouge">TriState[T]</code>, we can properly
 represent the edit JSON in our model as:</p>
 
-<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="lineno">1</span> <span class="nc">User</span><span class="o">(</span><span class="s">&quot;John M. Murray&quot;</span><span class="o">,</span> <span class="s">&quot;my-other-email@gmail.com&quot;</span><span class="o">,</span> <span class="nc">TriState</span><span class="o">.</span><span class="nc">Absent</span><span class="o">)</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+</pre></td><td class="code"><pre><span class="nc">User</span><span class="o">(</span><span class="s">"John M. Murray"</span><span class="o">,</span> <span class="s">"my-other-email@gmail.com"</span><span class="o">,</span> <span class="nc">TriState</span><span class="o">.</span><span class="nc">Absent</span><span class="o">)</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>From this, we know not to edit the field, since it is absent. Additionally if I were to
-provide a null value on edit, we would know to set the <code>userName</code> to  <code>null</code>/empty within
-our persistent storage solution. From this we can see that <code>Option</code>, for web services, is
-better replaced with a <code>TriState</code>.</p>
+provide a null value on edit, we would know to set the <code class="highlighter-rouge">userName</code> to  <code class="highlighter-rouge">null</code>/empty within
+our persistent storage solution. From this we can see that <code class="highlighter-rouge">Option</code>, for web services, is
+better replaced with a <code class="highlighter-rouge">TriState</code>.</p>
 
 
 

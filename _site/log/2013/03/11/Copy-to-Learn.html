@@ -85,42 +85,56 @@ at meeting the aforementioned goals:</p>
 
 <h3 id="basic-routing">Basic Routing</h3>
 
-<p>This was relatively simple. To get started, I created a main class <code>Pinatra</code>
+<p>This was relatively simple. To get started, I created a main class <code class="highlighter-rouge">Pinatra</code>
 that I could use to register my routes with. I then created methods for each
 HTTP verb I would be supporting (GET, POST, PUT, DELETE) that took a path (a
 string) and a handler. The handler would then be called if the incoming
 request could be matched against the route. The method for registering a GET
 request looked generally like:</p>
 
-<div class="highlight"><pre><code class="language-php5" data-lang="php5"><span class="lineno">1</span> <span class="x">public static function get($match, $callback) {</span>
-<span class="lineno">2</span> <span class="x">  $app = Pinatra::instance();</span>
-<span class="lineno">3</span> <span class="x">  $app-&gt;register(&#39;get&#39;, $match, $callback);</span>
-<span class="lineno">4</span> <span class="x">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-php5" data-lang="php5"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">get</span><span class="p">(</span><span class="nv">$match</span><span class="p">,</span> <span class="nv">$callback</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nv">$app</span> <span class="o">=</span> <span class="nx">Pinatra</span><span class="o">::</span><span class="na">instance</span><span class="p">();</span>
+  <span class="nv">$app</span><span class="o">-&gt;</span><span class="na">register</span><span class="p">(</span><span class="s1">'get'</span><span class="p">,</span> <span class="nv">$match</span><span class="p">,</span> <span class="nv">$callback</span><span class="p">);</span>
+<span class="p">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<p>As you can see, we are simply taking the route to match (the <code>$match</code>) and a
-callback (a callable) and sending that on to the <code>register</code> function. So, to
+<p>As you can see, we are simply taking the route to match (the <code class="highlighter-rouge">$match</code>) and a
+callback (a callable) and sending that on to the <code class="highlighter-rouge">register</code> function. So, to
 look at the register function:</p>
 
-<div class="highlight"><pre><code class="language-php5" data-lang="php5"><span class="lineno">1</span> <span class="x">private function register($method, $match, $callback) {</span>
-<span class="lineno">2</span> <span class="x">  $match = $this-&gt;compute_regex($match);</span>
-<span class="lineno">3</span> <span class="x">  $this-&gt;routes[$method][$match] = $callback;</span>
-<span class="lineno">4</span> <span class="x">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-php5" data-lang="php5"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="k">private</span> <span class="k">function</span> <span class="nf">register</span><span class="p">(</span><span class="nv">$method</span><span class="p">,</span> <span class="nv">$match</span><span class="p">,</span> <span class="nv">$callback</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nv">$match</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">compute_regex</span><span class="p">(</span><span class="nv">$match</span><span class="p">);</span>
+  <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">routes</span><span class="p">[</span><span class="nv">$method</span><span class="p">][</span><span class="nv">$match</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$callback</span><span class="p">;</span>
+<span class="p">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>You can see here that we are extracting a regex out of the given match (we’ll
 look more at that later) and we are registering the route in a local hash based
-on the HTTP verb (<code>$method</code>).</p>
+on the HTTP verb (<code class="highlighter-rouge">$method</code>).</p>
 
 <p>We can use this very simply now as:</p>
 
-<div class="highlight"><pre><code class="language-php5" data-lang="php5"><span class="lineno">1</span> <span class="x">Pinatra::get(&#39;/hi&#39;, function () {</span>
-<span class="lineno">2</span> <span class="x">  return &#39;hello world&#39;;</span>
-<span class="lineno">3</span> <span class="x">});</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-php5" data-lang="php5"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="code"><pre><span class="nx">Pinatra</span><span class="o">::</span><span class="na">get</span><span class="p">(</span><span class="s1">'/hi'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">'hello world'</span><span class="p">;</span>
+<span class="p">});</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>Very similar, we can register POST method like the following:</p>
 
-<div class="highlight"><pre><code class="language-php5" data-lang="php5"><span class="lineno">1</span> <span class="x">Pinatra::post(&#39;/name&#39;, function ($data) {</span>
-<span class="lineno">2</span> <span class="x">  return &#39;Hello &#39; . $data[&#39;name&#39;];</span>
-<span class="lineno">3</span> <span class="x">});</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-php5" data-lang="php5"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="code"><pre><span class="nx">Pinatra</span><span class="o">::</span><span class="na">post</span><span class="p">(</span><span class="s1">'/name'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">'Hello '</span> <span class="o">.</span> <span class="nv">$data</span><span class="p">[</span><span class="s1">'name'</span><span class="p">];</span>
+<span class="p">});</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <h3 id="prepost-hooks">Pre/Post Hooks</h3>
 
@@ -128,68 +142,111 @@ on the HTTP verb (<code>$method</code>).</p>
 verb, we can also register before and after hooks. When we create them in our
 application, it is as simple as:</p>
 
-<div class="highlight"><pre><code class="language-php5" data-lang="php5"><span class="lineno">1</span> <span class="x">Pinatra::before(&#39;*&#39;, function () {</span>
-<span class="lineno">2</span> <span class="x">  header(&#39;AppVersion: 0.0.1&#39;);</span>
-<span class="lineno">3</span> <span class="x">});</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-php5" data-lang="php5"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="code"><pre><span class="nx">Pinatra</span><span class="o">::</span><span class="na">before</span><span class="p">(</span><span class="s1">'*'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="nb">header</span><span class="p">(</span><span class="s1">'AppVersion: 0.0.1'</span><span class="p">);</span>
+<span class="p">});</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<div class="highlight"><pre><code class="language-php5" data-lang="php5"><span class="lineno">1</span> <span class="x">Pinatra::after(&#39;*&#39;, function () {</span>
-<span class="lineno">2</span> <span class="x">  Logger::log_request(&#39;served yet another request&#39;);</span>
-<span class="lineno">3</span> <span class="x">});</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-php5" data-lang="php5"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="code"><pre><span class="nx">Pinatra</span><span class="o">::</span><span class="na">after</span><span class="p">(</span><span class="s1">'*'</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="nx">Logger</span><span class="o">::</span><span class="na">log_request</span><span class="p">(</span><span class="s1">'served yet another request'</span><span class="p">);</span>
+<span class="p">});</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <h3 id="parameratized-routes">Parameratized Routes</h3>
 
 <p>This is a way of representing data in a given route that is extracted
 automatically. For example, given the following route:</p>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text"><span class="lineno">1</span> /authors/:author_id/books/:book_id</code></pre></div>
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+</pre></td><td class="code"><pre>/authors/:author_id/books/:book_id</pre></td></tr></tbody></table></code></pre></figure>
 
-<p>I should be able to extract the two values, <code>:author_id</code> and <code>:book_id</code>.
+<p>I should be able to extract the two values, <code class="highlighter-rouge">:author_id</code> and <code class="highlighter-rouge">:book_id</code>.
 Earlier you saw a method for building up the regular expression. This is
 what we’ll use to create our route and the match-patterns will be used
 to extract the route-data. The method for generating our regex from the
 user-supplied route is seen below.</p>
 
-<div class="highlight"><pre><code class="language-php5" data-lang="php5"><span class="lineno"> 1</span> <span class="x">private $URIParser_PLACEHOLDER = &#39;([^\/]+)&#39;;</span>
-<span class="lineno"> 2</span> <span class="x">private $URIParser_GLOB = &#39;.*?&#39;;</span>
-<span class="lineno"> 3</span> 
-<span class="lineno"> 4</span> <span class="x">/**</span>
-<span class="lineno"> 5</span> <span class="x"> * Private: Generate a PHP (Perl) regular expression given the</span>
-<span class="lineno"> 6</span> <span class="x"> *          Sinatra-style expression in the get/post/put/etc. functions.</span>
-<span class="lineno"> 7</span> <span class="x"> */</span>
-<span class="lineno"> 8</span> <span class="x">private function compute_regex($match) {</span>
-<span class="lineno"> 9</span> <span class="x">  // get the URI parts of the match-pattern given</span>
-<span class="lineno">10</span> <span class="x">  $parts = array_filter(explode(&#39;/&#39;, $match), function ($val) { </span>
-<span class="lineno">11</span> <span class="x">    return !empty($val);</span>
-<span class="lineno">12</span> <span class="x">  });</span>
-<span class="lineno">13</span> 
-<span class="lineno">14</span> <span class="x">  // build our pattern-matching regex from given route</span>
-<span class="lineno">15</span> <span class="x">  $regex= &#39;/^&#39;;</span>
-<span class="lineno">16</span> 
-<span class="lineno">17</span> <span class="x">  foreach ($parts as $part) {</span>
-<span class="lineno">18</span> <span class="x">    if ($part[0] === &#39;:&#39;) {</span>
-<span class="lineno">19</span> <span class="x">      $regex .= &#39;\/&#39; . $this-&gt;URIParser_PLACEHOLDER;</span>
-<span class="lineno">20</span> <span class="x">    }</span>
-<span class="lineno">21</span> <span class="x">    else if ($part[0] === &#39;*&#39;){</span>
-<span class="lineno">22</span> <span class="x">      $regex .= &#39;\/&#39; . $this-&gt;URIParser_GLOB;</span>
-<span class="lineno">23</span> <span class="x">    }</span>
-<span class="lineno">24</span> <span class="x">    else {</span>
-<span class="lineno">25</span> <span class="x">      $regex .= &#39;\/&#39; . $part;</span>
-<span class="lineno">26</span> <span class="x">    }</span>
-<span class="lineno">27</span> <span class="x">  }</span>
-<span class="lineno">28</span> <span class="x">  $regex .= &#39;\/?$/&#39;;</span>
-<span class="lineno">29</span> <span class="x">  return $regex;</span>
-<span class="lineno">30</span> <span class="x">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-php5" data-lang="php5"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+</pre></td><td class="code"><pre><span class="k">private</span> <span class="nv">$URIParser_PLACEHOLDER</span> <span class="o">=</span> <span class="s1">'([^\/]+)'</span><span class="p">;</span>
+<span class="k">private</span> <span class="nv">$URIParser_GLOB</span> <span class="o">=</span> <span class="s1">'.*?'</span><span class="p">;</span>
+
+<span class="sd">/**
+ * Private: Generate a PHP (Perl) regular expression given the
+ *          Sinatra-style expression in the get/post/put/etc. functions.
+ */</span>
+<span class="k">private</span> <span class="k">function</span> <span class="nf">compute_regex</span><span class="p">(</span><span class="nv">$match</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// get the URI parts of the match-pattern given
+</span>  <span class="nv">$parts</span> <span class="o">=</span> <span class="nb">array_filter</span><span class="p">(</span><span class="nb">explode</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="nv">$match</span><span class="p">),</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$val</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="k">return</span> <span class="o">!</span><span class="k">empty</span><span class="p">(</span><span class="nv">$val</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="c1">// build our pattern-matching regex from given route
+</span>  <span class="nv">$regex</span><span class="o">=</span> <span class="s1">'/^'</span><span class="p">;</span>
+
+  <span class="k">foreach</span> <span class="p">(</span><span class="nv">$parts</span> <span class="k">as</span> <span class="nv">$part</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$part</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="s1">':'</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nv">$regex</span> <span class="o">.=</span> <span class="s1">'\/'</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">URIParser_PLACEHOLDER</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nv">$part</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="s1">'*'</span><span class="p">){</span>
+      <span class="nv">$regex</span> <span class="o">.=</span> <span class="s1">'\/'</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">URIParser_GLOB</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nv">$regex</span> <span class="o">.=</span> <span class="s1">'\/'</span> <span class="o">.</span> <span class="nv">$part</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="nv">$regex</span> <span class="o">.=</span> <span class="s1">'\/?$/'</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nv">$regex</span><span class="p">;</span>
+<span class="p">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>You can see how the match patterns could be used to extract data from
 the URI. This can then be passed to the route-methods. An example of how
 this would look is as such:</p>
 
-<div class="highlight"><pre><code class="language-php5" data-lang="php5"><span class="lineno">1</span> <span class="x">Pinatra::get(&#39;/hello/:name&#39;, function($name) {</span>
-<span class="lineno">2</span> <span class="x">  return $this-&gt;json([</span>
-<span class="lineno">3</span> <span class="x">    &#39;key&#39; =&gt; &#39;hello-route has been matched!&#39;, </span>
-<span class="lineno">4</span> <span class="x">    &#39;name&#39; =&gt; $name</span>
-<span class="lineno">5</span> <span class="x">  ]);</span>
-<span class="lineno">6</span> <span class="x">});</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-php5" data-lang="php5"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="nx">Pinatra</span><span class="o">::</span><span class="na">get</span><span class="p">(</span><span class="s1">'/hello/:name'</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">json</span><span class="p">([</span>
+    <span class="s1">'key'</span> <span class="o">=&gt;</span> <span class="s1">'hello-route has been matched!'</span><span class="p">,</span> 
+    <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$name</span>
+  <span class="p">]);</span>
+<span class="p">});</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>You’ll also notice a JSON helper function (I’ll leave that one for your own
 exploration).</p>
@@ -202,35 +259,64 @@ that newer versions of PHP provide easy way to rebind anonymous methods making
 it possible to use them here. Take a look at the method that actually matches
 a request to a route and calls a lambda:</p>
 
-<div class="highlight"><pre><code class="language-php5" data-lang="php5"><span class="lineno"> 1</span> <span class="x">/**</span>
-<span class="lineno"> 2</span> <span class="x">   * Method that is called when we actually want to process an incoming</span>
-<span class="lineno"> 3</span> <span class="x">   * request based on the method and uri provided. This method (expecting</span>
-<span class="lineno"> 4</span> <span class="x">   * to be given a URI and method) can also be used for re-routing requests</span>
-<span class="lineno"> 5</span> <span class="x">   * internally.</span>
-<span class="lineno"> 6</span> <span class="x">   */</span>
-<span class="lineno"> 7</span> <span class="x">public static function handle_request($method, $uri) {</span>
-<span class="lineno"> 8</span> <span class="x">  $app = Pinatra::instance();</span>
-<span class="lineno"> 9</span> 
-<span class="lineno">10</span> 
-<span class="lineno">11</span> <span class="x">  // before hook code (removed for brevity)</span>
-<span class="lineno">12</span> 
-<span class="lineno">13</span> <span class="x">  // find and call route-handler</span>
-<span class="lineno">14</span> <span class="x">  $route_match = $app-&gt;find_route($app-&gt;routes, $method, $uri);</span>
-<span class="lineno">15</span> <span class="x">  if ($route_match !== null) {</span>
-<span class="lineno">16</span> <span class="x">      </span>
-<span class="lineno">17</span> <span class="x">    $request_body_data = $app-&gt;get_body_data($method);</span>
-<span class="lineno">18</span> <span class="x">    if ($request_body_data !== null) {</span>
-<span class="lineno">19</span> <span class="x">      array_unshift($route_match[&#39;arguments&#39;], $request_body_data);</span>
-<span class="lineno">20</span> <span class="x">    }</span>
-<span class="lineno">21</span> 
-<span class="lineno">22</span> <span class="x">    $route_res = call_user_func_array(</span>
-<span class="lineno">23</span> <span class="x">      $route_match[&#39;callback&#39;]-&gt;bindTo($app), </span>
-<span class="lineno">24</span> <span class="x">      $route_match[&#39;arguments&#39;]);</span>
-<span class="lineno">25</span> <span class="x">  }</span>
-<span class="lineno">26</span> 
-<span class="lineno">27</span> <span class="x">  // after hook code (removed for brevity)</span>
-<span class="lineno">28</span> <span class="x">  </span>
-<span class="lineno">29</span> <span class="x">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-php5" data-lang="php5"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+</pre></td><td class="code"><pre>  <span class="sd">/**
+   * Method that is called when we actually want to process an incoming
+   * request based on the method and uri provided. This method (expecting
+   * to be given a URI and method) can also be used for re-routing requests
+   * internally.
+   */</span>
+<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">handle_request</span><span class="p">(</span><span class="nv">$method</span><span class="p">,</span> <span class="nv">$uri</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nv">$app</span> <span class="o">=</span> <span class="nx">Pinatra</span><span class="o">::</span><span class="na">instance</span><span class="p">();</span>
+
+
+  <span class="c1">// before hook code (removed for brevity)
+</span>
+  <span class="c1">// find and call route-handler
+</span>  <span class="nv">$route_match</span> <span class="o">=</span> <span class="nv">$app</span><span class="o">-&gt;</span><span class="na">find_route</span><span class="p">(</span><span class="nv">$app</span><span class="o">-&gt;</span><span class="na">routes</span><span class="p">,</span> <span class="nv">$method</span><span class="p">,</span> <span class="nv">$uri</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nv">$route_match</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+      
+    <span class="nv">$request_body_data</span> <span class="o">=</span> <span class="nv">$app</span><span class="o">-&gt;</span><span class="na">get_body_data</span><span class="p">(</span><span class="nv">$method</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$request_body_data</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nb">array_unshift</span><span class="p">(</span><span class="nv">$route_match</span><span class="p">[</span><span class="s1">'arguments'</span><span class="p">],</span> <span class="nv">$request_body_data</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nv">$route_res</span> <span class="o">=</span> <span class="nb">call_user_func_array</span><span class="p">(</span>
+      <span class="nv">$route_match</span><span class="p">[</span><span class="s1">'callback'</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">bindTo</span><span class="p">(</span><span class="nv">$app</span><span class="p">),</span> 
+      <span class="nv">$route_match</span><span class="p">[</span><span class="s1">'arguments'</span><span class="p">]);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// after hook code (removed for brevity)
+</span>  
+<span class="p">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <h3 id="php-54-usage">PHP 5.4 Usage</h3>
 
@@ -255,7 +341,7 @@ those computed routes (regex’s) can be cached and re-used.</p>
 <p>Like I had mentioned previously, this project was to learn. That being said, there
 is probably a lot of debug code and comments left in this project and I would not
 recommend it for real-world use. So, if you do want to play around with it, you might
-have to remove some <code>echo</code> and <code>var_dump</code> statements that might still be hanging
+have to remove some <code class="highlighter-rouge">echo</code> and <code class="highlighter-rouge">var_dump</code> statements that might still be hanging
 around in the code.</p>
 
 
