@@ -5,8 +5,8 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 27 Nov 2017 12:03:08 -0600</pubDate>
-    <lastBuildDate>Mon, 27 Nov 2017 12:03:08 -0600</lastBuildDate>
+    <pubDate>Mon, 27 Nov 2017 12:33:21 -0600</pubDate>
+    <lastBuildDate>Mon, 27 Nov 2017 12:33:21 -0600</lastBuildDate>
     <generator>Jekyll v3.6.2</generator>
     
       <item>
@@ -39,7 +39,7 @@ allowing the error to cascade. An example in Scala might look like:&lt;/p&gt;
   &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Above we define several functions, meant to be called in order. Each function returns a possible
-error and the next functio takes the success value of the previous function. The code starting 
+error and the next function takes the success value of the previous function. The code starting 
 with &lt;code class=&quot;highlighter-rouge&quot;&gt;for {&lt;/code&gt; is some syntactic sugar that allows us to call &lt;code class=&quot;highlighter-rouge&quot;&gt;map&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;flatMap&lt;/code&gt; which are
 essentially ways of calling the next function assuming the previous one succeeded. If there
 was an error, then the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;model&lt;/code&gt; will be a failed &lt;code class=&quot;highlighter-rouge&quot;&gt;Try&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;Failure&lt;/code&gt; in Scala) with the
@@ -54,7 +54,7 @@ issues at play. Go read this two-part post, it’s super good so you should read
 prompting you anyways: &lt;a href=&quot;https://fsharpforfunandprofit.com/rop/&quot;&gt;part-1&lt;/a&gt;, &lt;a href=&quot;https://fsharpforfunandprofit.com/posts/recipe-part2/&quot;&gt;part-2&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;I don’t want this to turn into an in-depth explanation of &lt;code class=&quot;highlighter-rouge&quot;&gt;Try&lt;/code&gt; in Scala, so go read the
-&lt;a href=&quot;https://www.scala-lang.org/api/current/scala/util/Try.html&quot;&gt;docs here&lt;/a&gt; if you still want to know more&lt;/p&gt;
+&lt;a href=&quot;https://www.scala-lang.org/api/current/scala/util/Try.html&quot;&gt;docs here&lt;/a&gt; if you still want to know more.&lt;/p&gt;
 
 &lt;h3 id=&quot;continued-horribleness&quot;&gt;Continued Horribleness&lt;/h3&gt;
 
@@ -99,7 +99,7 @@ within our Try.&lt;/p&gt;
 
 &lt;p&gt;So we got a basic container, but that’s more or less useless. Especially given that there
 are no publicly exported fields in our struct and no functions except our utility function
-to create/use the &lt;code class=&quot;highlighter-rouge&quot;&gt;Try&lt;/code&gt;. Let’s define some basic functions for creating an interacting with
+to create/use the &lt;code class=&quot;highlighter-rouge&quot;&gt;Try&lt;/code&gt;. Let’s define some basic functions for creating and interacting with
 &lt;code class=&quot;highlighter-rouge&quot;&gt;Try&lt;/code&gt;:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-go&quot; data-lang=&quot;go&quot;&gt;&lt;span class=&quot;c&quot;&gt;// NewSuccess creates a new succeeded Try&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
@@ -285,7 +285,7 @@ genny &lt;span class=&quot;nt&quot;&gt;-in&lt;/span&gt; try_base.go.tmp &lt;span
     &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Of course, without being able to compose things with &lt;code class=&quot;highlighter-rouge&quot;&gt;Try&lt;/code&gt;s of other type, this isn’t that great. So let’s
+&lt;p&gt;Of course, without being able to compose things with &lt;code class=&quot;highlighter-rouge&quot;&gt;Try&lt;/code&gt;s of other types, this isn’t that great. So let’s
 make a template that allows us to map from one type to another:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-go&quot; data-lang=&quot;go&quot;&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
