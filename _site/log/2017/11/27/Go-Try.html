@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Bastard Go - Try</title>
+  <meta name="description" content="PremiseGo is great. Scala is great. Scala has Trys. Go doesn’t.">
+
+  <!-- <link rel="stylesheet" href="/css/main.css"> -->
+  
+  <style>
+    @import "https://fonts.googleapis.com/css?family=Roboto:300,400,500";body,h1,h2,h3,h4,h5,h6,p,blockquote,pre,hr,dl,dd,ol,ul,figure{margin:0;padding:0}body{-webkit-text-size-adjust:100%;background-color:#fff;color:#566b78;font-family:"Roboto","Open Sans",Helvetica,Arial,sans-serif;font-size:18px;font-weight:300;line-height:1.7;padding-top:2em}h1,h2,strong{color:#344b78}h1,h2,h3,h4,h5,h6,p,blockquote,pre,ul,ol,dl,figure{margin-bottom:15px}img{margin-bottom:20px;max-width:100%;vertical-align:middle}figure>img{display:block}figcaption{font-size:15.75px}ul,ol{margin-left:30px}li>ul,li>ol{margin-bottom:0}h1,h2,h3,h4,h5,h6{font-weight:300}a{color:#e81c4f;text-decoration:none}a:visited{color:#e81c4f}a:hover{color:#566b78;text-decoration:none}blockquote{color:#828282;border-left:4px solid #e8e8e8;padding-left:15px;font-size:18px;letter-spacing:-1px;font-style:italic}blockquote>:last-child{margin-bottom:0}pre,code{font-size:12px;border-radius:3px;border:1px solid #d8dee9;background-color:#f5f7f9}code{padding:4px 5px 1px 5px}pre{padding:8px 12px;overflow-x:auto}pre>code{border:0;padding-right:0;padding-left:0}.wrapper{max-width:-webkit-calc(800px - (30px * 2));max-width:calc(800px - (30px * 2));margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px}@media screen and (max-width: 800px){.wrapper{max-width:-webkit-calc(800px - (30px));max-width:calc(800px - (30px));padding-right:15px;padding-left:15px}}.wrapper:after{content:"";display:table;clear:both}.icon>svg{display:inline-block;width:16px;height:16px;vertical-align:middle}.icon>svg path{fill:#828282}.masthead{color:#fff;background-color:#2a2a2a;min-width:270px}.masthead h1{color:#fff;font-weight:400;font-family:"Roboto", "Lucida Console", Monaco, monospace}.masthead a{text-decoration:none}.masthead a:hover{text-decoration:none}.masthead a:active{text-decoration:none}.masthead-inner .sub{color:#666}.masthead-inner .sub a{color:#666}.masthead-inner .sub a:hover{color:#999}@media (min-width: 760px){.masthead-inner{padding:40px}.page-content{margin-left:40px;margin-right:40px}}@media (min-width: 990px){.masthead{position:fixed;top:0;left:0;bottom:0;width:25%;margin-bottom:0}.masthead-inner{position:absolute;top:0;right:0;left:0}.masthead h1{font-size:54px}.page-content{margin-left:35%;margin-right:10%;width:55%}}.page-content{padding:30px 0}.page-heading{font-size:20px}.post-list{margin-left:0;list-style:none}.post-list .post-title{margin-top:30px;margin-bottom:0;display:inline-block}.post-meta{color:#828282;display:inline-block;float:right;font-size:15.75px;margin-top:32px}.post-link{display:block;font-size:24px}.post-header{margin-bottom:30px}.post-title{font-size:42px;letter-spacing:-1px;line-height:1}@media screen and (max-width: 800px){.post-title{font-size:36px}}.post-content{margin-bottom:30px}.post-content h2{font-size:32px}@media screen and (max-width: 800px){.post-content h2{font-size:28px}}.post-content h3{font-size:26px}@media screen and (max-width: 800px){.post-content h3{font-size:22px}}.post-content h4{font-size:20px}@media screen and (max-width: 800px){.post-content h4{font-size:18px}}.footer-navigation{border-bottom:1px solid #e0e0e0;display:block;font-weight:bold;height:60px;margin:50px 0 40px 0;text-align:center}.footer-navigation .previous{display:block;margin:0 auto}.footer-navigation .next{display:block;margin:0 auto}@media (min-width: 760px){.footer-navigation{height:30px;padding-bottom:10px}.footer-navigation .previous{display:block;float:left;margin:0;text-align:left}.footer-navigation .next{display:block;float:right;margin:0;text-align:right}}.highlight{background:#ffffff;margin-bottom:20px;margin-top:20px}.highlight .c{color:#999988;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#999988;font-style:italic}.highlight .cp{color:#999999;font-weight:bold}.highlight .c1{color:#999988;font-style:italic}.highlight .cs{color:#999999;font-weight:bold;font-style:italic}.highlight .gd{color:#000000;background-color:#fdd}.highlight .gd .x{color:#000000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000000;background-color:#dfd}.highlight .gi .x{color:#000000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaa}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#445588;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:teal}.highlight .nb{color:#0086B3}.highlight .nc{color:#445588;font-weight:bold}.highlight .no{color:#0086b3}.highlight .ni{color:purple}.highlight .ne{color:#990000;font-weight:bold}.highlight .nf{color:#990000;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:navy}.highlight .nv{color:teal}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#0086b3}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#0086b3}.highlight .bp{color:#999}.highlight .vc{color:teal}.highlight .vg{color:teal}.highlight .vi{color:teal}.highlight .il{color:#099}.post .highlight .lineno{color:#ccc;display:inline-block;padding:0 5px 0 0;border-right:1px solid #ccc}.post .highlight pre code{display:block;white-space:pre;overflow-x:auto;word-wrap:normal}.post .highlight pre{border:none;border-left:3px solid #d8dee9;border-color:#e0e0e0}.post .highlight pre code{background-color:transparent;font-size:12px}
+
+  </style>
+  <link rel="canonical" href="http://www.johnmurray.io/log/2017/11/27/Go-Try.html">
+  <link rel="alternate" type="application/rss+xml" title="John Murray" href="http://www.johnmurray.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="masthead">
+  <div class="masthead-inner">
+    <a href="/"><h1>murray</h2></a>
+    <p class="sub">
+      <a href="http://github.com/johnmurray">github</a>
+      |
+      <a href="http://twitter.com/johnmurray_io">twitter</a>
+      |
+      <a href="http://linkedin.com/pub/john-murray/22/a86/80a/en">linkedin</a>
+    </p>
+  </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+    <header class="post-header">
+        <h1 class="post-title">Bastard Go - Try</h1>
+    </header>
+
+    <article class="post-content">
+        <h3 id="premise">Premise</h3>
+<p>Go is great. Scala is great. Scala has <code class="highlighter-rouge">Try</code>s. Go doesn’t.</p>
+
+<h3 id="motivation">Motivation</h3>
+<p>I’m a horrible person. ¯\_(ツ)_/¯</p>
+
+<h3 id="horribleness">Horribleness</h3>
+<p>In Go it’s typical to return <code class="highlighter-rouge">error</code>s as soon as they happen and handle them locally, or
+wrap them with some additional context and pass them back up the stack. In Scala however it’s
+idiomatic to wrap an error into a <code class="highlighter-rouge">Try</code> which represents <em>either</em> a successfully computed value
+or an error. The advantage of a <code class="highlighter-rouge">Try</code> over a 2-tuple (or multiple return-values) is that the
+<code class="highlighter-rouge">Try</code> can be composed so that you can chain functions together and worry if they failed later,
+allowing the error to cascade. An example in Scala might look like:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">def</span> <span class="n">configLoad</span><span class="o">()</span>                   <span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>         <span class="k">=</span> <span class="o">???</span>
+<span class="k">def</span> <span class="n">getDbConnection</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>     <span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">sql.Connection</span><span class="o">]</span> <span class="k">=</span> <span class="o">???</span>
+<span class="k">def</span> <span class="n">queryForData</span><span class="o">(</span><span class="n">c</span><span class="k">:</span> <span class="kt">sql.Connection</span><span class="o">)</span><span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">sql.Result</span><span class="o">]</span>     <span class="k">=</span> <span class="o">???</span>
+<span class="k">def</span> <span class="n">transformResults</span><span class="o">(</span><span class="n">r</span><span class="k">:</span> <span class="kt">sql.Result</span><span class="o">)</span><span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">app.MyModel</span><span class="o">]</span>    <span class="k">=</span> <span class="o">???</span>
+
+<span class="k">val</span> <span class="n">model</span><span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">app.MyModel</span><span class="o">]</span> <span class="k">=</span>
+  <span class="k">for</span> <span class="o">{</span>
+    <span class="n">s</span> <span class="k">&lt;-</span> <span class="n">configLoad</span><span class="o">()</span>
+    <span class="n">c</span> <span class="k">&lt;-</span> <span class="n">getDbConnection</span><span class="o">(</span><span class="n">s</span><span class="o">)</span>
+    <span class="n">r</span> <span class="k">&lt;-</span> <span class="n">queryForData</span><span class="o">(</span><span class="n">c</span><span class="o">)</span>
+    <span class="n">m</span> <span class="k">&lt;-</span> <span class="n">transformResults</span><span class="o">(</span><span class="n">r</span><span class="o">)</span>
+  <span class="o">}</span> <span class="k">yield</span> <span class="o">(</span><span class="n">m</span><span class="o">)</span></code></pre></figure>
+
+<p>Above we define several functions, meant to be called in order. Each function returns a possible
+error and the next functio takes the success value of the previous function. The code starting 
+with <code class="highlighter-rouge">for {</code> is some syntactic sugar that allows us to call <code class="highlighter-rouge">map</code> and <code class="highlighter-rouge">flatMap</code> which are
+essentially ways of calling the next function assuming the previous one succeeded. If there
+was an error, then the value of <code class="highlighter-rouge">model</code> will be a failed <code class="highlighter-rouge">Try</code> (<code class="highlighter-rouge">Failure</code> in Scala) with the
+error.</p>
+
+<p>This allows the programmer to write code that describes the “happy path”, dealing with any
+errors at the end. Some argue this style is more readable. ¯\_(ツ)_/¯</p>
+
+<p>I mean, it has it’s own
+pattern named after trains and if that isn’t enough to convince you, then I think there are larger
+issues at play. Go read this two-part post, it’s super good so you should read it without me
+prompting you anyways: <a href="https://fsharpforfunandprofit.com/rop/">part-1</a>, <a href="https://fsharpforfunandprofit.com/posts/recipe-part2/">part-2</a>.</p>
+
+<p>I don’t want this to turn into an in-depth explanation of <code class="highlighter-rouge">Try</code> in Scala, so go read the
+<a href="https://www.scala-lang.org/api/current/scala/util/Try.html">docs here</a> if you still want to know more</p>
+
+<h3 id="continued-horribleness">Continued Horribleness</h3>
+
+<p>Let’s make a <code class="highlighter-rouge">Try</code> in Go.</p>
+
+<p>Since we don’t have generics let’s (for now) just use <code class="highlighter-rouge">interface {}</code> as the value contained
+within our Try.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">type</span><span class="x"> </span><span class="n">Try</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">success</span><span class="x"> </span><span class="kt">bool</span><span class="x">
+    </span><span class="n">value</span><span class="x">   </span><span class="k">interface</span><span class="p">{}</span><span class="x">
+    </span><span class="n">err</span><span class="x">     </span><span class="kt">error</span><span class="x">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>Pretty self-explanatory. Also note that <code class="highlighter-rouge">success</code> is used instead of checking for <code class="highlighter-rouge">nil</code> on
+<code class="highlighter-rouge">success</code> or <code class="highlighter-rouge">err</code> because it’s more explicit’ish.</p>
+
+<p>Next a utility function.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">func</span><span class="x"> </span><span class="n">ToTry</span><span class="p">(</span><span class="n">value</span><span class="x"> </span><span class="k">interface</span><span class="p">{},</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">Try</span><span class="p">{</span><span class="x">
+        </span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="p">,</span><span class="x">
+        </span><span class="n">value</span><span class="o">:</span><span class="x">   </span><span class="n">value</span><span class="p">,</span><span class="x">
+        </span><span class="n">err</span><span class="o">:</span><span class="x">     </span><span class="n">err</span><span class="p">,</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>Now we can wrap other functions that produce value/err results. Such as:</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">func</span><span class="x"> </span><span class="n">doSomething</span><span class="p">()</span><span class="x"> </span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">someCheck</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">return</span><span class="x"> </span><span class="s">"biscuits"</span><span class="p">,</span><span class="x"> </span><span class="no">nil</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="s">""</span><span class="p">,</span><span class="x"> </span><span class="n">errors</span><span class="o">.</span><span class="n">New</span><span class="p">(</span><span class="s">"You failed the all-important check"</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">result</span><span class="x"> </span><span class="n">Try</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">ToTry</span><span class="p">(</span><span class="n">doSomething</span><span class="p">())</span><span class="x">
+
+    </span><span class="c">// use result as Try</span><span class="x">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>So we got a basic container, but that’s more or less useless. Especially given that there
+are no publicly exported fields in our struct and no functions except our utility function
+to create/use the <code class="highlighter-rouge">Try</code>. Let’s define some basic functions for creating an interacting with
+<code class="highlighter-rouge">Try</code>:</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="c">// NewSuccess creates a new succeeded Try</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">NewSuccess</span><span class="p">(</span><span class="n">value</span><span class="x"> </span><span class="k">interface</span><span class="p">{})</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">Try</span><span class="p">{</span><span class="x">
+        </span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="no">true</span><span class="p">,</span><span class="x">
+        </span><span class="n">value</span><span class="o">:</span><span class="x">   </span><span class="n">value</span><span class="p">,</span><span class="x">
+        </span><span class="n">err</span><span class="o">:</span><span class="x">     </span><span class="no">nil</span><span class="p">,</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">NewFailure</span><span class="p">(</span><span class="n">err</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">Try</span><span class="p">{</span><span class="x">
+        </span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="no">false</span><span class="p">,</span><span class="x">
+        </span><span class="n">value</span><span class="o">:</span><span class="x">   </span><span class="no">nil</span><span class="p">,</span><span class="x">
+        </span><span class="n">err</span><span class="o">:</span><span class="x">     </span><span class="n">err</span><span class="p">,</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="p">)</span><span class="x"> </span><span class="n">IsSuccess</span><span class="p">()</span><span class="x"> </span><span class="kt">bool</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">success</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="p">)</span><span class="x"> </span><span class="n">IsFailure</span><span class="p">()</span><span class="x"> </span><span class="kt">bool</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="o">!</span><span class="n">t</span><span class="o">.</span><span class="n">success</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="p">)</span><span class="x"> </span><span class="n">GetValue</span><span class="p">()</span><span class="x"> </span><span class="k">interface</span><span class="p">{}</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">IsFailure</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="nb">panic</span><span class="p">(</span><span class="s">"you do not know what you are doing"</span><span class="p">)</span><span class="x"> </span><span class="c">// totally right thing to do</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="p">)</span><span class="x"> </span><span class="n">GetFailure</span><span class="p">()</span><span class="x"> </span><span class="kt">error</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">IsSuccess</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="nb">panic</span><span class="p">(</span><span class="s">"you do not know what you are doing"</span><span class="p">)</span><span class="x"> </span><span class="c">// totally right thing to do</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">err</span><span class="x">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>This is good, but not entirely usable. As it stands this is just as <em>wonderful</em> as the
+existing Go model of checking errors right at the source. We need some way for the errors
+to cascade and for us to say what we <em>want</em> to do without having to worry about so much
+error handling. For this we have to break out the big guns, <code class="highlighter-rouge">map</code> and <code class="highlighter-rouge">flatMap</code>. If you haven’t
+heard of these functions yet, maybe go try googling “higher order functions” to get a better
+idea. I’ll avoid explaining them here since that could be a whole other post on it’s own.</p>
+
+<p>Let’s take a stab at this:</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="p">)</span><span class="x"> </span><span class="n">Map</span><span class="p">(</span><span class="n">f</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="k">interface</span><span class="p">{})</span><span class="x"> </span><span class="k">interface</span><span class="p">{})</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="o">!</span><span class="n">t</span><span class="o">.</span><span class="n">success</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">return</span><span class="x"> </span><span class="n">t</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">Try</span><span class="p">{</span><span class="x">
+        </span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="no">true</span><span class="p">,</span><span class="x">
+        </span><span class="n">value</span><span class="o">:</span><span class="x">   </span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">),</span><span class="x">
+        </span><span class="n">err</span><span class="o">:</span><span class="x">     </span><span class="no">nil</span><span class="p">,</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="p">)</span><span class="x"> </span><span class="n">FlatMap</span><span class="p">(</span><span class="n">f</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="k">interface</span><span class="p">{})</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="o">!</span><span class="n">t</span><span class="o">.</span><span class="n">success</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">return</span><span class="x"> </span><span class="n">t</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="p">)</span><span class="x"> </span><span class="n">FlatMapWrap</span><span class="p">(</span><span class="n">f</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="k">interface</span><span class="p">{})</span><span class="x"> </span><span class="p">(</span><span class="k">interface</span><span class="p">{},</span><span class="x"> </span><span class="kt">error</span><span class="p">))</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="o">!</span><span class="n">t</span><span class="o">.</span><span class="n">success</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">return</span><span class="x"> </span><span class="n">t</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="n">ToTry</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">))</span><span class="x">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>So now with this, we can attempt to chain some stuff together, with all the wonderfulness
+that is working with <code class="highlighter-rouge">interface {}</code> which is obiously the superior way of writing code in
+Go:</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">func</span><span class="x"> </span><span class="n">test</span><span class="p">()</span><span class="x">          </span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x"> </span><span class="k">return</span><span class="x"> </span><span class="s">""</span><span class="p">,</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">}</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">test2</span><span class="p">(</span><span class="n">s</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="kt">int</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x">    </span><span class="p">{</span><span class="x"> </span><span class="k">return</span><span class="x"> </span><span class="m">128</span><span class="p">,</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">}</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">test3</span><span class="p">(</span><span class="n">i</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x">    </span><span class="o">*</span><span class="n">Try</span><span class="x">            </span><span class="p">{</span><span class="x"> </span><span class="k">return</span><span class="x"> </span><span class="n">NewSuccess</span><span class="p">(</span><span class="no">true</span><span class="p">)</span><span class="x"> </span><span class="p">}</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">test4</span><span class="p">(</span><span class="n">b</span><span class="x"> </span><span class="kt">bool</span><span class="p">)</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">return</span><span class="x"> </span><span class="s">"true"</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">return</span><span class="x"> </span><span class="s">"false"</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">ToTry</span><span class="p">(</span><span class="n">test</span><span class="p">())</span><span class="o">.</span><span class="n">FlatMapWrap</span><span class="p">(</span><span class="k">func</span><span class="p">(</span><span class="n">s</span><span class="x"> </span><span class="k">interface</span><span class="p">{})</span><span class="x"> </span><span class="p">(</span><span class="k">interface</span><span class="p">{},</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">return</span><span class="x"> </span><span class="n">test2</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="p">(</span><span class="kt">string</span><span class="p">))</span><span class="x">
+    </span><span class="p">})</span><span class="o">.</span><span class="n">FlatMap</span><span class="p">(</span><span class="k">func</span><span class="p">(</span><span class="n">i</span><span class="x"> </span><span class="k">interface</span><span class="p">{})</span><span class="x"> </span><span class="o">*</span><span class="n">Try</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">return</span><span class="x"> </span><span class="n">test3</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="p">(</span><span class="kt">int</span><span class="p">))</span><span class="x">
+    </span><span class="p">})</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="k">func</span><span class="p">(</span><span class="n">b</span><span class="x"> </span><span class="k">interface</span><span class="p">{})</span><span class="x"> </span><span class="k">interface</span><span class="p">{}</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">return</span><span class="x"> </span><span class="n">test4</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="p">(</span><span class="kt">bool</span><span class="p">))</span><span class="x">
+    </span><span class="p">})</span><span class="x">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>I mean, can you not see the benefit of this yet? Who would not choose this highly readable, soooper
+maintainable code over immediate error checking?</p>
+
+<h3 id="less-horrible">Less Horrible?</h3>
+
+<p>Even though so far we have a working <code class="highlighter-rouge">Try</code> complete with <code class="highlighter-rouge">interface {}</code> everywhere (a favorite
+style of <em>“real programmers”</em>), the benevolent overlords of Go built us <code class="highlighter-rouge">go generate</code> and it would
+be a shame to not find a way to shove that into this blog post.</p>
+
+<p>Thanks to <a href="https://github.com/cheekybits/genny">genny</a>, onwards and upwards my friends!</p>
+
+<p>First a template without any of the tranformation functions (<code class="highlighter-rouge">Map</code>, <code class="highlighter-rouge">FlatMap</code>, etc):</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span><span class="x"> </span><span class="n">try</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"github.com/cheekybits/genny/generic"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">Type</span><span class="x"> </span><span class="n">generic</span><span class="o">.</span><span class="n">Type</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">TypeTry</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">success</span><span class="x"> </span><span class="kt">bool</span><span class="x">
+	</span><span class="n">value</span><span class="x">   </span><span class="n">Type</span><span class="x">
+	</span><span class="n">err</span><span class="x">     </span><span class="kt">error</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">ToTypeTry</span><span class="p">(</span><span class="n">value</span><span class="x"> </span><span class="n">Type</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">TypeTry</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">TypeTry</span><span class="p">{</span><span class="x">
+		</span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="p">,</span><span class="x">
+		</span><span class="n">value</span><span class="o">:</span><span class="x">   </span><span class="n">value</span><span class="p">,</span><span class="x">
+		</span><span class="n">err</span><span class="o">:</span><span class="x">     </span><span class="n">err</span><span class="p">,</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">NewTypeSuccess</span><span class="p">(</span><span class="n">value</span><span class="x"> </span><span class="n">Type</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">TypeTry</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">TypeTry</span><span class="p">{</span><span class="x">
+		</span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="no">true</span><span class="p">,</span><span class="x">
+		</span><span class="n">value</span><span class="o">:</span><span class="x">   </span><span class="n">value</span><span class="p">,</span><span class="x">
+		</span><span class="n">err</span><span class="o">:</span><span class="x">     </span><span class="no">nil</span><span class="p">,</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">NewTypeFailure</span><span class="p">(</span><span class="n">err</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">TypeTry</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">TypeTry</span><span class="p">{</span><span class="x">
+		</span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="no">false</span><span class="p">,</span><span class="x">
+		</span><span class="n">err</span><span class="o">:</span><span class="x">     </span><span class="n">err</span><span class="p">,</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">TypeTry</span><span class="p">)</span><span class="x"> </span><span class="n">IsSuccess</span><span class="p">()</span><span class="x"> </span><span class="kt">bool</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">success</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">TypeTry</span><span class="p">)</span><span class="x"> </span><span class="n">IsFailure</span><span class="p">()</span><span class="x"> </span><span class="kt">bool</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="o">!</span><span class="n">t</span><span class="o">.</span><span class="n">success</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">TypeTry</span><span class="p">)</span><span class="x"> </span><span class="n">GetValue</span><span class="p">()</span><span class="x"> </span><span class="n">Type</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">IsFailure</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="nb">panic</span><span class="p">(</span><span class="s">"you do not know what you are doing"</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">TypeTry</span><span class="p">)</span><span class="x"> </span><span class="n">GetFailure</span><span class="p">()</span><span class="x"> </span><span class="kt">error</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">IsSuccess</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="nb">panic</span><span class="p">(</span><span class="s">"you do not know what you are doing"</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">err</span><span class="x">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>With this + <code class="highlighter-rouge">genny</code>, we can generate some basic <code class="highlighter-rouge">Try</code> code for a specific type without any compsition
+functions (we’ll get there). To get the basic support we’d simply run:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># inside the root of your project</span>
+mkdir <span class="nt">-p</span> try
+genny <span class="nt">-in</span> try_base.go.tmp <span class="nt">-out</span> try/int_base.go gen <span class="s2">"Type=int"</span></code></pre></figure>
+
+<p>And you can now write code like:</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">var</span><span class="x"> </span><span class="n">it</span><span class="x"> </span><span class="n">IntTry</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">NewIntSuccess</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="x">
+</span><span class="k">if</span><span class="x"> </span><span class="n">it</span><span class="o">.</span><span class="n">IsSuccess</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">GetValue</span><span class="p">())</span><span class="x">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>Of course, without being able to compose things with <code class="highlighter-rouge">Try</code>s of other type, this isn’t that great. So let’s
+make a template that allows us to map from one type to another:</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span><span class="x"> </span><span class="n">try</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"github.com/cheekybits/genny/generic"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">FromType</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">generic</span><span class="o">.</span><span class="n">Type</span><span class="x">
+</span><span class="k">type</span><span class="x"> </span><span class="n">ToType</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">generic</span><span class="o">.</span><span class="n">Type</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">FromTypeTry</span><span class="p">)</span><span class="x"> </span><span class="n">MapToToType</span><span class="p">(</span><span class="n">f</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="n">FromType</span><span class="p">)</span><span class="x"> </span><span class="n">ToType</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">ToTypeTry</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="o">!</span><span class="n">t</span><span class="o">.</span><span class="n">success</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">ToTypeTry</span><span class="p">{</span><span class="x">
+			</span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="no">false</span><span class="p">,</span><span class="x">
+			</span><span class="n">err</span><span class="o">:</span><span class="x">     </span><span class="n">t</span><span class="o">.</span><span class="n">err</span><span class="p">,</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">ToTypeTry</span><span class="p">{</span><span class="x">
+		</span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="no">true</span><span class="p">,</span><span class="x">
+		</span><span class="n">value</span><span class="o">:</span><span class="x">   </span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">),</span><span class="x">
+		</span><span class="n">err</span><span class="o">:</span><span class="x">     </span><span class="no">nil</span><span class="p">,</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">FromTypeTry</span><span class="p">)</span><span class="x"> </span><span class="n">FlatMapToToType</span><span class="p">(</span><span class="n">f</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="n">FromType</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">ToTypeTry</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">ToTypeTry</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="o">!</span><span class="n">t</span><span class="o">.</span><span class="n">success</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">ToTypeTry</span><span class="p">{</span><span class="x">
+			</span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="no">false</span><span class="p">,</span><span class="x">
+			</span><span class="n">err</span><span class="o">:</span><span class="x">     </span><span class="n">t</span><span class="o">.</span><span class="n">err</span><span class="p">,</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">t</span><span class="x"> </span><span class="o">*</span><span class="n">FromTypeTry</span><span class="p">)</span><span class="x"> </span><span class="n">FlatMapWrapToToType</span><span class="p">(</span><span class="n">f</span><span class="x"> </span><span class="k">func</span><span class="p">(</span><span class="n">FromType</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="n">ToType</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">))</span><span class="x"> </span><span class="o">*</span><span class="n">ToTypeTry</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="o">!</span><span class="n">t</span><span class="o">.</span><span class="n">success</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">ToTypeTry</span><span class="p">{</span><span class="x">
+			</span><span class="n">success</span><span class="o">:</span><span class="x"> </span><span class="no">false</span><span class="p">,</span><span class="x">
+			</span><span class="n">err</span><span class="o">:</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">err</span><span class="p">,</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">ToToTypeTry</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">))</span><span class="x">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>With this I can replace our original <code class="highlighter-rouge">genny</code> command with these two:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">genny <span class="nt">-in</span> try_base.go.tmp    <span class="nt">-out</span> try/try_base.go    gen <span class="s2">"Type=string,int"</span>
+genny <span class="nt">-in</span> try_compose.go.tmp <span class="nt">-out</span> try/try_compose.go gen <span class="s2">"FromType=string,int ToType=string,int"</span></code></pre></figure>
+
+<p>And now I have two <code class="highlighter-rouge">Try</code> types, <code class="highlighter-rouge">IntTry</code> and <code class="highlighter-rouge">StringTry</code> and can seamlessly convert back and forth
+like so:</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">composedValue</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">try</span><span class="o">.</span><span class="n">NewStringSuccess</span><span class="p">(</span><span class="s">"37"</span><span class="p">)</span><span class="o">.</span><span class="x">
+		</span><span class="n">FlatMapWrapToInt</span><span class="p">(</span><span class="n">strconv</span><span class="o">.</span><span class="n">Atoi</span><span class="p">)</span><span class="o">.</span><span class="x">
+		</span><span class="n">MapToString</span><span class="p">(</span><span class="k">func</span><span class="p">(</span><span class="n">i</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="k">return</span><span class="x"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="s">"Parsed to: %d"</span><span class="p">,</span><span class="x"> </span><span class="n">i</span><span class="p">)</span><span class="x">
+		</span><span class="p">})</span><span class="x">
+
+	</span><span class="k">if</span><span class="x"> </span><span class="n">composedValue</span><span class="o">.</span><span class="n">IsSuccess</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">composedValue</span><span class="o">.</span><span class="n">GetValue</span><span class="p">())</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span></code></pre></figure>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Yay! This is all very horrible, but it actually works in a usable way. Feel free to spread the <em>love</em> ;-)</p>
+
+<p><strong><a href="https://github.com/johnmurray/bastard-go/">github.com/johnmurray/bastard-go/</a></strong></p>
+
+
+
+        <div class="footer-navigation">
+            
+                <span class="previous"><a href="/log/2017/06/22/The-Futures-Abstraction.html">
+                    &laquo;The Futures Abstraction
+                </a></span>
+            
+            
+        </div>
+    </article>
+
+    <footer style="text-align:center;">
+      &copy; 2017. All Rights Reserved
+    </footer>
+
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- Google Analytics -->
+    <script type="application/javascript">
+      function downloadGoogleAnalytics() {
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-11511983-4']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+          var ga = document.createElement('script'); 
+          ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(ga, s);
+        })();
+      }
+			if (window.addEventListener) window.addEventListener("load", downloadGoogleAnalytics, false);
+			else if (window.attachEvent) window.attachEvent("onload", downloadGoogleAnalytics);
+			else                         window.onload = downloadGoogleAnalytics;
+    </script>
+  </body>
+
+</html>
