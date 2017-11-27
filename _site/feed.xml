@@ -5,8 +5,8 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 27 Nov 2017 11:59:55 -0600</pubDate>
-    <lastBuildDate>Mon, 27 Nov 2017 11:59:55 -0600</lastBuildDate>
+    <pubDate>Mon, 27 Nov 2017 12:03:08 -0600</pubDate>
+    <lastBuildDate>Mon, 27 Nov 2017 12:03:08 -0600</lastBuildDate>
     <generator>Jekyll v3.6.2</generator>
     
       <item>
@@ -176,7 +176,7 @@ idea. I’ll avoid explaining them here since that could be a whole other post o
 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;So now with this, we can attempt to chain some stuff together, with all the wonderfulness
-that is working with &lt;code class=&quot;highlighter-rouge&quot;&gt;interface {}&lt;/code&gt; which is obiously the superior way of writing code in
+that is working with &lt;code class=&quot;highlighter-rouge&quot;&gt;interface {}&lt;/code&gt; which is obviously the superior way of writing code in
 Go:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-go&quot; data-lang=&quot;go&quot;&gt;&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;          &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
@@ -210,7 +210,7 @@ be a shame to not find a way to shove that into this blog post.&lt;/p&gt;
 
 &lt;p&gt;Thanks to &lt;a href=&quot;https://github.com/cheekybits/genny&quot;&gt;genny&lt;/a&gt;, onwards and upwards my friends!&lt;/p&gt;
 
-&lt;p&gt;First a template without any of the tranformation functions (&lt;code class=&quot;highlighter-rouge&quot;&gt;Map&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;FlatMap&lt;/code&gt;, etc):&lt;/p&gt;
+&lt;p&gt;First a template without any of the transformation functions (&lt;code class=&quot;highlighter-rouge&quot;&gt;Map&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;FlatMap&lt;/code&gt;, etc):&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-go&quot; data-lang=&quot;go&quot;&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
 
@@ -271,7 +271,7 @@ be a shame to not find a way to shove that into this blog post.&lt;/p&gt;
 	&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;With this + &lt;code class=&quot;highlighter-rouge&quot;&gt;genny&lt;/code&gt;, we can generate some basic &lt;code class=&quot;highlighter-rouge&quot;&gt;Try&lt;/code&gt; code for a specific type without any compsition
+&lt;p&gt;With this + &lt;code class=&quot;highlighter-rouge&quot;&gt;genny&lt;/code&gt;, we can generate some basic &lt;code class=&quot;highlighter-rouge&quot;&gt;Try&lt;/code&gt; code for a specific type without any composition
 functions (we’ll get there). To get the basic support we’d simply run:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# inside the root of your project&lt;/span&gt;

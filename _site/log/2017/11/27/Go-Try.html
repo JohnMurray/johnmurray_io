@@ -210,7 +210,7 @@ idea. I’ll avoid explaining them here since that could be a whole other post o
 </span><span class="p">}</span></code></pre></figure>
 
 <p>So now with this, we can attempt to chain some stuff together, with all the wonderfulness
-that is working with <code class="highlighter-rouge">interface {}</code> which is obiously the superior way of writing code in
+that is working with <code class="highlighter-rouge">interface {}</code> which is obviously the superior way of writing code in
 Go:</p>
 
 <figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">func</span><span class="x"> </span><span class="n">test</span><span class="p">()</span><span class="x">          </span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x"> </span><span class="k">return</span><span class="x"> </span><span class="s">""</span><span class="p">,</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">}</span><span class="x">
@@ -244,7 +244,7 @@ be a shame to not find a way to shove that into this blog post.</p>
 
 <p>Thanks to <a href="https://github.com/cheekybits/genny">genny</a>, onwards and upwards my friends!</p>
 
-<p>First a template without any of the tranformation functions (<code class="highlighter-rouge">Map</code>, <code class="highlighter-rouge">FlatMap</code>, etc):</p>
+<p>First a template without any of the transformation functions (<code class="highlighter-rouge">Map</code>, <code class="highlighter-rouge">FlatMap</code>, etc):</p>
 
 <figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span><span class="x"> </span><span class="n">try</span><span class="x">
 
@@ -305,7 +305,7 @@ be a shame to not find a way to shove that into this blog post.</p>
 	</span><span class="k">return</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">err</span><span class="x">
 </span><span class="p">}</span></code></pre></figure>
 
-<p>With this + <code class="highlighter-rouge">genny</code>, we can generate some basic <code class="highlighter-rouge">Try</code> code for a specific type without any compsition
+<p>With this + <code class="highlighter-rouge">genny</code>, we can generate some basic <code class="highlighter-rouge">Try</code> code for a specific type without any composition
 functions (we’ll get there). To get the basic support we’d simply run:</p>
 
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># inside the root of your project</span>
