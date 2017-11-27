@@ -2,6 +2,9 @@
 title: Bastard Go - Futures
 ---
 
+Go is great. Scala is great. Scala has Futures on top of threads. Go doesn't have this
+and I don't know why. 
+
 Go has CSP and green thread things, but who wants those. Futures are the only good abstraction.
 Let's make futures in Go.
 
@@ -22,3 +25,6 @@ type Future struct {
   CGo and pThreads (because the whole post is ironic).
 
 -->
+
+
+ _If you made it this far and didn't realize this was sarcasm..._ ¯\\\_(ツ)_/¯
