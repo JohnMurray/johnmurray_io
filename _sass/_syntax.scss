@@ -62,6 +62,10 @@
 .highlight .vg { color: #008080 } /* Name.Variable.Global */
 .highlight .vi { color: #008080 } /* Name.Variable.Instance */
 .highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+
+figure .highlight {
+  border-left: 3px solid #e0e0e0;
+}
  
 .post .highlight .lineno { 
   color: #ccc; 
@@ -78,10 +82,7 @@
 }
 
 .post .highlight pre {
-  /* border-color: #ccc; background-color: #f5f5f5; */
   border: none;
-  /* border-left: 3px solid #d8dee9; */
-  /* border-color: #e0e0e0; */
   margin: 0;
 }
 
