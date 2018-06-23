@@ -5,8 +5,8 @@
     <description>&lt; Random thoughts of John Murray</description>
     <link>http://www.johnmurray.io/</link>
     <atom:link href="http://www.johnmurray.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 13 Dec 2017 08:54:01 -0500</pubDate>
-    <lastBuildDate>Wed, 13 Dec 2017 08:54:01 -0500</lastBuildDate>
+    <pubDate>Fri, 22 Jun 2018 20:21:32 -0600</pubDate>
+    <lastBuildDate>Fri, 22 Jun 2018 20:21:32 -0600</lastBuildDate>
     <generator>Jekyll v3.6.2</generator>
     
       <item>
@@ -368,7 +368,7 @@ like so:&lt;/p&gt;
 &lt;p&gt;If you made it all the way to the end and didn’t realize this was written with intentional sarcasm… ¯\_(ツ)_/¯&lt;/p&gt;
 
 </description>
-        <pubDate>Mon, 27 Nov 2017 00:00:00 -0500</pubDate>
+        <pubDate>Mon, 27 Nov 2017 00:00:00 -0700</pubDate>
         <link>http://www.johnmurray.io/log/2017/11/27/Go-Try.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2017/11/27/Go-Try.html</guid>
         
@@ -1333,7 +1333,7 @@ Link to some various future implementations to read / learn more
 --&gt;
 
 </description>
-        <pubDate>Thu, 22 Jun 2017 12:00:00 -0400</pubDate>
+        <pubDate>Thu, 22 Jun 2017 12:00:00 -0600</pubDate>
         <link>http://www.johnmurray.io/log/2017/06/22/The-Futures-Abstraction.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2017/06/22/The-Futures-Abstraction.html</guid>
         
@@ -1415,7 +1415,7 @@ Additionally if your organization supports both Java and Scala, you can make tho
 as well to make the provided plugins more tailored toward specific application needs while still maintaining
 a set of standards for each supported archetype.&lt;/p&gt;
 </description>
-        <pubDate>Fri, 02 Sep 2016 00:00:00 -0400</pubDate>
+        <pubDate>Fri, 02 Sep 2016 00:00:00 -0600</pubDate>
         <link>http://www.johnmurray.io/log/2016/09/02/Every-Scala-Team-Writes-Plugins.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2016/09/02/Every-Scala-Team-Writes-Plugins.html</guid>
         
@@ -1606,7 +1606,7 @@ git push heroku master&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 	git push heroku master&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 </description>
-        <pubDate>Mon, 08 Aug 2016 00:00:00 -0400</pubDate>
+        <pubDate>Mon, 08 Aug 2016 00:00:00 -0600</pubDate>
         <link>http://www.johnmurray.io/log/2016/08/08/Jekyll-on-Heroku.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2016/08/08/Jekyll-on-Heroku.html</guid>
         
@@ -1761,7 +1761,7 @@ need, but if you have ideas for useful features and want to contribute, feel fre
 open PRs.&lt;/p&gt;
 
 </description>
-        <pubDate>Mon, 25 Jul 2016 00:00:00 -0400</pubDate>
+        <pubDate>Mon, 25 Jul 2016 00:00:00 -0600</pubDate>
         <link>http://www.johnmurray.io/log/2016/07/25/Inspecting-JSON-From-The-Command-Line.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2016/07/25/Inspecting-JSON-From-The-Command-Line.html</guid>
         
@@ -2253,7 +2253,7 @@ implementation, at least it’s not bloating your dependency tree &lt;em&gt;too&
   +---------------------------+ +------------+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 </description>
-        <pubDate>Thu, 31 Mar 2016 00:00:00 -0400</pubDate>
+        <pubDate>Thu, 31 Mar 2016 00:00:00 -0600</pubDate>
         <link>http://www.johnmurray.io/log/2016/03/31/Poor-Mans-Actors.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2016/03/31/Poor-Mans-Actors.html</guid>
         
@@ -2359,7 +2359,7 @@ available today.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/pathikrit/metarest&quot;&gt;https://github.com/pathikrit/metarest&lt;/a&gt;&lt;/p&gt;
 </description>
-        <pubDate>Sun, 29 Nov 2015 12:00:00 -0500</pubDate>
+        <pubDate>Sun, 29 Nov 2015 12:00:00 -0700</pubDate>
         <link>http://www.johnmurray.io/log/2015/11/29/Typed-PATCH.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2015/11/29/Typed-PATCH.html</guid>
         
@@ -2480,7 +2480,7 @@ our persistent storage solution. From this we can see that &lt;code class=&quot;
 better replaced with a &lt;code class=&quot;highlighter-rouge&quot;&gt;TriState&lt;/code&gt;.&lt;/p&gt;
 
 </description>
-        <pubDate>Mon, 04 May 2015 12:00:00 -0400</pubDate>
+        <pubDate>Mon, 04 May 2015 12:00:00 -0600</pubDate>
         <link>http://www.johnmurray.io/log/2015/05/04/Web-Service-Data-Models-Null.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2015/05/04/Web-Service-Data-Models-Null.html</guid>
         
@@ -2603,7 +2603,7 @@ and from the parsing code. I’m also not really doing anything with the
 
 &lt;p&gt;But yeah, just some (light) food for thought.&lt;/p&gt;
 </description>
-        <pubDate>Tue, 28 Apr 2015 12:00:00 -0400</pubDate>
+        <pubDate>Tue, 28 Apr 2015 12:00:00 -0600</pubDate>
         <link>http://www.johnmurray.io/log/2015/04/28/Play-Typed-Action.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2015/04/28/Play-Typed-Action.html</guid>
         
@@ -2758,7 +2758,7 @@ without further to-do, a util that has been useful (for met at least):&lt;/p&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 </description>
-        <pubDate>Mon, 27 Apr 2015 12:00:00 -0400</pubDate>
+        <pubDate>Mon, 27 Apr 2015 12:00:00 -0600</pubDate>
         <link>http://www.johnmurray.io/log/2015/04/27/Jenkins-Env-Templating.html</link>
         <guid isPermaLink="true">http://www.johnmurray.io/log/2015/04/27/Jenkins-Env-Templating.html</guid>
         
