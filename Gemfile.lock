@@ -33,7 +33,7 @@ GEM
     pathutil (0.16.0)
       forwardable-extended (~> 2.6)
     public_suffix (3.0.1)
-    puma (3.11.0)
+    puma (3.12.4)
     rack (1.6.8)
     rack-contrib (1.8.0)
       rack (~> 1.4)
