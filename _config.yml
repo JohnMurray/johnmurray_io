@@ -7,20 +7,18 @@ baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://www.johnmurray.io"
 # Build settings
 markdown: kramdown
-exclude: [vendor, config.ru, Gemfile, Gemfile.lock, Procfile, Makefile]
+exclude: [vendor, config.ru, Gemfile, Gemfile.lock, Procfile, Makefile, Dockerfile]
 include: [blog_files]
 sass:
   style: compressed
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
       type: "posts"
     values:
       category: "log"
       layout: "post"
-  -
-    scope:
+  - scope:
       path: ""
       type: "drafts"
     values:
