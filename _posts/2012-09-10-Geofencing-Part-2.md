@@ -1,7 +1,8 @@
 ---
-layout: post
-title:  "Geofencing - Part 2"
-date:   2012-09-10 12:00:00
+layout:  post
+title:   "Geofencing - Part 2"
+date:    2012-09-10 12:00:00
+archive: true
 ---
 
 # Building Your Own Geofence Server
@@ -23,14 +24,14 @@ surprise for you.
 
 Before we get into the nitty-gritty details, we'll go over the conceptual
 approach that we will be taking. My hope is that the theoretical foundation
-will aid in understanding the concrete details. 
+will aid in understanding the concrete details.
 
 ### Utilizing Mongo
 
 As we're planning our geofence server, we know we want to use existing
 technologies, where possible, to aid in development time. In this example,
 we're going to use some of the geo-spatial indexing and search features
-that are available in Mongo. 
+that are available in Mongo.
 
 In particular, Mongo allows you index Lat-Lon points and search within
 a specified radius. To visualize this, I've put together a map full of
@@ -40,7 +41,7 @@ points (on the left) and a nearby-search query with a specified radius
 <img src="{% base64 blog-files/geofence/part-2/mongo-spatial-index-and-query.png %}"
     alt="Mongo geo-spatial index and query visualization"/>
 
-Although Mongo does not currently provide support for full-featured 
+Although Mongo does not currently provide support for full-featured
 geofences, this particular feature will save us a lot of time as we
 build our own geofence server.
 
@@ -82,7 +83,7 @@ inside of the fence).
 So far, things have been pretty easy (although possibly not easy to follow
 along the first time through) conceptually. Now you might have to get some
 pin a paper out to draw this next piece to fully understand how we are
-going to do this. 
+going to do this.
 
 Our objective is to turn a random, regular polygon into a set of grid-blocks
 which estimate its shape. We're going to be using an algorithm similar to
@@ -136,9 +137,9 @@ points, then we can generate our grid like the following:
 # ]
 #
 # We can use the following methods:
- 
- 
- 
+
+
+
 # Method to get the min and max values for the polygon (plus
 # some padding) that the grid can be generated within
 def get_bounding_box(coords)
@@ -156,24 +157,24 @@ def get_bounding_box(coords)
   # add a little padding to the max and min
   max.each {|k, v| max[k] += 1 }
   min.each {|k, v| min[k] -= 1 }
- 
+
   {min: min, max: max}
 end
- 
- 
+
+
 # We need to create a conceptual grid in which to do our estimation
 # against. We're actually going to represent our grid-blocks by their
 # centerpoint. Ex:
-# 
+#
 #  _______
 # |       |
 # |   +   |  -- Box and center-point
 # |_______|
-# 
+#
 # We're representing our blocks as points because that's how we're
 # going store and index our fence in Mongo when it's all said and
 # done.
-# 
+#
 # Note: In real-life, we might want to adjust the size of the grid-block
 #       based on how large the geofence is, how granular your estimation
 #       will be, etc. For this example, we're going to use a fixed size
@@ -181,7 +182,7 @@ end
 def generate_grid(bounds)
   lon_range = bounds[:min][:lon]...bounds[:max][:lon]
   lat_range = bounds[:min][:lat]...bounds[:max][:lat]
- 
+
   grid = []
   lon_range.each do |lon|
     lat_range.each do |lat|
@@ -191,12 +192,12 @@ def generate_grid(bounds)
       grid << [lon + 0.75, lat + 0.75]
     end
   end
- 
+
   grid
 end
- 
- 
- 
+
+
+
 # And they would be called like so:
 bounds = get_bounding_box(coords)
 grid = generate_grid(bounds)
@@ -214,7 +215,7 @@ grid = generate_grid(bounds)
 # [
 #   [<latN>, <lat1>],
 #   [<lat1>, <lat2>],
-#   ..., 
+#   ...,
 #   [<latN-1>, <latN>]
 # ]
 def get_horizontals(coords)
@@ -223,7 +224,7 @@ def get_horizontals(coords)
     arr << lat unless arr.include? lat
     arr
   end
- 
+
   #wrap those individuals up into cyclic pairs
   h1.sort!
   h2 = h1.dup
@@ -239,12 +240,12 @@ something like:
 
 {% highlight ruby linenos %}
 horizontals = get_horizontals(coords)
- 
+
 horizontals.each do |horizontal|
   sub_grid = grid.select do |g|
     g.last.between?(horizontal.first, horizontal.last)
   end
- 
+
   # ... some more processing...
 end
 {% endhighlight %}
@@ -262,8 +263,8 @@ aproach, and visuals, above.)
 # our polygon, determine what lines intersect the space created by the
 # horizontal (or horizontal sub-section if you prefer to think of it that
 # way)
-# 
-# 
+#
+#
 # ---*------------------------------------------------
 #     \
 #      \  - intersecting line           [horizontal section]
@@ -271,24 +272,24 @@ aproach, and visuals, above.)
 # -------*--------------------------------------------
 #        |
 #        |
-#        |   
-#        ... 
-# 
-# 
+#        |
+#        ...
+#
+#
 # h  = horizontal
 # ls = lines
-def intersecting_lines(h, ls) 
-  ls.select do |l| 
+def intersecting_lines(h, ls)
+  ls.select do |l|
     l.first.last <= h.first && l.last.last >= h.last
-  end 
+  end
 end
- 
- 
- 
+
+
+
 # The "lines" is the set of all lines for the polygon.
 lines = coords.zip(coords.dup.rotate(-1))
 lines.map! {|l| l.sort! {|a,b| a.last <=> b.last } }
- 
+
 # Assuming that we already have our horizontals
 horizontals.each do |horizontal|
   intersects = intersecting_lines(horizontal, lines)
@@ -302,25 +303,25 @@ end
 Now that we can get out intersecting lines, we need to determine, for each
 point within the sub-grid, if that point is to the left of the intersecting
 line or to the right of the line. If it is to the left of the line, then
-two things can happen. If that point is already included in the 
+two things can happen. If that point is already included in the
 estimated-polygon array, then it will be removed and if it was not in the
 array, then it will be added. And finally, the code:
 
 {% highlight ruby linenos %}
 # Get the determinant of a line and a point. This is conceptually
 # represented by the following:
-# 
+#
 # point = (a,b)
 # line  = [(x1, y1), (x2, y2)], such that y2 > y1
-# 
+#
 # matrix:
 # | (x2 - x1)    (a-x1) |
 # | (y2 - y1)    (b-y1) |
-# 
-# determinent: 
+#
+# determinent:
 #   (x2 - x1)*(b-y1)  -  (y2-y1)*(a-x1)
-# 
-# 
+#
+#
 # Assertions:
 #   determinent > 0  <->  point lies to left of line
 #   determinent = 0  <->  point lies on the line
@@ -331,18 +332,18 @@ array, then it will be added. And finally, the code:
 def self.det(line, point)
   x1 = line.first.first
   y1 = line.first.last
- 
+
   x2 = line.last.first
   y2 = line.last.last
- 
+
   a = point.first
   b = point.last
- 
+
   (x2 - x1)*(b-y1)  -  (y2-y1)*(a-x1)
 end
- 
- 
- 
+
+
+
 # Process each grid-item for each intersecting line
 estimated_polygon = []
 intersecting_lines.each do |line|

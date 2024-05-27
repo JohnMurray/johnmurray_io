@@ -1,17 +1,18 @@
 ---
-layout: post
-title:  "Geofencing - Part 3"
-date:   2012-09-11 12:00:00
+layout:  post
+title:   "Geofencing - Part 3"
+date:    2012-09-11 12:00:00
+archive: true
 ---
 
 # A Sample Server!
 
 _You did not!_ Oh, yes I did! Here it is folks, a one of a kind (well, it's
 my only one) geofence server! It's totally open source, super-awesome, free,
-magical code! 
+magical code!
 
 And you can find it right on my [GitHub][1] page! Introducing the one, the only,
-the 
+the
 
 <p style="font-size:32px"><a href="http://github.com/johnmurray/geofence-server-example"><b>Geofence Server Example</b></a></p>
 

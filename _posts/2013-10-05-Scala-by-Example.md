@@ -1,7 +1,8 @@
 ---
-layout: post
-title:  "Scala By Example"
-date:   2013-10-05 12:00:00
+layout:  post
+title:   "Scala By Example"
+date:    2013-10-05 12:00:00
+archive: true
 ---
 
 I believe that the best way to learn a new language or technology, or anything for that

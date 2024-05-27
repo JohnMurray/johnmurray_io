@@ -1,7 +1,8 @@
 ---
-layout: post
-title:  "Metric K-Center [Q]"
-date:   2012-11-09 12:00:00
+layout:  post
+title:   "Metric K-Center [Q]"
+date:    2012-11-09 12:00:00
+archive: true
 ---
 
 As you may, or may not, know I am currently working on my masters in
@@ -16,7 +17,7 @@ distributed computing (for large problem sizes), etc. It should be a lot of
 fun. If this sounds interesting, then check back in a couple weeks or so and I
 should have a good writeup of the solution that I have come to. Wait a little
 longer and (hopefully) you'll see a mysteriously similar research paper show
-up in some random publication on the inter-webs. 
+up in some random publication on the inter-webs.
 
 So, consider this the questions for which I will follow up with:
 

@@ -1,5 +1,7 @@
 ---
-title: Inspecting JSON From The Command Line
+layout:  post
+title:   Inspecting JSON From The Command Line
+archive: true
 ---
 
 Sometimes you need to inspect some heterogeneous JSON documents. When it comes to working with JSON
@@ -13,7 +15,7 @@ line utility as a gathering place of functionality for inspecting JSON documents
 some features of the tool.
 
 If you want to follow-along with the examples I'm showing, feel free to install the tool from
-[PyPi][json_inspect_pypi] via 
+[PyPi][json_inspect_pypi] via
 
 {% highlight bash %}
 pip install json-inspect
@@ -56,7 +58,7 @@ Let's first make a file `test.json` to contain some fake JSON data to play with
 If you are working with JSON data that you do not control (think data integrations)
 then you sometimes need to compare their specification of the data with the data
 you are actually receiving. For this we can create a histogram of values based on a
-search expression. 
+search expression.
 
 {% highlight bash %}
 $ cat test.json | json-inspect histo '[].*.user.demographic.regions.[].name'
@@ -162,5 +164,3 @@ open PRs.
 
   [1]: https://github.com/JohnMurray/json-inspect
   [json_inspect_pypi]: https://pypi.python.org/pypi/json-inspect
-  
-

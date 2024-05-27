@@ -1,12 +1,14 @@
 ---
-title: Your Team Should Write SBT Plugins
+layout:  post
+title:   Your Team Should Write SBT Plugins
+archive: true
 ---
 
 __Every Scala development team should be writing their own SBT plugins. If you're not then
 you're doing it wrong__.
 
 This is an <s>assertion</s> assumption I am making based on what I've seen so far in my limited
-experience working on/with various teams and their Scala applications. 
+experience working on/with various teams and their Scala applications.
 
 ## Standards
 

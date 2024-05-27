@@ -1,7 +1,8 @@
 ---
-layout: post
-title:  "Copy to Learn"
-date:   2013-03-11 12:00:00
+layout:  post
+title:   "Copy to Learn"
+date:    2013-03-11 12:00:00
+archive: true
 ---
 
 While I have stated my opinion in the past that you should think twice before
@@ -17,7 +18,7 @@ Frameworks][1].
 I've recently (as of the time this post was written) taken a new position in
 AdTech doing PHP for the purpose of web services. I really don't know too much
 about PHP and it's been a while since I've last encountered real PHP code. So,
-I figured that a little homework was in order. 
+I figured that a little homework was in order.
 
 I figured that the best way to learn would be to create a fun project in PHP
 that could utilize many of PHP's newer features. For this, I wanted to create
@@ -117,7 +118,7 @@ automatically. For example, given the following route:
 {% highlight text linenos %}
 /authors/:author_id/books/:book_id
 {% endhighlight %}
-    
+
 I should be able to extract the two values, `:author_id` and `:book_id`.
 Earlier you saw a method for building up the regular expression. This is
 what we'll use to create our route and the match-patterns will be used
@@ -134,7 +135,7 @@ private $URIParser_GLOB = '.*?';
  */
 private function compute_regex($match) {
   // get the URI parts of the match-pattern given
-  $parts = array_filter(explode('/', $match), function ($val) { 
+  $parts = array_filter(explode('/', $match), function ($val) {
     return !empty($val);
   });
 
@@ -164,7 +165,7 @@ this would look is as such:
 {% highlight php5 linenos %}
 Pinatra::get('/hello/:name', function($name) {
   return $this->json([
-    'key' => 'hello-route has been matched!', 
+    'key' => 'hello-route has been matched!',
     'name' => $name
   ]);
 });
@@ -198,19 +199,19 @@ public static function handle_request($method, $uri) {
   // find and call route-handler
   $route_match = $app->find_route($app->routes, $method, $uri);
   if ($route_match !== null) {
-      
+
     $request_body_data = $app->get_body_data($method);
     if ($request_body_data !== null) {
       array_unshift($route_match['arguments'], $request_body_data);
     }
 
     $route_res = call_user_func_array(
-      $route_match['callback']->bindTo($app), 
+      $route_match['callback']->bindTo($app),
       $route_match['arguments']);
   }
 
   // after hook code (removed for brevity)
-  
+
 }
 {% endhighlight %}
 
@@ -219,7 +220,7 @@ public static function handle_request($method, $uri) {
 Several features were used, but the main new 5.4'ish feature that got used
 was traits. They were fun, but I probably used them wrong. Anyways, I'll leave it
 up to you to check out my usage, however I will say that I mainly used them
-as modules and not so much as re-usable traits. 
+as modules and not so much as re-usable traits.
 
 
 ## What Was Learned
@@ -231,7 +232,7 @@ request. Since we cannot cache these results, we end up doing a lot of parsing
 and string manipulation on every request. This means that as you add new routes,
 you incur overhead on every new request, even if that route is never called.
 This is unlike other languages in which the application starts up once and then
-those computed routes (regex's) can be cached and re-used. 
+those computed routes (regex's) can be cached and re-used.
 
 ## Final Notes
 

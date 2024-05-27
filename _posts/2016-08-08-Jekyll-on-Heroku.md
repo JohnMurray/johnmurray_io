@@ -1,5 +1,7 @@
 ---
-title: Deploying Jekyll to Heroku
+layout:  post
+title:   Deploying Jekyll to Heroku
+archive: true
 ---
 
 So you have a static site in Jekyll that you want to deploy to

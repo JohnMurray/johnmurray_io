@@ -1,6 +1,8 @@
 ---
-title: "Typed Actions in Play"
-date:  2015-04-28 12:00:00:00
+layout:  post
+title:   "Typed Actions in Play"
+date:    2015-04-28 12:00:00:00
+archive: true
 ---
 
 This is just something I was playing around with when discussing how to build

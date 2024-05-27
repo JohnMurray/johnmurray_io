@@ -1,7 +1,8 @@
 ---
-layout: post
-title:  "Scala map() vs map{}"
-date:   2013-11-17 12:00:00
+layout:  post
+title:   "Scala map() vs map{}"
+date:    2013-11-17 12:00:00
+archive: true
 ---
 
 I was wondering the other day what the difference really was, in Scala, between
@@ -47,13 +48,13 @@ this format is generally applicable. I came up with some simple tests.
 
 {% highlight scala linenos %}
 def echo(x: String) = println(x)
- 
+
 echo{"hello"}    // valid
 echo("hello")    // valid
- 
- 
+
+
 def echoName(name: String, x: String) = println("$name: $x")
- 
+
 echoName{"John", "hello"}        // invalid
 echoName("John", "hello")        // valid
 echoName({"John"}, {"hello"})    // valid
@@ -89,14 +90,14 @@ a slightly larger map example.
 
 {% highlight scala linenos %}
 val list = List(1, 2, 3, 4)
- 
+
 // not valid (compile-error)
 list.map(x =>
   val y = x * x
   val z = y * x
   Math.sin(z / x)
 )
- 
+
 // valid
 list.map{x =>
   val y = x * x

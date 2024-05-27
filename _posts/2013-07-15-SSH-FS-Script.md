@@ -1,7 +1,8 @@
 ---
-layout: post
-title:  "SSH FS Script"
-date:   2013-07-15 12:00:00
+layout:  post
+title:   "SSH FS Script"
+date:    2013-07-15 12:00:00
+archive: true
 ---
 
 Due to my employer's server-configuration, I find myself developing
@@ -15,7 +16,7 @@ help you out (just a little).
 #!/usr/bin/env python
 from subprocess import call
 import os
- 
+
 servers = [
   {
     'host': 'some.remote.host',          # host to connect to
@@ -27,8 +28,8 @@ servers = [
   }
 ]
 user = os.environ['USER']
- 
- 
+
+
 def connect():
   """
   Connect SSH-FS's
@@ -42,7 +43,7 @@ def connect():
       status = call(["sshfs",
                      "%s:%s" % (server['host'], server['dir']),
                      "/Volumes/%s" %(server['host'])])
- 
+
       if status == 0:
         print("connected")
         print("mounted locally at /Volumes/%s" % (server['host']))
@@ -51,13 +52,13 @@ def connect():
       print "Unexpected error:", sys.exc_info()[0]
     finally:
       print("\n")
- 
- 
+
+
 def get_sudo():
   call(["echo", "Running as root. Beware!! (mwahahahaha)"])
   call(["sudo", "echo"])
- 
- 
+
+
 get_sudo()
 connect()
 {% endhighlight %}

@@ -1,7 +1,8 @@
 ---
-title: The Futures Abstraction
-layout: post
-date:  2017-06-22 12:00:00:00
+layout:  post
+title:   The Futures Abstraction
+date:    2017-06-22 12:00:00:00
+archive: true
 ---
 
 <img src="{% base64 blog-files/futures-abstraction/the-future-is-now.jpg %}"
@@ -57,7 +58,7 @@ val concurrentComputation = new Thread(new Runnable {
 concurrentComputation.start()
 {% endhighlight %}
 
-This is fairly simple, but some things are worth pointing out. 
+This is fairly simple, but some things are worth pointing out.
 
   * __1)__ `Unit` means that we didn't return a value (similar to `void` in other languages).
   * __2)__ The `Thread` object does not start executing the `run` function until we call `start()` on line 7.
@@ -254,7 +255,7 @@ val f: Future[Int] = future(tp) {
 f.write(6)
 println(f.get())  // prints 6
 
-// value of f set to 5 1 second later 
+// value of f set to 5 1 second later
 {% endhighlight %}
 
 The second issue is that the value is not immutable. Once it is written, it should not be possible

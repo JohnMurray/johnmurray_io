@@ -1,6 +1,8 @@
 ---
-title: "Typed PATCH"
-date:  2015-11-29 12:00:00:00
+layout:  post
+title:   "Typed PATCH"
+date:    2015-11-29 12:00:00:00
+archive: true
 ---
 
 When building web services we need to define a contract of how the service
@@ -24,15 +26,15 @@ case class User(id: Long,
 {% endhighlight %}
 
 This type accurately represents what I believe a contact, in the context of my
-API, is defined as. All pieces except `address` are required 
-and I also expect a few meta-data fields to exist such as `id`, 
+API, is defined as. All pieces except `address` are required
+and I also expect a few meta-data fields to exist such as `id`,
 `createdOn` and `lastModified`. This type works great when defining objects
 in my system, but it starts to break down as a definition for a contract with a
-consumer of my web-service. 
+consumer of my web-service.
 
 While this works decently well for read operations, where the full object
 is returned, what does this look like for a create (`POST`) operation? To start I
-no longer need any of what I'll call _"system provided"_ fields such as `id`, 
+no longer need any of what I'll call _"system provided"_ fields such as `id`,
 `createdOn` and `lastModified`. Some of you might be saying one of two things right
 about now:
 
@@ -53,13 +55,13 @@ case class UserCreate(name:     String,
 {% endhighlight %}
 
 This gets us where we want to be at the price of having to create and maintain another
-type in our application. 
+type in our application.
 
 Now it's time to think about how we would support operations such as PATCH which
 are based around the idea of partial edits. Since, by the nature of partial edits,
 everything is optional you can see that we can't use the same model that we used
 for create. Also, since we will need to know the difference between null and absent,
-we'll need to use a `TriState` value to represent any types that are currently 
+we'll need to use a `TriState` value to represent any types that are currently
 nullable (or non-required by our default model).
 
 {% highlight scala linenos %}

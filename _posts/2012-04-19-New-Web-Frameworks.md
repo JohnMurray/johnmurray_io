@@ -1,7 +1,8 @@
 ---
-layout: post
-title:  "New Web Frameworks"
-date:   2012-04-19 12:00:00
+layout:  post
+title:   "New Web Frameworks"
+date:    2012-04-19 12:00:00
+archive: true
 ---
 
 # Who is this for?
@@ -24,14 +25,14 @@ advice as you start down this path is simple, and is as follows:
 <br />
 
 It's quite simple to follow, really. No reason you shouldn't be able to do just
-that. 
+that.
 
 # Why?
 If this is your first framework, then you're probably all giddy to start
 working on it. You're excited about the learning experience, about putting
-your work out there, about people using it, and _< insert whatever else >_. I've 
-been there. I've put quite a bit of work into some _"frameworks"_ that I 
-thought would solve all the world's problems. 
+your work out there, about people using it, and _< insert whatever else >_. I've
+been there. I've put quite a bit of work into some _"frameworks"_ that I
+thought would solve all the world's problems.
 
 So what happened to those frameworks I was working on? I never released them.
 For the most part I actually just zipped up the work, put it in my archive, and
@@ -51,9 +52,9 @@ I fight this battle all the time. I find myself working on a problem that is in
 need of some framework and the first thought
 is to create it myself. I just love creating things so this is where
 my mind heads first, but I have to stop myself. I know that the first thing
-I should be doing is seeing what is already out there. See if I can find 
+I should be doing is seeing what is already out there. See if I can find
 something that solves _most_ of my problems. If so, then that is what I should
-be using. 
+be using.
 
 All these little frameworks out there really just cause a lot of clutter. This
 is especially true of web frameworks. I feel like 2 or 3 new frameworks come out
@@ -94,7 +95,7 @@ If there are already frameworks out there that solve a large majority of
 your problem and if they are fairly popular then, there's probably a reason.
 Most likely, they're quite good. It's likely that many people
 have added functionality, reviewed and refactored, and tested thoroughly the
-framework. 
+framework.
 
 My suggestion to you, <span style="text-decoration:line-through">clutter</span>
 framework creator, is that you contribute to a framework that is already
@@ -106,6 +107,6 @@ extension, etc. Basically, contribute instead of creating clutter.
 <br />
 
 
-If you're problem is truly unique and you can justify creating a framework, 
+If you're problem is truly unique and you can justify creating a framework,
 then I don't have any advice for you except this, _If you're going to
 clutter my ecosystem, please don't clutter it with garbage.

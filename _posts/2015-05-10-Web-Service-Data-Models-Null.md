@@ -1,6 +1,8 @@
 ---
-title: "Web Service Data Models - Null"
-date:  2015-05-04 12:00:00:00
+layout:  post
+title:   "Web Service Data Models - Null"
+date:    2015-05-04 12:00:00:00
+archive: true
 ---
 
 > This relates to my other post "[Typed Actions In Play][1]". You may want to

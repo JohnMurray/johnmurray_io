@@ -1,7 +1,8 @@
 ---
-layout: post
-title: "Jenkins EnvVar Templating"
-date:  2015-04-27 12:00:00:00
+layout:  post
+title:   "Jenkins EnvVar Templating"
+date:    2015-04-27 12:00:00:00
+archive: true
 ---
 
 I've been doing a bit of Jenkins plugin development lately and I have
@@ -36,14 +37,14 @@ public class EnvTemplater {
      *  - $VAR_NAME
      *  - ${VAR_NAME}
      *
-     * Note: The environment variables that we are using are not _true_ environment 
-     * variables, but rather Jenkins Environment variables (the same ones you would normally 
+     * Note: The environment variables that we are using are not _true_ environment
+     * variables, but rather Jenkins Environment variables (the same ones you would normally
      * use to template within a normal Jenkins job).
      *
-     * @param input The input string to be templated (possibly containing variable 
+     * @param input The input string to be templated (possibly containing variable
      *              expressions)
      * @param vars  The vars to use to inject into the input string
-     * @return      A string where the variables have been replaced by Jenkins evn variable 
+     * @return      A string where the variables have been replaced by Jenkins evn variable
      *              value, if the variable exists.
      */
     public static String templateString(String input, EnvVars vars) {
@@ -72,8 +73,8 @@ public class EnvTemplater {
                             + replacement
                             + output.substring(replacementOffset + endPos, output.length());
 
-                    // replacement offset is used during string replacement to account for 
-                    // the string growing or shrinking as we replace values (and the regex 
+                    // replacement offset is used during string replacement to account for
+                    // the string growing or shrinking as we replace values (and the regex
                     // positions being out of date).
                     replacementOffset +=  replacement.length() - (endPos - startPos);
                 }

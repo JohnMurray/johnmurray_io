@@ -1,5 +1,7 @@
 ---
-title: Poor Man's Actors in Java
+layout:  post
+title:   Poor Man's Actors in Java
+archive: true
 ---
 
 
@@ -34,10 +36,10 @@ the value is read again to do the cleanup, meaning we need some sort of asynchro
 
 There is nothing stopping from creating immutable data-structures in Java. However it may not be
 as easy as using say case classes in Scala. However it is most certainly _possible_. However, this
-one is pretty easy to get with very little work on our part.  Java has long had annotation 
-processors, which is a way to generate code based on annotations at compile time. You can imagine 
-that this is very useful, especially for defining immutable objects. Luckily for us, someone 
-has already went through the work to create a generator for immutable data. If you are not 
+one is pretty easy to get with very little work on our part.  Java has long had annotation
+processors, which is a way to generate code based on annotations at compile time. You can imagine
+that this is very useful, especially for defining immutable objects. Luckily for us, someone
+has already went through the work to create a generator for immutable data. If you are not
 already familiar, meet [Immutables][imm.io].
 
 Let's define some models that we'll use later
@@ -362,4 +364,3 @@ sbt> akka-actor/dependencyGraph
   [actor-wikipedia]: https://en.wikipedia.org/wiki/Actor_model
   [imm.io]: http://immutables.github.io
   [clq]: https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentLinkedQueue.html
-

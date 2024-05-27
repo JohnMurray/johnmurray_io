@@ -1,25 +1,26 @@
 ---
-layout: post
-title:  "Fnord Metrics and C#"
-date:   2012-01-19 12:00:00
+layout:  post
+title:   "Fnord Metrics and C#"
+date:    2012-01-19 12:00:00
+archive: true
 ---
 
 # What's a Fnord?
 So, if you've taken a look at FnordMetrics then you know why it's worth
 trying out. It's easy to get setup, has a great API for defining your
 metrics collection, and is a powerful tool in your platform-analytics
-arsenal. 
+arsenal.
 
 If you've never heard of FnordMetrics before (since it's relatively new at
 this point) then, let me explain a little bit. From the FnordMetric site, it
 says:
 
-> _FnordMetric is a highly configurable (and pretty fast) realtime app/event 
-> tracking thing based on ruby eventmachine and redis. You define your own 
+> _FnordMetric is a highly configurable (and pretty fast) realtime app/event
+> tracking thing based on ruby eventmachine and redis. You define your own
 > plotting and counting functions as ruby blocks!_
 
 This pretty much sums it up. It's a beautiful API for representing data in
-a very compelling and useful way. If you want to know more about the project, 
+a very compelling and useful way. If you want to know more about the project,
 head on over to their [GitHub] [1] page. Also, be sure to check out the
 [original screencast] [5] to see it in action!
 
@@ -27,8 +28,8 @@ head on over to their [GitHub] [1] page. Also, be sure to check out the
 # On To the Show
 Okay, let's get down to business. I'm going to walk you through getting started
 with FnordMetric in your C# project. Why C# you may ask? Well, mainly because
-that is the environment which I am currently spending my time in (at work) and 
-because I believe we can all benefit from great projects. Not just _cool_ 
+that is the environment which I am currently spending my time in (at work) and
+because I believe we can all benefit from great projects. Not just _cool_
 startups who _don't_ use .NET.
 
 ## Getting Started
@@ -51,7 +52,7 @@ you can find a great Windows Ruby installer over [here] [4].
 
 Once you get the Linux server setup then you'll need to install Ruby. I'd
 recommend (for ease) that you use [RVM] [3]. To get started, mosey on
-over to their (entirely professional) site and follow the instructions. 
+over to their (entirely professional) site and follow the instructions.
 
 Once that is done, we need to install FnordMetric. This is my favorite part
 just because it is so easy. Open up a terminal and run:
@@ -107,11 +108,11 @@ at the first actual line of code:
 FnordMetric.namespace :my_first_fnord do
 {% endhighlight %}
 
-This simply let's us define a namespace within the Fnord application. What 
+This simply let's us define a namespace within the Fnord application. What
 exactly is a namespace? Well, in the context of my work, it could be our web
 application or our real time services. Think of it as the whole dashboard. Note
 that it is possible to create multiple namespaces and host them all in one
-Fnord instance. 
+Fnord instance.
 
 The next piece of important code is the gauge:
 
@@ -135,7 +136,7 @@ event(:login) { incr(:logins_per_hour) }
 
 This registers the event that Fnord will listen to and what to do when that
 event is received. In this case, we'd like to increment the gauge :logins_per_hour
-when we receive a :login event. 
+when we receive a :login event.
 
 An event looks like this (in JSON):
 
@@ -196,7 +197,7 @@ using(var client = new RedisClient("linux.mysite.com:6379"))
 At this point we are simply pushing a message directly to Redis. FnordMetric will
 notice the event and update the results in the dashboard. Note that I have
 set a timeout for this event of 60 seconds. This means that if FnordMetric is not
-running, it could miss the event (Redis will expire it). However, this keeps us 
+running, it could miss the event (Redis will expire it). However, this keeps us
 from quickly building up a lot of stale data in our Redis installation.
 
 You might also notice that there are some conventions with how we are naming the
@@ -209,7 +210,7 @@ Redis keys. This is discussed in the next section if you are interested.
  intervention. But, what if my Redis install runs on a non-standard port? Or,
  perhaps I want my metrics dashboard to run over port 80 so that I can set
  up a sub-domain like stats.mysite.com. Maybe you're wondering how FnordMetric
- knows what items in Redis to read. Let's take a closer look. 
+ knows what items in Redis to read. Let's take a closer look.
 
  The first piece of the puzzle is the configuration section which, if left
  out, is populated with some smart defaults. Let's define a custom
@@ -217,39 +218,39 @@ Redis keys. This is discussed in the next section if you are interested.
 
 {% highlight ruby linenos %}
 ## fnord.rb
-      
+
 # fnord namespace definition (as shown previously)
-      
+
 FnordMetric.server_configuration = {
   # point to external redis on non-standard port
   redis_url:          'redis://10.1.0.38:6380',
-      
+
   # prefix on events pushed to redis
   redis_prefix:       'mavia-metrics',
-      
+
   # port on which to accept event-pushes (we're not using this)
   inbound_stream:     ['0.0.0.0', '1339'],
-      
+
   # port to run web interface
   web_interface:      ['0.0.0.0', '80'],
-      
+
   # worker "process" to watch redis (we want this)
   start_worker:       true,
-      
+
   # make the program chatty so we know how it's feeling
   print_stats:        3,
-      
+
   # events not processed after 2 minutes are dropped
   event_queue_ttl:    120,
-      
+
   # event data is kept for one month
   event_data_ttl:     3600*24*30,
-      
+
   # session data is kept for one month
   :session_data_ttl:  3600*24*30
-      
+
 }
-      
+
 FnordMetric.standalone
 {% endhighlight %}
 
@@ -265,7 +266,7 @@ String.Format("mavia-metrics-{0}", guid);
 The one other item that might be a little confusing is the `inbound_stream`
 configuration option. This specifies on what port the API will run. The API
 is yet another way to push data to FnordMetric but, I'm not going to cover
-that here. You can learn more about that on their [GitHub][1] page. 
+that here. You can learn more about that on their [GitHub][1] page.
 
 Well, that's about it. There's not a lot of demystifying to do here. It's a
 pretty straight forward project with a gorgeous API. Obviously there is a lot

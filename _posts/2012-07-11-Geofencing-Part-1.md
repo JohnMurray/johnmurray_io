@@ -1,19 +1,20 @@
 ---
-layout: post
-title:  "Geofencing - Part 1"
-date:   2012-07-11 12:00:00
+layout:  post
+title:   "Geofencing - Part 1"
+date:    2012-07-11 12:00:00
+archive: true
 ---
 
 # The Series
 "Series about what?" you may ask. Well, geofencing of course. I'm going to
 blather on about what they are, why there cool and why should you care,
 how to build (a simple) one, and when that's all said and done I'm going
-to show you a long-winded video-tutorial of how to use my sample 
+to show you a long-winded video-tutorial of how to use my sample
 geofence-server.
 
 I've split this blog series into three parts. For you few excited folks out
 there, worry much! I've not yet written the other parts in the series, but
-I imagine they'll make there way on out here sooner or later. 
+I imagine they'll make there way on out here sooner or later.
 I am splitting up the posts so that my readers
 _(you)_ can feel accomplished as they work there way through the sections.
 _(Well, I'm splitting it up mostly so I can feel accomplished in finishing
@@ -36,7 +37,7 @@ A geofence is a conceptual fence around some geographically defined area. For
 example, the company I am currently working for deals in car-centric telemetry.
 Specifically, we process a lot of geo-spatial data. We use this to allow users
 to create a conceptual fence around their car (a geofence). When the car
-reports outside of the fence, we can send them a notification. 
+reports outside of the fence, we can send them a notification.
 
 This is useful for making sure your car isn't stolen, tracking your children,
 setting reminders for yourself, etc. If the idea of a conceptual fence is
@@ -61,7 +62,7 @@ is the next step in user-engagement. With geofences, we can interact with
 our users when they're on the move; enjoying life and not spending countless
 hours in front of a computer. Apple realizes this to the point that they are
 including [geo-spatial reminders][10] in iOS (probably using geofences of some
-sort). 
+sort).
 
 And the possibilities are endless! Sure, everyone's going for the obvious
 answers right now, such as: alerts, reminders, etc.; but there are so many
@@ -83,7 +84,7 @@ features from several database engines. You can roll your own from scratch
 portions from various technologies to hack together a geofence engine/server.
 
 When thinking about implementing your own server, you'll want to
-think about several important pieces. 
+think about several important pieces.
 
 - How are you going to store the data?
 - Does the size of the fence matter?
@@ -100,7 +101,7 @@ just playing around; you'll probably want to utilize some existing
 technology or find a good introduction/blog (like [this][1] one!).
 
 
-If you're curious about geo-spatial data-processing in general, 
+If you're curious about geo-spatial data-processing in general,
 check out some of these articles as well:
 
 - [Spatial Indexing with Quadtrees and Hilbert Curves][5]
@@ -125,7 +126,7 @@ important to ignore.
 ## Part 2
 Well, that's all I have for you right now. If you think you're ready, head
 on over to [Part 2][2] for a whirlwind introduction on building your own
-(simple) geofence server with Ruby and Mongo. 
+(simple) geofence server with Ruby and Mongo.
 
 
 

@@ -1,7 +1,8 @@
 ---
-layout: post
-title:  "Getting Started with Akka"
-date:   2013-08-31 12:00:00
+layout:  post
+title:   "Getting Started with Akka"
+date:    2013-08-31 12:00:00
+archive: true
 ---
 
 
@@ -16,15 +17,15 @@ folder, let's create a `build.sbt` file with the following contents:
 <!-- build.sbt gist -->
 {% highlight text linenos %}
 name := "Hello Akka"
- 
+
 version := "0.0.1"
- 
+
 scalaVersion := "2.10.2"
- 
+
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
- 
+
 libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.2.0"
- 
+
 libraryDependencies += "com.typesafe.akka" %% "akka-kernel" % "2.2.0"
 {% endhighlight %}
 
@@ -39,14 +40,14 @@ hello-world:
 
 {% highlight scala linenos %}
 import akka.actor.{Actor, Props}
- 
+
 object HelloWorldActor {
   case object Tick
 }
- 
+
 class HelloWorldActor extends Actor {
   val greeter = context.actorOf(Props[Greeter], "greeter")
- 
+
   def receive: Actor.Receive = {
     case HelloWorldActor.Tick => greeter ! Greeter.Greet
   }
@@ -55,7 +56,7 @@ class HelloWorldActor extends Actor {
 
 {% highlight scala linenos %}
 import akka.actor.Actor
- 
+
 object Greeter {
   case object Greet
 }
@@ -78,11 +79,11 @@ HelloWorldActor to start with. For this we have to define our kernel:
 import akka.actor.{ActorSystem, Props}
 import akka.kernel.Bootable
 import scala.concurrent.duration._
- 
+
 class HelloWorldKernel extends Bootable {
   val system = ActorSystem("helloworldkernel")
   import system.dispatcher
- 
+
   def startup() {
     val helloWorldActor = system.actorOf(Props[HelloWorldActor])
     system.scheduler.schedule(0 milliseconds,
@@ -90,7 +91,7 @@ class HelloWorldKernel extends Bootable {
       helloWorldActor,
       HelloWorldActor.Tick)
   }
- 
+
   def shutdown() {
     system.shutdown()
   }
@@ -120,14 +121,14 @@ do something like the following:
 {% highlight make linenos %}
 all: build deploy
 run: build deploy start
- 
+
 build:
   sbt package:clean
   sbt package
- 
+
 start:
   ./akka/bin/akka HelloWorldKernel
- 
+
 deploy:
   mv target/scala-2.10/hello-akka_2.10-0.0.1.jar akka/deploy/
 {% endhighlight %}

@@ -1,7 +1,8 @@
 ---
-layout: post
-title:  "Getting Rust'y"
-date:   2012-09-26 12:00:00
+layout:  post
+title:   "Getting Rust'y"
+date:    2012-09-26 12:00:00
+archive: true
 ---
 
 Have you heard of [Rust][1] (I'm not talking about iron oxide)? It's a new
@@ -35,7 +36,7 @@ to compile it and get it up and running. For me, I had just setup a new Fedora
 {% highlight bash linenos %}
 # get all of the necessary tools to build
 sudo yum install gcc-c++ llvm llvm-devel perl wget
- 
+
 # following rust-lang.org's instructions
 wget http://dl.rust-lang.org/dist/rust-0.3.tar.gz
 tar -xzf rust-0.3.tar.gz
@@ -47,7 +48,7 @@ make -j 4 && make install
 Do note that I use the `-j` option for `make` to speed things up on my
 computer. I'd recommend to change the value of `-j` to however many cores your
 computer has available. You might also need to run `make install` as sudo
-if you do not have the necessary permissions. 
+if you do not have the necessary permissions.
 
 <br />
 <br />
@@ -70,22 +71,22 @@ A slightly more exciting example (shamelessly stolen from rust-lang.org's
 
 {% highlight rust linenos %}
 use std;
- 
+
 import comm::{listen, methods};
 import task::spawn;
 import iter::repeat;
 import rand::{seeded_rng, seed};
 import uint::range;
 import io::println;
- 
+
 fn main() {
     // Open a channel to receive game results
     do listen |result_from_game| {
- 
+
         let times = 10;
         let player1 = "graydon";
         let player2 = "patrick";
- 
+
         for repeat(times) {
             // Start another task to play the game
             do spawn |copy player1, copy player2| {
@@ -93,25 +94,25 @@ fn main() {
                 result_from_game.send(outcome);
             }
         }
- 
+
         // Report the results as the games complete
         for range(0, times) |round| {
             let winner = result_from_game.recv();
             println(#fmt("%s wins round #%u", winner, round));
         }
     }
- 
+
     fn play_game(player1: str, player2: str) -> str {
- 
+
         // Our rock/paper/scissors types
         enum gesture {
             rock, paper, scissors
         }
- 
+
         let rng = seeded_rng(seed());
         // A small inline function for picking an RPS gesture
         let pick = || (~[rock, paper, scissors])[rng.gen_uint() % 3];
- 
+
         // Pick two gestures and decide the result
         alt (pick(), pick()) {
             (rock, scissors) | (paper, rock) | (scissors, paper) { copy player1 }
