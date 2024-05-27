@@ -1,7 +1,6 @@
 ---
 layout: post
 title:  "Twitter Future - Merging"
-date:   2016-06-15 12:00:00
 ---
 
 I've been doing Scala development for a while now, but I've been firmly in the land
