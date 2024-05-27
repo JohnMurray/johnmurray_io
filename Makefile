@@ -6,10 +6,10 @@ deploy: build_container
 	docker run --rm -v $(shell pwd):/source -w /source johnmurray_io:latest \
         bundle exec jekyll build
 	cp blog-files/ads.txt _site/
-	g add _site
-	g ci -m "rebuild of _site/ dir for release"
-	g push github master
-	g push heroku master
+	git add _site
+	git ci -m "rebuild of _site/ dir for release"
+	git push origin master
+	git push heroku master
 
 .PHONY: serve
 serve: build_container
