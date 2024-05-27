@@ -1,15 +1,17 @@
 default: deploy
 
-deploy:
-	ps aux | grep jekyll | grep -v grep | awk '{print $$2}' | xargs kill -9
+.PHONY: deploy
+deploy: build_container
 	rm -rf _site
-	bundle exec jekyll build
+	docker run --rm -v $(shell pwd):/source -w /source johnmurray_io:latest \
+        bundle exec jekyll build
 	cp blog-files/ads.txt _site/
 	g add _site
 	g ci -m "rebuild of _site/ dir for release"
 	g push github master
 	g push heroku master
 
+.PHONY: serve
 serve: build_container
 	docker run --rm -v $(shell pwd):/source --expose 4000 -p 4000:4000 -w /source johnmurray_io:latest \
 		bundle exec jekyll serve --drafts -H "0.0.0.0" -P 4000
