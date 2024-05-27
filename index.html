@@ -6,13 +6,40 @@ layout: default
 
     <ul class="post-list">
         {% for post in site.posts %}
+        {% if post.archive %}{% continue %}{% endif %}
         <li>
-
             <h2 class="post-title">
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-            <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+                <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">
+                    {% if post.draft %}
+                        (draft)
+                    {% endif %}
+                    {{ post.title }}
+                </a>
+            </h2>
+            <span class="post-meta">{{ post.date | date: "%-d %Y" }}</span>
+        </li>
+        {% endfor %}
+    </ul>
 
+    <h4>Archive</h4>
+    <ul class="post-list">
+        {% assign archived_posts = site.posts | where: "archive", "true" | concat: site.data.medium_posts | sort: "date" | reverse %}
+        {% for post in archived_posts %}
+        <li>
+            <h2 class="post-title">
+                <span class="archive">
+                <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">
+                    {% if post.draft %}
+                        (draft)
+                    {% endif %}
+                    {{ post.title }}
+                </a>
+                {% if post.medium %}
+                    <small>(Medium)</small>
+                {% endif %}
+                </span>
+            </h2>
+            <span class="post-meta">{{ post.date | date: "%Y" }}</span>
         </li>
         {% endfor %}
     </ul>
